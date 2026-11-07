@@ -2097,8 +2097,13 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.0';
+    const APP_VERSION = '2.1';
     const APP_CHANGES = [
+      { v: '2.1', date: '8 ноября 2026', items: [
+        'Совместные карты онлайн: «Поделиться» → «Пригласить по ссылке» — вы оба видите изменения через пару секунд',
+        'Фото и документы совместной карты видны всем участникам',
+        'Факт-карту можно установить как приложение на телефон и компьютер'
+      ] },
       { v: '2.0', date: '7 ноября 2026', items: [
         'Кнопка «Поделиться»: отправить копию карты файлом или пригласить в совместную карту',
         'Обновления: Меню → «Версия и обновления» → установить новую версию из файла',
@@ -2253,7 +2258,7 @@
     // In the shared map two people add cards at once, so ids get a per-device suffix
     const CLIENT_TAG = Math.random().toString(36).slice(2, 6);
     function uid() {
-      return 'n' + (state.nextId++) + (window.FACTMAP_SHARED ? '-' + CLIENT_TAG : '');
+      return 'n' + (state.nextId++) + (window.FACTMAP_SHARED || (window.__fmCloudOn && window.__fmCloudOn()) ? '-' + CLIENT_TAG : '');
     }
 
     function getNode(id) {
@@ -6523,23 +6528,38 @@
       const name = (cur && cur.name) || 'Карта';
       const canSend = !!(navigator.share && navigator.canShare);
       const shared = !!window.FACTMAP_SHARED;
+      const live = Cloud.enabled && Cloud.linked(activeMapId);
       const html =
+        (Cloud.enabled ? '<div class="sh-card sh-live"><h3>Работать вместе онлайн</h3>' +
+          (live
+            ? '<p>Эта карта совместная: все, у кого есть ссылка, видят изменения друг друга через пару секунд.</p><input class="sh-link sh-inv" readonly value="' + escapeHtml(Cloud.inviteUrl(activeMapId)) + '" aria-label="Ссылка-приглашение"><div class="sh-acts">' + (navigator.share ? '<button type="button" class="btn primary" data-s="invsend">Отправить ссылку…</button>' : '') + '<button type="button" class="btn' + (navigator.share ? '' : ' primary') + '" data-s="invcopy">Скопировать ссылку</button></div><div class="sh-acts" style="margin-top:8px"><button type="button" class="btn link-btn" data-s="unlink">Отключить совместную работу на этом устройстве</button></div>'
+            : '<p>Пригласите человека по ссылке — он откроет её в приложении Факт-карта, и вы оба будете видеть изменения почти сразу. Регистрация не нужна. Фото и документы с карты тоже станут доступны по ссылке.</p><div class="sh-acts"><button type="button" class="btn primary" data-s="invite">Пригласить по ссылке</button></div>') +
+          '</div>' : '') +
         '<div class="sh-card"><h3>Отправить копию карты</h3>' +
           '<p>Получится один файл. Человек откроет его в любом браузере — на телефоне или компьютере — увидит карту и сможет сохранить её себе. Без регистрации. Фото и документы с этой карты тоже внутри.</p>' +
           '<div class="sh-acts">' + (canSend ? '<button type="button" class="btn primary" data-s="send">Отправить…</button>' : '') +
           '<button type="button" class="btn' + (canSend ? '' : ' primary') + '" data-s="file">Сохранить файл</button></div></div>' +
         (IS_SITE ? '<div class="sh-card"><h3>Ссылка на приложение</h3><p>Отправьте ссылку — человек откроет Факт-карту и сможет установить её себе.</p><input class="sh-link sh-app" readonly value="' + APP_URL + '" aria-label="Ссылка на приложение"><div class="sh-acts"><button type="button" class="btn" data-s="applink">Скопировать ссылку</button></div></div>' : '') +
-        '<div class="sh-card"><h3>Пригласить в совместную карту</h3>' +
+        (Cloud.enabled ? '' : '<div class="sh-card"><h3>Пригласить в совместную карту</h3>' +
           (shared
             ? '<p>Это совместная карта: все, у кого есть доступ, видят изменения друг друга сразу.</p><ol><li>Вверху страницы Claude нажмите «Поделиться» (Share) и добавьте человека.</li><li>Отправьте ему ссылку — он откроет её и войдёт в Claude.</li></ol>'
             : '<p>Работать над картой вдвоём можно в общей карте — изменения видны обоим сразу. Нужен аккаунт Claude у каждого.</p><ol><li>Откройте общую карту по ссылке ниже и перенесите туда эту карту: Меню → Импорт → файл из «Сохранить файл».</li><li>В общей карте нажмите «Поделиться» (Share) вверху Claude и добавьте человека.</li><li>Отправьте ему ссылку.</li></ol>') +
           '<input class="sh-link" readonly value="' + SHARED_MAP_URL + '" aria-label="Ссылка на совместную карту">' +
           '<div class="sh-acts"><button type="button" class="btn" data-s="copy">Скопировать ссылку</button>' +
-          (shared ? '' : '<button type="button" class="btn" data-s="open">Открыть общую карту</button>') + '</div></div>';
+          (shared ? '' : '<button type="button" class="btn" data-s="open">Открыть общую карту</button>') + '</div></div>');
       openSheet('Поделиться картой', '«' + name + '»', html, (ov) => {
         ov.addEventListener('click', async e => {
           const b = e.target.closest('[data-s]'); if (!b) return;
           const a = b.dataset.s;
+          if (a === 'invite') {
+            b.disabled = true; b.textContent = 'Создаю ссылку…';
+            try { await Cloud.share(activeMapId); openShareDialog(); showToast('Ссылка готова — отправьте её'); }
+            catch (err) { b.disabled = false; b.textContent = 'Пригласить по ссылке'; showToast('Не получилось: нет связи с сервером. Проверьте интернет'); }
+            return;
+          }
+          if (a === 'invcopy') { const u = Cloud.inviteUrl(activeMapId); const ok = await copyText(u); if (!ok) { const i = ov.querySelector('.sh-inv'); i.focus(); i.select(); } showToast(ok ? 'Ссылка-приглашение скопирована' : 'Выделил ссылку — скопируйте её'); return; }
+          if (a === 'invsend') { try { await navigator.share({ title: 'Факт-карта', text: 'Присоединяйся к моей карте «' + name + '» в Факт-карте:', url: Cloud.inviteUrl(activeMapId) }); } catch (_) {} return; }
+          if (a === 'unlink') { askConfirm('Карта останется у вас, но перестанет обновляться вместе с другими. Продолжить?', () => { Cloud.unlink(activeMapId); openShareDialog(); }, 'Отключить'); return; }
           if (a === 'send' || a === 'file') shareCopy(a);
           else if (a === 'copy') { const ok = await copyText(SHARED_MAP_URL); if (!ok) { const i = ov.querySelector('.sh-link'); i.focus(); i.select(); } showToast(ok ? 'Ссылка скопирована' : 'Выделил ссылку — скопируйте её'); }
           else if (a === 'applink') { const ok = await copyText(APP_URL); if (!ok) { const i = ov.querySelector('.sh-app'); i.focus(); i.select(); } showToast(ok ? 'Ссылка скопирована' : 'Выделил ссылку — скопируйте её'); }
@@ -6739,6 +6759,265 @@
           if (other.length) addFiles(other, null, null);
         }).catch(() => {});
       }
+    })();
+
+    // ==================== Working together online (Supabase) ====================
+    // A map you share gets a "room" in the cloud: a random id + a secret. The invite link carries both;
+    // whoever has the link can open and edit the map. Cards, links and strokes are merged one by one,
+    // so two people editing at the same time don't overwrite each other.
+    const CLOUD = { url: 'https://lupackbvqgobmahuuddy.supabase.co', key: 'sb_publishable_GsuSkcX-mpVgObup_CWgMg_yXzEJRP5', app: 'https://sergo12311.github.io/fakt-karta/' };
+    const Cloud = (function () {
+      const enabled = !window.FACTMAP_SHARED && !(window.claude && window.claude.use) && typeof fetch === 'function';
+      const LKEY = 'factmap-cloud-v1';
+      let links = {};
+      try { links = JSON.parse(localStorage.getItem(LKEY) || '{}') || {}; } catch (e) { links = {}; }
+      const saveLinks = () => { try { localStorage.setItem(LKEY, JSON.stringify(links)); } catch (e) {} };
+      window.__fmCloudOn = () => !!links[activeMapId];
+
+      const S = v => JSON.stringify(v);
+      const stripNulls = o => { const r = {}; Object.keys(o).forEach(k => { if (o[k] !== null) r[k] = o[k]; }); return r; };
+      const fromStore = o => Object.keys(o || {}).filter(k => o[k] && typeof o[k] === 'object').map(k => Object.assign(stripNulls(o[k]), { id: k }));
+      const inkFromStore = o => Object.keys(o || {}).filter(k => o[k]).map(k => o[k]);
+      function hashKey(str) { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return 'k' + (h >>> 0).toString(36) + str.length.toString(36); }
+      const byId = x => x.id, byStroke = x => hashKey(S(x));
+      const toStoreMap = (arr, key) => { const r = {}; (arr || []).forEach(x => { r[key(x)] = x; }); return r; };
+      function diffMap(baseArr, localArr, key) {
+        const B = new Map((baseArr || []).map(x => [key(x), x])), patch = {};
+        let n = 0;
+        (localArr || []).forEach(x => {
+          const k = key(x), b = B.get(k); B.delete(k);
+          if (b && S(b) === S(x)) return;
+          const v = Object.assign({}, x); delete v.id;
+          if (b) Object.keys(b).forEach(f => { if (!(f in x)) v[f] = null; });
+          patch[k] = v; n++;
+        });
+        B.forEach((_, k) => { patch[k] = null; n++; });
+        return n ? patch : null;
+      }
+      function mergeArr(b, l, r, key) {
+        const M = a => new Map((a || []).map(x => [key(x), x]));
+        const B = M(b), L = M(l), Rm = M(r), out = [], seen = new Set();
+        [...L.keys(), ...Rm.keys()].forEach(k => {
+          if (seen.has(k)) return; seen.add(k);
+          const lv = L.get(k), changedHere = S(lv) !== S(B.get(k));
+          const v = changedHere ? lv : Rm.get(k);
+          if (v) out.push(v);
+        });
+        return out;
+      }
+      const snap = (d, name) => ({ nodes: (d.nodes || []).map(x => Object.assign({}, x)), edges: (d.edges || []).map(x => Object.assign({}, x)), ink: (d.ink || []).slice(), nextId: d.nextId || 1, name: name || '' });
+      const fromRemote = data => ({ nodes: fromStore(data.nodes), edges: fromStore(data.edges), ink: inkFromStore(data.ink), nextId: data.nextId || 1, name: data.name || 'Совместная карта' });
+      const toRemote = d => ({ name: d.name, nodes: toStoreMap(d.nodes, byId), edges: toStoreMap(d.edges, byId), ink: toStoreMap(d.ink, byStroke), nextId: d.nextId });
+      function localOf(id) {
+        const rec = mapsCollection.find(m => m.id === id);
+        if (id === activeMapId) return snap({ nodes: state.nodes, edges: state.edges, ink: state.ink, nextId: state.nextId }, rec && rec.name);
+        return rec && rec.data ? snap(rec.data, rec.name) : null;
+      }
+      const rnd = n => { const a = new Uint8Array(n); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => { a[i] = Math.random() * 256; }); return [...a].map(x => 'abcdefghijklmnopqrstuvwxyz0123456789'[x % 36]).join(''); };
+
+      async function api(fn, body) {
+        const r = await fetch(CLOUD.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: CLOUD.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const t = await r.text();
+        if (!r.ok) { let m = t; try { m = JSON.parse(t).message || t; } catch (e) {} throw Object.assign(new Error(m), { status: r.status }); }
+        return t ? JSON.parse(t) : null;
+      }
+      // photos and documents go to cloud storage so the other person can open them
+      function filesIn(nodes) {
+        const out = [];
+        const walk = arr => (arr || []).forEach(n => { if (n.file && !n.file.url && n.file.ref) out.push(n); if (n.items) walk(n.items.map(i => i.node).filter(Boolean)); });
+        walk(nodes); return out;
+      }
+      async function uploadFiles(room, nodes) {
+        let changed = false;
+        for (const n of filesIn(nodes)) {
+          try {
+            const blob = await FileStore.getBlob(n.file);
+            if (!blob) continue;
+            const ext = ((n.file.name || '').match(/\.[a-z0-9]{1,6}$/i) || [''])[0].toLowerCase();
+            const path = room + '/' + rnd(14) + ext;
+            const r = await fetch(CLOUD.url + '/storage/v1/object/fm-files/' + path, { method: 'POST', headers: { apikey: CLOUD.key, Authorization: 'Bearer ' + CLOUD.key, 'Content-Type': blob.type || n.file.type || 'application/octet-stream' }, body: blob });
+            if (!r.ok) continue;
+            n.file.url = CLOUD.url + '/storage/v1/object/public/fm-files/' + path;
+            changed = true;
+          } catch (e) {}
+        }
+        return changed;
+      }
+
+      // ---- status pill ----
+      let pill = null;
+      function setStatus(kind, text, title) {
+        if (!pill) {
+          const tb = document.querySelector('.toolbar'), spacer = tb && tb.querySelector('.toolbar-spacer');
+          pill = document.createElement('button'); pill.type = 'button';
+          pill.className = 'sync-pill'; pill.setAttribute('role', 'status');
+          pill.innerHTML = '<i></i><span></span>';
+          pill.addEventListener('click', () => openShareDialog());
+          if (spacer) spacer.after(pill); else if (tb) tb.appendChild(pill);
+        }
+        pill.hidden = !kind;
+        if (!kind) return;
+        pill.className = 'sync-pill ' + kind;
+        pill.querySelector('span').textContent = text;
+        pill.title = title || text;
+      }
+      const showState = () => {
+        const L = links[activeMapId];
+        if (!L) { setStatus(null); return; }
+        if (!navigator.onLine) setStatus('warn', 'Нет интернета', 'Изменения сохранятся здесь и отправятся, когда появится интернет');
+        else if (L.err) setStatus('warn', 'Нет связи', L.err);
+        else setStatus(dirty || busy ? 'busy' : 'ok', dirty || busy ? 'Синхронизация…' : 'Вместе', 'Совместная карта: изменения видны всем, у кого есть ссылка');
+      };
+
+      // ---- sync of the open map ----
+      let busy = false, dirty = false, pending = false, writeTimer = null;
+      const idle = () => !state.mode && !inkCur && !groupAnimating && !document.querySelector('.node-text[contenteditable="true"]');
+      function applyToActive(m) {
+        state.nodes = m.nodes.map(n => Object.assign({}, n));
+        state.edges = m.edges.map(e => Object.assign({}, e));
+        state.ink = m.ink.slice();
+        state.nextId = Math.max(state.nextId || 1, m.nextId || 1);
+        if (state.selectedNodeId && !getNode(state.selectedNodeId)) state.selectedNodeId = null;
+        if (state.selectedEdgeId && !state.edges.some(e => e.id === state.selectedEdgeId)) state.selectedEdgeId = null;
+        renderNodes(); renderEdges(); renderInk();
+        applying = true; try { save(); } finally { applying = false; }
+        if (window.__zlQuickUpdate) window.__zlQuickUpdate();
+      }
+      let applying = false, applyingJoin = false;
+      async function pull(id) {
+        const L = links[id]; if (!L) return;
+        const got = await api('fm_get', { p_id: L.room, p_secret: L.secret });
+        if (!got) { L.err = 'Эта совместная карта удалена или ссылка больше не действует'; showState(); return; }
+        const R = fromRemote(got.data || {});
+        const local = localOf(id), b = L.base || snap({}, '');
+        if (id === activeMapId && !idle()) { pending = true; return; }
+        const merged = {
+          nodes: mergeArr(b.nodes, local ? local.nodes : [], R.nodes, byId),
+          edges: mergeArr(b.edges, local ? local.edges : [], R.edges, byId),
+          ink: mergeArr(b.ink, local ? local.ink : [], R.ink, byStroke),
+          nextId: Math.max(local ? local.nextId : 1, R.nextId)
+        };
+        const rec = mapsCollection.find(m => m.id === id);
+        if (rec && (!local || rec.name === b.name)) rec.name = R.name;
+        const changedHere = !local || S(merged.nodes) !== S(local.nodes) || S(merged.edges) !== S(local.edges) || S(merged.ink) !== S(local.ink);
+        L.base = R; L.v = got.v; L.err = '';
+        if (changedHere) {
+          if (id === activeMapId) applyToActive(merged);
+          else if (rec) rec.data = Object.assign({}, rec.data || {}, { nodes: merged.nodes, edges: merged.edges, ink: merged.ink, nextId: merged.nextId });
+          applying = true; try { persistMaps(); } finally { applying = false; }
+          refreshMapSelect();
+        }
+        saveLinks();
+        // our merged copy still has edits the other side doesn't have yet
+        if (S(merged.nodes) !== S(R.nodes) || S(merged.edges) !== S(R.edges) || S(merged.ink) !== S(R.ink)) { dirty = true; scheduleWrite(); }
+      }
+      async function push(id) {
+        const L = links[id]; if (!L) return;
+        if (id === activeMapId && await uploadFiles(L.room, state.nodes)) { applying = true; try { save(); } finally { applying = false; } }
+        const local = localOf(id); if (!local) return;
+        const b = L.base || snap({}, '');
+        const patch = {};
+        const np = diffMap(b.nodes, local.nodes, byId), ep = diffMap(b.edges, local.edges, byId), ip = diffMap(b.ink, local.ink, byStroke);
+        if (np) patch.nodes = np; if (ep) patch.edges = ep; if (ip) patch.ink = ip;
+        if (local.nextId !== b.nextId) patch.nextId = local.nextId;
+        if ((local.name || '') !== (b.name || '')) patch.name = local.name;
+        if (!Object.keys(patch).length) { dirty = false; return; }
+        const v = await api('fm_patch', { p_id: L.room, p_secret: L.secret, p_patch: patch });
+        const othersWrote = Number(v) !== Number(L.v) + 1;
+        L.base = local; L.v = Number(v); L.err = ''; dirty = false;
+        saveLinks();
+        if (othersWrote) await pull(id);
+      }
+      async function tick(force) {
+        const id = activeMapId, L = links[id];
+        if (!L || busy || !navigator.onLine) { showState(); return; }
+        if (!force && document.visibilityState === 'hidden') return;
+        busy = true; showState();
+        try {
+          if (dirty) await push(id);
+          else {
+            const v = await api('fm_version', { p_id: L.room, p_secret: L.secret });
+            if (v === null) { L.err = 'Эта совместная карта удалена или ссылка больше не действует'; }
+            else if (Number(v) !== Number(L.v)) await pull(id);
+            else L.err = '';
+          }
+        } catch (e) {
+          L.err = 'Не удаётся связаться с сервером. Изменения сохранены здесь и отправятся позже.';
+        } finally { busy = false; showState(); }
+      }
+      function scheduleWrite() {
+        clearTimeout(writeTimer);
+        writeTimer = setTimeout(() => tick(true), 700);
+      }
+      if (enabled) {
+        setInterval(() => {
+          if (pending && idle()) { pending = false; tick(true); return; }
+          tick(false);
+        }, 2500);
+        window.addEventListener('online', () => tick(true));
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tick(true); });
+        const prevSync = window.__factmapSync;
+        window.__factmapSync = () => {
+          if (prevSync) try { prevSync(); } catch (e) {}
+          // a linked map was deleted here: just forget the link (the other person keeps it)
+          Object.keys(links).forEach(id => { if (!mapsCollection.some(m => m.id === id)) { delete links[id]; saveLinks(); } });
+          if (applying || applyingJoin || !links[activeMapId]) { showState(); return; }
+          dirty = true; showState(); scheduleWrite();
+        };
+      }
+
+      // ---- start sharing / join by link ----
+      async function share(id) {
+        const local = localOf(id); if (!local) throw new Error('no map');
+        const room = rnd(12), secret = rnd(28);
+        if (id === activeMapId) { await uploadFiles(room, state.nodes); save(); }
+        const fresh = localOf(id);
+        await api('fm_create', { p_id: room, p_secret: secret, p_data: toRemote(fresh) });
+        links[id] = { room, secret, v: 1, base: fresh };
+        saveLinks(); showState();
+        return inviteUrl(id);
+      }
+      function inviteUrl(id) { const L = links[id]; return L ? (IS_SITE ? APP_URL : CLOUD.app) + '#join=' + L.room + '.' + L.secret : ''; }
+      function unlink(id) { delete links[id]; saveLinks(); showState(); }
+      async function join(room, secret) {
+        const existing = Object.keys(links).find(id => links[id].room === room && mapsCollection.some(m => m.id === id));
+        if (existing) { switchMap(existing); showToast('Совместная карта открыта'); tick(true); return; }
+        showToast('Открываю совместную карту…');
+        let got;
+        try { got = await api('fm_get', { p_id: room, p_secret: secret }); }
+        catch (e) { showToast('Нет связи с сервером — проверьте интернет и откройте ссылку ещё раз'); return; }
+        if (!got) { showToast('Ссылка-приглашение не действует: карту удалили или ссылка неполная'); return; }
+        const R = fromRemote(got.data || {});
+        const id = 'map-' + Date.now().toString(36);
+        // a fresh install: replace the untouched starter map
+        save();
+        if (mapsCollection.length === 1 && !links[mapsCollection[0].id] && isStarterMap(mapsCollection[0])) mapsCollection = [];
+        mapsCollection.push({ id, name: R.name, data: { nodes: R.nodes, edges: R.edges, ink: R.ink, nextId: R.nextId } });
+        links[id] = { room, secret, v: got.v, base: R };
+        saveLinks();
+        activeMapId = id;
+        applyingJoin = true;
+        try { persistMaps(); resetWorkspace(); load(); persistMaps(); } finally { applyingJoin = false; }
+        showActiveMap();
+        showState();
+        showToast('Вы в совместной карте «' + R.name + '». Изменения видны обоим');
+      }
+      // invite opened: #join=<room>.<secret>
+      if (enabled) {
+        const m = /[#&]join=([a-z0-9]{8,40})\.([a-z0-9]{20,64})/.exec(location.hash || '');
+        if (m) {
+          try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+          try { localStorage.setItem('factmap-tour-done-v1', '1'); } catch (e) {}
+          document.querySelectorAll('.tour, .tour-ov').forEach(o => o.remove());
+          setTimeout(() => join(m[1], m[2]), 300);
+        }
+        window.addEventListener('hashchange', () => {
+          const h = /[#&]join=([a-z0-9]{8,40})\.([a-z0-9]{20,64})/.exec(location.hash || '');
+          if (h) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} join(h[1], h[2]); }
+        });
+        setTimeout(() => { showState(); tick(true); }, 500);
+      }
+      return { enabled, linked: id => !!links[id], share, inviteUrl, unlink, refresh: () => { showState(); tick(true); } };
     })();
     (function bindBackup() {
       const imp = document.getElementById('btn-import');
