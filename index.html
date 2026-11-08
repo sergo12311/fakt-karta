@@ -2059,6 +2059,11 @@
     .tv-row:last-child { border-bottom: 0; }
     .tv-row:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
     .tv-row.key { box-shadow: inset 3px 0 0 #facc15; }
+    .tv-row.head { background: color-mix(in srgb, var(--c) 10%, transparent) !important; }
+    .tv-row.head .tv-text { font-weight: 700; font-size: 15px; }
+    .tv-row.head .tv-num { color: var(--c); font-size: 14px; }
+    .tv-row.sub .tv-cell { padding-left: calc((var(--d) - 1) * 16px + 14px); position: relative; }
+    .tv-row.sub .tv-cell::before { content: ''; position: absolute; left: calc((var(--d) - 1) * 16px + 1px); top: 4px; width: 8px; height: 11px; border-left: 1.5px solid var(--border); border-bottom: 1.5px solid var(--border); border-bottom-left-radius: 4px; }
     .tv-row.editing { background: color-mix(in srgb, var(--accent) 9%, transparent); }
     .tv-row.flash { animation: tvFlash 1.4s ease-out; }
     @keyframes tvFlash { 0%, 30% { background: color-mix(in srgb, var(--accent) 28%, transparent); } 100% { background: transparent; } }
@@ -2434,8 +2439,13 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.7';
+    const APP_VERSION = '2.8';
     const APP_CHANGES = [
+      { v: '2.8', date: '8 ноября 2026', items: [
+        'Таблица «По связям»: колонка на каждый ★ главный факт со всем, что с ним связано, по уровням — сначала прямые связи, потом следующие',
+        'Связки без ★ — отдельными колонками, карточки без связей — в колонке «Без связей»',
+        '«+» в колонке главного факта сразу создаёт связанную с ним карточку'
+      ] },
       { v: '2.7', date: '8 ноября 2026', items: [
         'Режим для перфекционистов: кнопка «Таблица» показывает карту ровными колонками — по шагам шаблона, по типам или по группам',
         'В таблице работает всё: писать и править текст, ★ главное, тип карточки, связи, перенос между шагами, удаление и помощник по шагам',
@@ -7406,7 +7416,46 @@
       const cards = () => state.nodes.filter(n => !n.isMain && n.kind !== 'box' && n.kind !== 'trash' && !n.hiddenBy);
       const byPlace = (a, b) => (a.y - b.y) || (a.x - b.x);
 
+      // «По связям»: every ★ main fact is a column with everything linked to it (nearest ★ wins),
+      // then the other linked bunches, then cards without links. Rows go level by level from the head.
+      function linkColumns() {
+        const all = cards(), ids = new Set(all.map(n => n.id)), adj = new Map(all.map(n => [n.id, []]));
+        state.edges.forEach(e => { if (ids.has(e.from) && ids.has(e.to) && e.from !== e.to) { adj.get(e.from).push(e.to); adj.get(e.to).push(e.from); } });
+        const owner = new Map(), depth = new Map();
+        const keys = all.filter(n => n.key).sort(byPlace);
+        let q = keys.map(k => k.id); keys.forEach(k => { owner.set(k.id, k.id); depth.set(k.id, 0); });
+        while (q.length) {   // all ★ grow at the same time, so every card goes to its closest ★
+          const nq = [];
+          q.forEach(id => adj.get(id).forEach(nb => { if (!owner.has(nb) && !getNode(nb).key) { owner.set(nb, owner.get(id)); depth.set(nb, depth.get(id) + 1); nq.push(nb); } }));
+          q = nq;
+        }
+        const ordered = head => all.filter(n => owner.get(n.id) === head).sort((a, b) => (depth.get(a.id) - depth.get(b.id)) || byPlace(a, b));
+        const cols = keys.map(k => {
+          const rows = ordered(k.id);
+          return { id: 'l-' + k.id, title: (k.text || '').trim() || 'Главный факт', sub: '★ главный · связано: ' + (rows.length - 1), color: '#facc15', rows, depth, head: k.id, make: { shape: 'rect', color: 'blue' }, linkTo: k.id, keep: true, isKey: true };
+        });
+        // linked bunches without a ★: the most connected card leads
+        const rest = all.filter(n => !owner.has(n.id));
+        const seen = new Set(), bunches = [], lonely = [];
+        rest.forEach(n => {
+          if (seen.has(n.id)) return;
+          const comp = [], st = [n.id]; seen.add(n.id);
+          while (st.length) { const id = st.pop(); comp.push(id); adj.get(id).forEach(nb => { if (!seen.has(nb) && !owner.has(nb)) { seen.add(nb); st.push(nb); } }); }
+          if (comp.length < 2) { lonely.push(n); return; }
+          const head = comp.slice().sort((a, b) => adj.get(b).length - adj.get(a).length)[0];
+          owner.set(head, head); depth.set(head, 0); let fr = [head];
+          while (fr.length) { const nq = []; fr.forEach(id => adj.get(id).forEach(nb => { if (comp.includes(nb) && !owner.has(nb)) { owner.set(nb, head); depth.set(nb, depth.get(id) + 1); nq.push(nb); } })); fr = nq; }
+          bunches.push(head);
+        });
+        bunches.sort((a, b) => ordered(b).length - ordered(a).length).forEach(h => {
+          const hn = getNode(h), rows = ordered(h);
+          cols.push({ id: 'l-' + h, title: (hn.text || '').trim() || 'Связка', sub: 'связка · ' + rows.length + ' ' + plural(rows.length, 'карточка', 'карточки', 'карточек') + ' · можно отметить ★', color: '#6c8cff', rows, depth, head: h, make: { shape: 'rect', color: 'blue' }, linkTo: h, keep: true });
+        });
+        cols.push({ id: 'l-none', title: 'Без связей', sub: 'свяжите через «⋯» → «Связать с…»', color: '#8a90a6', rows: lonely.sort(byPlace), depth, make: { shape: 'rect', color: 'blue' }, keep: !!lonely.length });
+        return cols;
+      }
       function columnsFor(mode) {
+        if (mode === 'links') return linkColumns();
         const all = cards();
         if (mode === 'steps') {
           const tpl = tplOf(state.guide), cols = [], seen = [];
@@ -7437,16 +7486,19 @@
       function modeNow() {
         const hasTpl = !!tplOf(state.guide) || state.nodes.some(n => n.gs);
         const hasGroups = state.nodes.some(n => n.gs === 'groups');
+        const hasLinks = state.edges.length > 0 || cards().some(n => n.key);
         let m = group;
+        if (m === 'links' && !hasLinks) m = 'types';
         if (m === 'steps' && !hasTpl) m = 'types';
         if (m === 'groups' && !hasGroups) m = 'types';
-        if (m === 'auto') m = hasTpl ? 'steps' : 'types';
-        return { m, hasTpl, hasGroups };
+        if (m === 'auto') m = hasTpl ? 'steps' : hasLinks ? 'links' : 'types';
+        return { m, hasTpl, hasGroups, hasLinks };
       }
       function layout() {
         const { m } = modeNow();
         const used = new Set();
         return columnsFor(m).map(c => {
+          if (c.rows) return c;
           const rows = cards().filter(n => !used.has(n.id) && c.filter(n)).sort(byPlace);
           if (m !== 'groups') rows.forEach(n => used.add(n.id));
           return Object.assign({ rows }, c);
@@ -7465,7 +7517,7 @@
       function typeColor(n) { return n.kind === 'sticker' ? '#facc15' : KINDS[n.shape] ? KINDS[n.shape].color : hexOf(n.color); }
 
       function rowHtml(n, i, col) {
-        const links = linksOf(n), ed = editing === n.id;
+        const links = linksOf(n).filter(x => !col.head || col.head === n.id || x.other.id !== col.head), ed = editing === n.id;
         const meta = [];
         const colType = col.make ? (col.make.kind === 'sticker' ? 'Стикер' : KINDS[col.make.shape] ? KINDS[col.make.shape].label : 'Факт') : '';
         if ((col.id.indexOf('t-') !== 0 || col.id === 't-files') && typeName(n) !== colType) meta.push('<span class="tv-type" style="--c:' + typeColor(n) + '">' + typeName(n) + '</span>');
@@ -7473,8 +7525,9 @@
         links.slice(0, 3).forEach(x => meta.push('<button type="button" class="tv-chip" data-t="goto" data-id="' + x.other.id + '" title="Перейти к связанной карточке">' + ICON.link + ' ' + escapeHtml(short(label(x.other), 26)) + '</button>'));
         if (links.length > 3) meta.push('<span class="tv-chip">+' + (links.length - 3) + '</span>');
         if (n.shape === 'idea' && (n.likes || n.liked)) meta.push('<span class="tv-chip tv-like">♥ ' + (+n.likes || 1) + '</span>');
-        return '<li class="tv-row' + (n.key ? ' key' : '') + (ed ? ' editing' : '') + '" data-id="' + n.id + '">' +
-          '<span class="tv-num">' + String(i + 1).padStart(2, '0') + '</span>' +
+        const d = col.depth && col.head ? Math.min(4, col.depth.get(n.id) || 0) : 0;
+        return '<li class="tv-row' + (n.key ? ' key' : '') + (ed ? ' editing' : '') + (col.head === n.id ? ' head' : '') + (d ? ' sub' : '') + '" data-id="' + n.id + '" style="--d:' + d + '">' +
+          '<span class="tv-num">' + (col.head === n.id ? '●' : String(i + 1).padStart(2, '0')) + '</span>' +
           '<div class="tv-cell">' + (ed
             ? '<textarea class="tv-edit" rows="2" aria-label="Текст карточки" placeholder="' + escapeHtml(n.hint || 'Напишите факт…') + '">' + escapeHtml(n.text || '') + '</textarea><small class="tv-help">Enter — сохранить · Esc — отмена</small>'
             : '<button type="button" class="tv-text' + ((n.text || '').trim() ? '' : ' empty') + '" data-t="edit">' + escapeHtml((n.text || '').trim() || n.hint || 'Нажмите, чтобы написать') + '</button>') +
@@ -7488,10 +7541,10 @@
         const ae = document.activeElement;
         if (!force && ae && wrap.contains(ae) && ae.classList.contains('tv-edit')) { pending = true; return; }   // don't throw away what is being typed
         const main = state.nodes.find(n => n.isMain);
-        const { m, hasTpl, hasGroups } = modeNow();
+        const { m, hasTpl, hasGroups, hasLinks } = modeNow();
         const cols = layout();
         const total = cards().length, keys = cards().filter(n => n.key).length;
-        const seg = [['steps', 'По шагам', hasTpl], ['types', 'По типам', true], ['groups', 'По группам', hasGroups]];
+        const seg = [['steps', 'По шагам', hasTpl], ['links', 'По связям', hasLinks], ['types', 'По типам', true], ['groups', 'По группам', hasGroups]];
         const hiddenTypes = m === 'types' ? Object.keys(KINDS).filter(k => !cols.some(c => c.id === 't-' + k)) : [];
         const scrollL = wrap.querySelector('.tv-cols') ? wrap.querySelector('.tv-cols').scrollLeft : 0, scrollT = wrap.scrollTop;
         wrap.innerHTML =
@@ -7603,13 +7656,13 @@
         const main = state.nodes.find(n => n.isMain);
         const mc = main ? getNodeCenter(main) : { x: 0, y: 0, h: 80 };
         const sizes = id => { const n = getNode(id), k = n ? getNodeCenter(n) : null; return { w: k && k.w ? k.w : 200, h: k && k.h ? k.h : 80 }; };
-        const widths = cols.map(c => Math.max(200, ...c.rows.map(n => sizes(n.id).w)));
+        const widths = cols.map(c => Math.max(200, ...c.rows.map(n => sizes(n.id).w + (c.head ? Math.min(3, (c.depth && c.depth.get(n.id)) || 0) * 26 : 0))));
         const gap = 48, totalW = widths.reduce((a, b) => a + b, 0) + gap * (cols.length - 1);
         let x = mc.x - totalW / 2; const top = mc.y + (mc.h || 80) / 2 + 110;
         const placed = new Set();
         cols.forEach((c, i) => {
           let y = top;
-          c.rows.forEach(n => { if (placed.has(n.id)) return; placed.add(n.id); const s = sizes(n.id); n.x = Math.round(x + (widths[i] - s.w) / 2); n.y = Math.round(y); y += s.h + 22; });
+          c.rows.forEach(n => { if (placed.has(n.id)) return; placed.add(n.id); const s = sizes(n.id), d = c.depth && c.head ? Math.min(3, c.depth.get(n.id) || 0) : 0; n.x = Math.round(x + (c.head ? d * 26 : (widths[i] - s.w) / 2)); n.y = Math.round(y); y += s.h + 22; });
           x += widths[i] + gap;
         });
         save(); renderNodes(); renderEdges();
