@@ -2140,6 +2140,23 @@
       .tv-edit { font-size: 16px; }
       #btn-view .tb-label { display: none; }
     }
+    /* share: people connected to a map */
+    .sh-people { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .sh-people h4 { margin: 0 0 8px; font-size: 14px; }
+    .sh-plist { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .sh-plist li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+    .sh-plist li > i { width: 9px; height: 9px; border-radius: 50%; background: var(--text-muted); flex: 0 0 9px; }
+    .sh-plist li > i.on { background: var(--success); box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 25%, transparent); }
+    .sh-plist li > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .sh-plist b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sh-plist b small { font-weight: 400; color: var(--text-muted); }
+    .sh-plist span { font-size: 12px; color: var(--text-muted); }
+    .sh-kick { flex-shrink: 0; font-size: 13px; color: var(--danger); }
+    .sh-lockall { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); }
+    .sh-pnote { font-size: 12.5px; color: var(--text-muted); margin: 6px 0; line-height: 1.45; }
+    .sh-lockednote { padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--danger) 10%, transparent); border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border)); }
+    .sh-claim { margin-top: 12px; padding: 10px 12px; border-radius: 10px; border: 1px dashed var(--border); }
+    .sh-claim p { margin: 0 0 8px; font-size: 13px; }
     /* coach: fact-or-opinion review + plain checklist */
     .coach .c-qs.plain .c-q.plain { border: 0; background: none; padding: 2px 0 2px 18px; position: relative; color: var(--text-muted); font-size: 13px; min-height: 0; }
     .coach .c-qs.plain .c-q.plain::before { content: '•'; position: absolute; left: 4px; top: 1px; color: var(--accent); font-weight: 700; }
@@ -2467,8 +2484,13 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.9';
+    const APP_VERSION = '3.0';
     const APP_CHANGES = [
+      { v: '3.0', date: '8 ноября 2026', items: [
+        '«Поделиться» → «Кто подключён»: видно, кто открыл вашу совместную карту, с какого устройства и когда был в сети',
+        'Кнопка «Отключить»: человек теряет доступ, а карта удаляется с его устройства и из его аккаунта',
+        '«Закрыть доступ всем»: отключает всех сразу, ссылка-приглашение перестаёт работать. Открыть доступ снова можно по новой ссылке'
+      ] },
       { v: '2.9', date: '8 ноября 2026', items: [
         'Новый стиль «Простой» (Меню → Стиль оформления): только карточки, цвета, форма и связи, большая кнопка «+ Мысль» и подсказка, что делать дальше',
         'Прежний стиль теперь называется «Классическая» — в нём все возможности',
@@ -7911,10 +7933,17 @@
       const canSend = !!(navigator.share && navigator.canShare);
       const shared = !!window.FACTMAP_SHARED;
       const live = Cloud.enabled && Cloud.linked(activeMapId);
+      const owner = live && Cloud.isOwner(activeMapId), locked = live && Cloud.isLocked(activeMapId);
       const html =
         (Cloud.enabled ? '<div class="sh-card sh-live"><h3>Работать вместе онлайн</h3>' +
           (live
-            ? '<p>Эта карта совместная: все, у кого есть ссылка, видят изменения друг друга через пару секунд.</p><input class="sh-link sh-inv" readonly value="' + escapeHtml(Cloud.inviteUrl(activeMapId)) + '" aria-label="Ссылка-приглашение"><div class="sh-acts">' + (navigator.share ? '<button type="button" class="btn primary" data-s="invsend">Отправить ссылку…</button>' : '') + '<button type="button" class="btn' + (navigator.share ? '' : ' primary') + '" data-s="invcopy">Скопировать ссылку</button></div>' + (Account.signedIn() ? '' : '<div class="sh-acts" style="margin-top:8px"><button type="button" class="btn link-btn" data-s="unlink">Отключить совместную работу на этом устройстве</button></div>') + ''
+            ? (locked && owner
+                ? '<p class="sh-lockednote">🔒 Доступ закрыт для всех. Ссылка-приглашение не работает — карта есть только у вас.</p><div class="sh-acts"><button type="button" class="btn primary" data-s="unlock">Открыть доступ по новой ссылке</button></div>'
+                : '<p>Эта карта совместная: все, у кого есть ссылка, видят изменения друг друга через пару секунд.</p><input class="sh-link sh-inv" readonly value="' + escapeHtml(Cloud.inviteUrl(activeMapId)) + '" aria-label="Ссылка-приглашение"><div class="sh-acts">' + (navigator.share ? '<button type="button" class="btn primary" data-s="invsend">Отправить ссылку…</button>' : '') + '<button type="button" class="btn' + (navigator.share ? '' : ' primary') + '" data-s="invcopy">Скопировать ссылку</button></div>') +
+              (owner ? '<div class="sh-people" aria-live="polite"><h4>Кто подключён</h4><p class="sh-pnote">Загружаю…</p></div>' : '') +
+              (Cloud.canClaim(activeMapId) ? '<div class="sh-claim"><p>Эту карту пригласили до обновления. Если её создали вы — нажмите, чтобы видеть, кто подключён, и управлять доступом.</p><button type="button" class="btn" data-s="claim">Я владелец этой карты</button></div>' : '') +
+              (!owner && !Cloud.canClaim(activeMapId) ? '<p class="sh-pnote">Владелец карты видит, кто подключён, и может отключить участников — тогда карта исчезнет с их устройств.</p>' : '') +
+              (Account.signedIn() || owner ? '' : '<div class="sh-acts" style="margin-top:8px"><button type="button" class="btn link-btn" data-s="unlink">Отключить совместную работу на этом устройстве</button></div>') + ''
             : '<p>Пригласите человека по ссылке — он откроет её в приложении Факт-карта, и вы оба будете видеть изменения почти сразу. Регистрация не нужна. Фото и документы с карты тоже станут доступны по ссылке.</p><div class="sh-acts"><button type="button" class="btn primary" data-s="invite">Пригласить по ссылке</button></div>') +
           '</div>' : '') +
         '<div class="sh-card"><h3>Отправить копию карты</h3>' +
@@ -7929,10 +7958,54 @@
           '<input class="sh-link" readonly value="' + SHARED_MAP_URL + '" aria-label="Ссылка на совместную карту">' +
           '<div class="sh-acts"><button type="button" class="btn" data-s="copy">Скопировать ссылку</button>' +
           (shared ? '' : '<button type="button" class="btn" data-s="open">Открыть общую карту</button>') + '</div></div>');
+      const ago = sec => sec < 90 ? 'в сети' : sec < 3600 ? 'был(а) ' + Math.round(sec / 60) + ' мин назад' : sec < 86400 ? 'был(а) ' + Math.round(sec / 3600) + ' ч назад' : 'был(а) ' + Math.round(sec / 86400) + ' дн назад';
+      async function fillPeople(ov) {
+        const box = ov.querySelector('.sh-people'); if (!box) return;
+        let r = null;
+        try { r = await Cloud.members(activeMapId); } catch (e) { r = null; }
+        if (!box.isConnected) return;
+        if (!r) { box.innerHTML = '<h4>Кто подключён</h4><p class="sh-pnote">Не получилось загрузить список — проверьте интернет.</p>'; return; }
+        const mine = r.members.filter(m => m.role === 'owner'), guests = r.members.filter(m => m.role !== 'owner');
+        const active = guests.filter(m => !m.revoked), off = guests.filter(m => m.revoked);
+        box.innerHTML = '<h4>Кто подключён' + (active.length ? ' · ' + active.length : '') + '</h4>' +
+          (active.length ? '<ul class="sh-plist">' + active.map(m => '<li><i class="' + (m.seen < 90 ? 'on' : '') + '"></i><div><b>' + escapeHtml(m.name || 'Без имени') + (m.account ? ' <small>· с аккаунтом</small>' : '') + '</b><span>' + escapeHtml(m.device || 'Устройство') + ' · ' + ago(m.seen) + '</span></div><button type="button" class="btn sh-kick" data-s="kick" data-m="' + m.member + '" data-n="' + escapeHtml(m.name || 'Без имени') + '">Отключить</button></li>').join('') + '</ul>'
+            : '<p class="sh-pnote">' + (r.locked ? 'Никого — доступ закрыт.' : 'Пока никто не открыл карту по ссылке.') + '</p>') +
+          (off.length ? '<p class="sh-pnote">Отключены: ' + off.map(m => escapeHtml(m.name || 'без имени')).join(', ') + ' — их ссылка больше не работает.</p>' : '') +
+          (mine.length ? '<p class="sh-pnote">Ваши устройства: ' + mine.length + '</p>' : '') +
+          (r.locked ? '' : '<div class="sh-acts"><button type="button" class="btn sh-lockall" data-s="lock">🔒 Закрыть доступ всем</button></div>');
+      }
       openSheet('Поделиться картой', '«' + name + '»', html, (ov) => {
+        fillPeople(ov);
+        const timer = setInterval(() => { if (!ov.isConnected) clearInterval(timer); else fillPeople(ov); }, 15000);
         ov.addEventListener('click', async e => {
           const b = e.target.closest('[data-s]'); if (!b) return;
           const a = b.dataset.s;
+          if (a === 'kick') {
+            const nm = b.dataset.n, mem = b.dataset.m;
+            askConfirm('Отключить «' + nm + '» от карты? Карта удалится с его устройства, как только оно выйдет в сеть, и ссылка у него перестанет работать.', async () => {
+              try { await Cloud.kick(activeMapId, mem); showToast('«' + nm + '» отключён'); } catch (err) { showToast('Не получилось — проверьте интернет'); }
+              fillPeople(ov);
+            }, 'Отключить');
+            return;
+          }
+          if (a === 'lock') {
+            askConfirm('Закрыть доступ всем? Все участники будут отключены, карта удалится с их устройств, а ссылка-приглашение перестанет работать — даже если по ней перейдут снова. Ваша карта останется у вас.', async () => {
+              try { await Cloud.lock(activeMapId, true); showToast('Доступ закрыт для всех'); openShareDialog(); } catch (err) { showToast('Не получилось — проверьте интернет'); }
+            }, 'Закрыть доступ');
+            return;
+          }
+          if (a === 'unlock') {
+            b.disabled = true;
+            try { await Cloud.lock(activeMapId, false); showToast('Доступ открыт по новой ссылке. Старая ссылка не работает'); openShareDialog(); } catch (err) { b.disabled = false; showToast('Не получилось — проверьте интернет'); }
+            return;
+          }
+          if (a === 'claim') {
+            b.disabled = true;
+            let ok = false; try { ok = await Cloud.claim(activeMapId); } catch (err) { ok = false; }
+            if (ok) { showToast('Теперь вы управляете доступом к этой карте'); openShareDialog(); }
+            else { b.disabled = false; showToast('У этой карты уже есть владелец — управлять доступом может только он'); }
+            return;
+          }
           if (a === 'invite') {
             b.disabled = true; b.textContent = 'Создаю ссылку…';
             try { await Cloud.share(activeMapId); openShareDialog(); showToast('Ссылка готова — отправьте её'); }
@@ -8197,8 +8270,20 @@
       }
       const rnd = n => { const a = new Uint8Array(n); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => { a[i] = Math.random() * 256; }); return [...a].map(x => 'abcdefghijklmnopqrstuvwxyz0123456789'[x % 36]).join(''); };
 
-      async function api(fn, body) {
-        const r = await fetch(CLOUD.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: CLOUD.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      // this device, as the owner of a map sees it in «Кто подключён»
+      const MEMBER = (() => { try { let m = localStorage.getItem('factmap-member'); if (!/^[a-z0-9]{16}$/.test(m || '')) { m = rnd(16); localStorage.setItem('factmap-member', m); } return m; } catch (e) { return rnd(16); } })();
+      const DEVICE = (() => {
+        const ua = navigator.userAgent || '';
+        const br = /YaBrowser/.test(ua) ? 'Яндекс' : /Edg\//.test(ua) ? 'Edge' : /OPR|Opera/.test(ua) ? 'Opera' : /Firefox/.test(ua) ? 'Firefox' : /Chrome/.test(ua) ? 'Chrome' : /Safari/.test(ua) ? 'Safari' : '';
+        const os = /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iPhone' : /Windows/.test(ua) ? 'Windows' : /Mac/.test(ua) ? 'Mac' : '';
+        return (IS_TOUCH ? 'Телефон' : 'Компьютер') + (os ? ' · ' + os : '') + (br ? ' · ' + br : '');
+      })();
+      const myName = () => { let n = ''; try { n = localStorage.getItem('factmap-user-name') || ''; } catch (e) {} return n || (window.__fmUserName ? window.__fmUserName() : '') || ''; };
+      const who = L => ({ p_member: MEMBER, p_owner: (L && L.owner) || null });
+      async function api(fn, body, withUser) {
+        let bearer = null;
+        if (withUser && window.__fmToken) { try { bearer = await window.__fmToken(); } catch (e) { bearer = null; } }
+        const r = await fetch(CLOUD.url + '/rest/v1/rpc/' + fn, { method: 'POST', headers: Object.assign({ apikey: CLOUD.key, 'Content-Type': 'application/json' }, bearer ? { Authorization: 'Bearer ' + bearer } : {}), body: JSON.stringify(body) });
         const t = await r.text();
         if (!r.ok) { let m = t; try { m = JSON.parse(t).message || t; } catch (e) {} throw Object.assign(new Error(m), { status: r.status }); }
         return t ? JSON.parse(t) : null;
@@ -8269,8 +8354,11 @@
       let applying = false, applyingJoin = false;
       async function pull(id) {
         const L = links[id]; if (!L) return;
-        const got = await api('fm_get', { p_id: L.room, p_secret: L.secret });
-        if (!got) { L.err = 'Эта совместная карта удалена или ссылка больше не действует'; showState(); return; }
+        const got = await api('fm_get', Object.assign({ p_id: L.room, p_secret: L.secret }, who(L)));
+        if (got && got.denied) { closed(id, got.denied); return; }
+        if (!got) { if (!L.owner && L.guest) { closed(id, 'gone'); return; } L.err = 'Эта совместная карта удалена или ссылка больше не действует'; showState(); return; }
+        if (got.owner && got.secret && got.secret !== L.secret) L.secret = got.secret;   // access was reopened from another of the owner's devices
+        L.locked = !!got.locked;
         const R = fromRemote(got.data || {});
         const local = localOf(id), b = L.base || snap({}, '');
         if (id === activeMapId && !idle()) { pending = true; return; }
@@ -8310,7 +8398,7 @@
         if (local.nextId !== b.nextId) patch.nextId = local.nextId;
         if ((local.name || '') !== (b.name || '')) patch.name = local.name;
         if (!Object.keys(patch).length) { dirty = false; return; }
-        const v = await api('fm_patch', { p_id: L.room, p_secret: L.secret, p_patch: patch });
+        const v = await api('fm_patch', Object.assign({ p_id: L.room, p_secret: L.secret, p_patch: patch }, who(L)));
         const othersWrote = Number(v) !== Number(L.v) + 1;
         L.base = local; L.v = Number(v); L.err = ''; dirty = false;
         saveLinks();
@@ -8324,14 +8412,45 @@
         try {
           if (dirty) await push(id);
           else {
-            const v = await api('fm_version', { p_id: L.room, p_secret: L.secret });
-            if (v === null) { L.err = 'Эта совместная карта удалена или ссылка больше не действует'; }
+            const v = await api('fm_version', Object.assign({ p_id: L.room, p_secret: L.secret }, who(L)));
+            if (v !== null && Number(v) < 0) { closed(id, Number(v) === -1 ? 'locked' : 'revoked'); return; }
+            if (v === null) { if (!L.owner && L.guest) { closed(id, 'gone'); return; } L.err = 'Эта совместная карта удалена или ссылка больше не действует'; }
             else if (Number(v) !== Number(L.v)) await pull(id);
             else L.err = '';
           }
+          if (links[id] && Date.now() - (links[id].helloAt || 0) > 30000) hello(id);
         } catch (e) {
-          L.err = 'Не удаётся связаться с сервером. Изменения сохранены здесь и отправятся позже.';
+          if (/denied/.test((e && e.message) || '')) { busy = false; dirty = false; tick(true); return; }
+          if (links[id]) links[id].err = 'Не удаётся связаться с сервером. Изменения сохранены здесь и отправятся позже.';
         } finally { busy = false; showState(); }
+      }
+      // «I'm here»: lets the owner see who has the map open
+      function hello(id) {
+        const L = links[id]; if (!L) return;
+        L.helloAt = Date.now();
+        api('fm_hello', Object.assign({ p_id: L.room, p_secret: L.secret, p_name: myName(), p_device: DEVICE }, who(L)), true)
+          .then(a => { if (a === 'locked' || a === 'revoked') closed(id, a); }).catch(() => {});
+      }
+      // the owner closed the door: the map and its link disappear from this device
+      function closed(id, why) {
+        const L = links[id]; if (!L || L.owner) return;
+        const rec = mapsCollection.find(m => m.id === id), nm = (rec && rec.name) || 'Совместная карта';
+        delete links[id]; saveLinks(); dirty = false;
+        if (rec) {
+          const wasActive = activeMapId === id;
+          mapsCollection = mapsCollection.filter(m => m.id !== id);
+          if (!mapsCollection.length) mapsCollection.push({ id: 'map-' + Date.now().toString(36) + rnd(3), name: 'Моя карта', data: { nodes: [], edges: [], ink: [], nextId: 1 } });
+          applying = true;
+          try {
+            if (wasActive) { activeMapId = mapsCollection[0].id; persistMaps(); resetWorkspace(); load(); if (!state.nodes.some(n => n.isMain)) addMainQuestion(); showActiveMap(); }
+            persistMaps();
+          } finally { applying = false; }
+          refreshMapSelect();
+        }
+        showState();
+        const text = why === 'locked' ? 'Владелец закрыл доступ к этой карте для всех.' : why === 'revoked' ? 'Владелец карты отключил вас от неё.' : 'Ссылка на эту карту больше не действует.';
+        openSheet('Доступ к карте закрыт', '«' + nm + '»', '<div class="sh-card"><p>' + text + ' Карта удалена с этого устройства.</p><div class="sh-acts"><button type="button" class="btn primary" data-x="ok">Понятно</button></div></div>',
+          (ov, close) => ov.querySelector('[data-x]').addEventListener('click', close));
       }
       function scheduleWrite() {
         clearTimeout(writeTimer);
@@ -8366,31 +8485,55 @@
       // ---- start sharing / join by link ----
       async function share(id) {
         const local = localOf(id); if (!local) throw new Error('no map');
-        const room = rnd(12), secret = rnd(28);
+        const room = rnd(12), secret = rnd(28), owner = rnd(24);
         await uploadFor(id, room);
         const fresh = localOf(id);
-        await api('fm_create', { p_id: room, p_secret: secret, p_data: toRemote(fresh) });
-        links[id] = { room, secret, v: 1, base: fresh };
+        await api('fm_create', { p_id: room, p_secret: secret, p_data: toRemote(fresh), p_owner: owner });
+        links[id] = { room, secret, owner, v: 1, base: fresh };
         saveLinks(); showState();
         if (onLinked) try { onLinked(id); } catch (e) {}
         return inviteUrl(id);
       }
       function inviteUrl(id) { const L = links[id]; return L ? (IS_SITE ? APP_URL : CLOUD.app) + '#join=' + L.room + '.' + L.secret : ''; }
+      // ---- the owner's controls ----
+      async function members(id) {
+        const L = links[id]; if (!L || !L.owner) return null;
+        const r = await api('fm_members_list', { p_id: L.room, p_owner: L.owner });
+        if (r) { L.locked = !!r.locked; if (r.secret && r.secret !== L.secret) L.secret = r.secret; saveLinks(); }
+        return r;
+      }
+      async function kick(id, member) { const L = links[id]; if (!L || !L.owner) throw new Error('not owner'); return api('fm_kick', { p_id: L.room, p_owner: L.owner, p_member: member }); }
+      async function lock(id, on) {
+        const L = links[id]; if (!L || !L.owner) throw new Error('not owner');
+        if (on) { await api('fm_lock', { p_id: L.room, p_owner: L.owner, p_lock: true }, true); L.locked = true; }
+        else { const r = await api('fm_lock', { p_id: L.room, p_owner: L.owner, p_lock: false, p_new_secret: rnd(28) }, true); L.secret = r.secret; L.locked = false; }
+        saveLinks();
+        if (onLinked) try { onLinked(id); } catch (e) {}
+      }
+      async function claim(id) {
+        const L = links[id]; if (!L || L.owner) return false;
+        const key = rnd(24);
+        const ok = await api('fm_claim', { p_id: L.room, p_secret: L.secret, p_owner: key });
+        if (ok) { L.owner = key; saveLinks(); hello(id); if (onLinked) try { onLinked(id); } catch (e) {} }
+        return !!ok;
+      }
       function unlink(id) { delete links[id]; saveLinks(); showState(); }
-      async function join(room, secret, quiet) {
+      async function join(room, secret, quiet, owner) {
         const existing = Object.keys(links).find(id => links[id].room === room && mapsCollection.some(m => m.id === id));
         if (existing) { if (quiet) return existing; switchMap(existing); showToast('Совместная карта открыта'); tick(true); if (onLinked) try { onLinked(existing); } catch (e) {} return existing; }
         if (!quiet) showToast('Открываю совместную карту…');
         let got;
-        try { got = await api('fm_get', { p_id: room, p_secret: secret }); }
+        try { got = await api('fm_get', { p_id: room, p_secret: secret, p_member: MEMBER, p_owner: owner || null }); }
         catch (e) { if (!quiet) showToast('Нет связи с сервером — проверьте интернет и откройте ссылку ещё раз'); return null; }
-        if (!got) { if (!quiet) showToast('Ссылка-приглашение не действует: карту удалили или ссылка неполная'); return null; }
+        if (got && got.denied) { if (!quiet) showToast(got.denied === 'locked' ? 'Владелец закрыл доступ к этой карте' : 'Владелец отключил вас от этой карты'); return null; }
+        if (!got) { if (!quiet) showToast('Ссылка-приглашение не действует: карту удалили, закрыли доступ или ссылка неполная'); return null; }
         const R = fromRemote(got.data || {});
         const id = 'map-' + Date.now().toString(36) + rnd(3);
         if (quiet) {
           // brought in from the account: add next to the others without switching
           mapsCollection.push({ id, name: R.name, data: { nodes: R.nodes, edges: R.edges, ink: R.ink, nextId: R.nextId } });
           links[id] = { room, secret, v: got.v, base: R, acct: true };
+          if (owner && got.owner) links[id].owner = owner;
           saveLinks(); applying = true; try { persistMaps(); } finally { applying = false; }
           refreshMapSelect();
           return id;
@@ -8399,7 +8542,7 @@
         save();
         if (mapsCollection.length === 1 && !links[mapsCollection[0].id] && isStarterMap(mapsCollection[0])) mapsCollection = [];
         mapsCollection.push({ id, name: R.name, data: { nodes: R.nodes, edges: R.edges, ink: R.ink, nextId: R.nextId } });
-        links[id] = { room, secret, v: got.v, base: R };
+        links[id] = { room, secret, v: got.v, base: R, guest: true };
         saveLinks();
         activeMapId = id;
         applyingJoin = true;
@@ -8427,7 +8570,8 @@
       }
       let onLinked = null, onUnlinked = null;
       return {
-        enabled, linked: id => !!links[id], share, inviteUrl, unlink, join,
+        enabled, linked: id => !!links[id], share, inviteUrl, unlink, join, members, kick, lock, claim, member: MEMBER,
+        isOwner: id => !!(links[id] && links[id].owner), canClaim: id => !!(links[id] && !links[id].owner && !links[id].guest), isLocked: id => !!(links[id] && links[id].locked),
         refresh: () => { showState(); tick(true); },
         links: () => links, saveLinks,
         hooks: (a, b) => { onLinked = a; onUnlinked = b; }
@@ -8493,7 +8637,9 @@
         const L = Cloud.links()[id]; if (!sess || !L) return;
         const rec = mapsCollection.find(m => m.id === id);
         try {
-          await rest('fm_user_rooms?on_conflict=user_id,room_id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ room_id: L.room, secret: L.secret, name: (rec && rec.name) || '', updated_at: new Date().toISOString() }) });
+          const row = { room_id: L.room, secret: L.secret, name: (rec && rec.name) || '', updated_at: new Date().toISOString() };
+          if (L.owner) row.owner_key = L.owner;
+          await rest('fm_user_rooms?on_conflict=user_id,room_id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(row) });
           L.acct = true; Cloud.saveLinks();
         } catch (e) {}
       }
@@ -8502,13 +8648,15 @@
         syncing = true; render();
         let added = 0;
         try {
-          const list = await rest('fm_user_rooms?select=room_id,secret,name&order=created_at.asc');
-          const mine = new Set(list.map(r => r.room_id));
-          // maps from other devices → here
+          const list = await rest('fm_user_rooms?select=room_id,secret,name,owner_key&order=created_at.asc');
+          const mine = new Set(list.map(r => r.room_id)), ownerKeys = {};
+          // maps from other devices → here (with the owner's key, so every device of the owner can manage access)
           for (const r of list) {
             const links = Cloud.links();
-            const have = Object.keys(links).some(id => links[id].room === r.room_id && mapsCollection.some(m => m.id === id));
-            if (!have) { const id = await Cloud.join(r.room_id, r.secret, true); if (id) added++; }
+            if (r.owner_key) ownerKeys[r.room_id] = r.owner_key;
+            const hereId = Object.keys(links).find(id => links[id].room === r.room_id && mapsCollection.some(m => m.id === id));
+            if (!hereId) { const id = await Cloud.join(r.room_id, r.secret, true, r.owner_key); if (id) added++; }
+            else if (r.owner_key && !links[hereId].owner) { links[hereId].owner = r.owner_key; Cloud.saveLinks(); }
           }
           // maps deleted on another device → remove here too
           const links = Cloud.links();
@@ -8539,7 +8687,7 @@
           for (const m of mapsCollection.slice()) {
             if (!Cloud.links()[m.id]) { try { await Cloud.share(m.id); } catch (e) { continue; } }
             const L2 = Cloud.links()[m.id];
-            if (L2 && !mine.has(L2.room)) await register(m.id);
+            if (L2 && (!mine.has(L2.room) || (L2.owner && !ownerKeys[L2.room]))) await register(m.id);
           }
         } catch (e) {} finally { syncing = false; render(); }
         return added;
@@ -8676,6 +8824,8 @@
         else { t.textContent = 'Войдите, чтобы карты были на всех ваших устройствах'; b.textContent = 'Войти или создать аккаунт'; }
       }
       window.__fmSignedIn = () => !!sess;
+      window.__fmToken = token;
+      window.__fmUserName = () => (sess && sess.user) ? (sess.user.name || (sess.user.email || '').split('@')[0]) : '';
       const btn = document.getElementById('btn-account');
       if (btn) btn.addEventListener('click', () => openAccount());
       render();
