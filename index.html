@@ -1873,6 +1873,17 @@
     html[data-theme="pc"] .sh-sub, html[data-theme="pc"] .sh-card p, html[data-theme="pc"] .sh-card ol { color: #222; }
     html[data-theme="paper"] .sh-box { background: #fffef8; color: #1c2b5a; border: 2px solid #27408b; }
     html[data-theme="paper"] .sh-card { background: #fff; border-color: #27408b; }
+
+    .acc-box { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; margin-bottom: 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); }
+    .acc-box .acc-title { flex: 1 1 180px; font-size: 13.5px; color: var(--text-muted); overflow-wrap: anywhere; }
+    .acc-form { display: flex; flex-direction: column; gap: 8px; }
+    .acc-form .sh-link { margin: 0; font-size: 15px; }
+    .acc-msg { margin: 4px 0 0 !important; min-height: 1em; color: var(--text) !important; }
+    .acc-gbtn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff !important; color: #1f1f1f !important; border: 1px solid #dadce0 !important; font-weight: 600; }
+    .acc-me { display: flex; align-items: center; gap: 12px; }
+    .acc-ava { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: 0 0 44px; }
+    .acc-ini { display: grid; place-items: center; background: var(--accent); color: #fff; font-weight: 700; font-size: 19px; }
+    .acc-me small { color: var(--text-muted); }
     /* touch screens: fingers need bigger targets */
     @media (pointer: coarse) {
       .np-dot, .op-colors .color-dot, .radial-tools-panel .color-dot { width: 32px; height: 32px; }
@@ -1972,6 +1983,10 @@
           <button type="button" class="btn" id="btn-close-settings">✕</button>
         </div>
         <div class="modal-body">
+          <div class="acc-box" id="acc-box" hidden>
+            <div class="acc-title"></div>
+            <button class="btn primary" id="btn-account" type="button">Войти или создать аккаунт</button>
+          </div>
           <h3>Карты и сохранение</h3>
           <div class="form-row">
             <label>Текущая карта</label>
@@ -2097,8 +2112,13 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.1';
+    const APP_VERSION = '2.2';
     const APP_CHANGES = [
+      { v: '2.2', date: '8 ноября 2026', items: [
+        'Аккаунт: Меню → «Войти или создать аккаунт» — по почте или через Google',
+        'После входа все карты сохраняются в облако и появляются на всех ваших устройствах',
+        'Новые и удалённые карты синхронизируются между устройствами сами'
+      ] },
       { v: '2.1', date: '8 ноября 2026', items: [
         'Совместные карты онлайн: «Поделиться» → «Пригласить по ссылке» — вы оба видите изменения через пару секунд',
         'Фото и документы совместной карты видны всем участникам',
@@ -6532,7 +6552,7 @@
       const html =
         (Cloud.enabled ? '<div class="sh-card sh-live"><h3>Работать вместе онлайн</h3>' +
           (live
-            ? '<p>Эта карта совместная: все, у кого есть ссылка, видят изменения друг друга через пару секунд.</p><input class="sh-link sh-inv" readonly value="' + escapeHtml(Cloud.inviteUrl(activeMapId)) + '" aria-label="Ссылка-приглашение"><div class="sh-acts">' + (navigator.share ? '<button type="button" class="btn primary" data-s="invsend">Отправить ссылку…</button>' : '') + '<button type="button" class="btn' + (navigator.share ? '' : ' primary') + '" data-s="invcopy">Скопировать ссылку</button></div><div class="sh-acts" style="margin-top:8px"><button type="button" class="btn link-btn" data-s="unlink">Отключить совместную работу на этом устройстве</button></div>'
+            ? '<p>Эта карта совместная: все, у кого есть ссылка, видят изменения друг друга через пару секунд.</p><input class="sh-link sh-inv" readonly value="' + escapeHtml(Cloud.inviteUrl(activeMapId)) + '" aria-label="Ссылка-приглашение"><div class="sh-acts">' + (navigator.share ? '<button type="button" class="btn primary" data-s="invsend">Отправить ссылку…</button>' : '') + '<button type="button" class="btn' + (navigator.share ? '' : ' primary') + '" data-s="invcopy">Скопировать ссылку</button></div>' + (Account.signedIn() ? '' : '<div class="sh-acts" style="margin-top:8px"><button type="button" class="btn link-btn" data-s="unlink">Отключить совместную работу на этом устройстве</button></div>') + ''
             : '<p>Пригласите человека по ссылке — он откроет её в приложении Факт-карта, и вы оба будете видеть изменения почти сразу. Регистрация не нужна. Фото и документы с карты тоже станут доступны по ссылке.</p><div class="sh-acts"><button type="button" class="btn primary" data-s="invite">Пригласить по ссылке</button></div>') +
           '</div>' : '') +
         '<div class="sh-card"><h3>Отправить копию карты</h3>' +
@@ -6771,7 +6791,7 @@
       const LKEY = 'factmap-cloud-v1';
       let links = {};
       try { links = JSON.parse(localStorage.getItem(LKEY) || '{}') || {}; } catch (e) { links = {}; }
-      const saveLinks = () => { try { localStorage.setItem(LKEY, JSON.stringify(links)); } catch (e) {} };
+      const saveLinks = () => { try { localStorage.setItem(LKEY, JSON.stringify(links, (k, v) => k === 'dropTimer' ? undefined : v)); } catch (e) {} };
       window.__fmCloudOn = () => !!links[activeMapId];
 
       const S = v => JSON.stringify(v);
@@ -6866,6 +6886,7 @@
         if (!L) { setStatus(null); return; }
         if (!navigator.onLine) setStatus('warn', 'Нет интернета', 'Изменения сохранятся здесь и отправятся, когда появится интернет');
         else if (L.err) setStatus('warn', 'Нет связи', L.err);
+        else if (window.__fmSignedIn && window.__fmSignedIn()) setStatus(dirty || busy ? 'busy' : 'ok', dirty || busy ? 'Синхронизация…' : 'В облаке', 'Карта сохранена в аккаунте и синхронизируется между устройствами');
         else setStatus(dirty || busy ? 'busy' : 'ok', dirty || busy ? 'Синхронизация…' : 'Вместе', 'Совместная карта: изменения видны всем, у кого есть ссылка');
       };
 
@@ -6911,9 +6932,14 @@
         // our merged copy still has edits the other side doesn't have yet
         if (S(merged.nodes) !== S(R.nodes) || S(merged.edges) !== S(R.edges) || S(merged.ink) !== S(R.ink)) { dirty = true; scheduleWrite(); }
       }
+      function nodesOf(id) { if (id === activeMapId) return state.nodes; const rec = mapsCollection.find(m => m.id === id); return (rec && rec.data && rec.data.nodes) || []; }
+      async function uploadFor(id, room) {
+        if (!(await uploadFiles(room, nodesOf(id)))) return;
+        applying = true; try { if (id === activeMapId) save(); else persistMaps(); } finally { applying = false; }
+      }
       async function push(id) {
         const L = links[id]; if (!L) return;
-        if (id === activeMapId && await uploadFiles(L.room, state.nodes)) { applying = true; try { save(); } finally { applying = false; } }
+        await uploadFor(id, L.room);
         const local = localOf(id); if (!local) return;
         const b = L.base || snap({}, '');
         const patch = {};
@@ -6960,7 +6986,16 @@
         window.__factmapSync = () => {
           if (prevSync) try { prevSync(); } catch (e) {}
           // a linked map was deleted here: just forget the link (the other person keeps it)
-          Object.keys(links).forEach(id => { if (!mapsCollection.some(m => m.id === id)) { delete links[id]; saveLinks(); } });
+          Object.keys(links).forEach(id => {
+            if (mapsCollection.some(m => m.id === id) || links[id].dropTimer) return;
+            links[id].dropTimer = setTimeout(() => {
+              if (!links[id]) return;
+              delete links[id].dropTimer;
+              if (mapsCollection.some(m => m.id === id)) return;
+              const gone = links[id]; delete links[id]; saveLinks();
+              if (onUnlinked) try { onUnlinked(gone); } catch (e) {}
+            }, 15000);
+          });
           if (applying || applyingJoin || !links[activeMapId]) { showState(); return; }
           dirty = true; showState(); scheduleWrite();
         };
@@ -6970,25 +7005,34 @@
       async function share(id) {
         const local = localOf(id); if (!local) throw new Error('no map');
         const room = rnd(12), secret = rnd(28);
-        if (id === activeMapId) { await uploadFiles(room, state.nodes); save(); }
+        await uploadFor(id, room);
         const fresh = localOf(id);
         await api('fm_create', { p_id: room, p_secret: secret, p_data: toRemote(fresh) });
         links[id] = { room, secret, v: 1, base: fresh };
         saveLinks(); showState();
+        if (onLinked) try { onLinked(id); } catch (e) {}
         return inviteUrl(id);
       }
       function inviteUrl(id) { const L = links[id]; return L ? (IS_SITE ? APP_URL : CLOUD.app) + '#join=' + L.room + '.' + L.secret : ''; }
       function unlink(id) { delete links[id]; saveLinks(); showState(); }
-      async function join(room, secret) {
+      async function join(room, secret, quiet) {
         const existing = Object.keys(links).find(id => links[id].room === room && mapsCollection.some(m => m.id === id));
-        if (existing) { switchMap(existing); showToast('Совместная карта открыта'); tick(true); return; }
-        showToast('Открываю совместную карту…');
+        if (existing) { if (quiet) return existing; switchMap(existing); showToast('Совместная карта открыта'); tick(true); if (onLinked) try { onLinked(existing); } catch (e) {} return existing; }
+        if (!quiet) showToast('Открываю совместную карту…');
         let got;
         try { got = await api('fm_get', { p_id: room, p_secret: secret }); }
-        catch (e) { showToast('Нет связи с сервером — проверьте интернет и откройте ссылку ещё раз'); return; }
-        if (!got) { showToast('Ссылка-приглашение не действует: карту удалили или ссылка неполная'); return; }
+        catch (e) { if (!quiet) showToast('Нет связи с сервером — проверьте интернет и откройте ссылку ещё раз'); return null; }
+        if (!got) { if (!quiet) showToast('Ссылка-приглашение не действует: карту удалили или ссылка неполная'); return null; }
         const R = fromRemote(got.data || {});
-        const id = 'map-' + Date.now().toString(36);
+        const id = 'map-' + Date.now().toString(36) + rnd(3);
+        if (quiet) {
+          // brought in from the account: add next to the others without switching
+          mapsCollection.push({ id, name: R.name, data: { nodes: R.nodes, edges: R.edges, ink: R.ink, nextId: R.nextId } });
+          links[id] = { room, secret, v: got.v, base: R, acct: true };
+          saveLinks(); applying = true; try { persistMaps(); } finally { applying = false; }
+          refreshMapSelect();
+          return id;
+        }
         // a fresh install: replace the untouched starter map
         save();
         if (mapsCollection.length === 1 && !links[mapsCollection[0].id] && isStarterMap(mapsCollection[0])) mapsCollection = [];
@@ -7001,6 +7045,8 @@
         showActiveMap();
         showState();
         showToast('Вы в совместной карте «' + R.name + '». Изменения видны обоим');
+        if (onLinked) try { onLinked(id); } catch (e) {}
+        return id;
       }
       // invite opened: #join=<room>.<secret>
       if (enabled) {
@@ -7017,8 +7063,263 @@
         });
         setTimeout(() => { showState(); tick(true); }, 500);
       }
-      return { enabled, linked: id => !!links[id], share, inviteUrl, unlink, refresh: () => { showState(); tick(true); } };
+      let onLinked = null, onUnlinked = null;
+      return {
+        enabled, linked: id => !!links[id], share, inviteUrl, unlink, join,
+        refresh: () => { showState(); tick(true); },
+        links: () => links, saveLinks,
+        hooks: (a, b) => { onLinked = a; onUnlinked = b; }
+      };
     })();
+
+    // ==================== Account: sign-in and maps saved to the account ====================
+    // After signing in, every map of this device gets a cloud copy registered to the account;
+    // signing in on another device brings all of them there. Sync itself is the same as for shared maps.
+    const Account = (function () {
+      const enabled = Cloud.enabled;
+      const SKEY = 'factmap-auth-v1';
+      let sess = null;
+      try { sess = JSON.parse(localStorage.getItem(SKEY) || 'null'); } catch (e) { sess = null; }
+      const store = () => { try { if (sess) localStorage.setItem(SKEY, JSON.stringify(sess)); else localStorage.removeItem(SKEY); } catch (e) {} };
+      const back = () => (IS_SITE ? APP_URL : CLOUD.app);
+      let providers = null;   // which sign-in buttons the server allows
+      async function settings() {
+        if (providers) return providers;
+        try { const r = await fetch(CLOUD.url + '/auth/v1/settings', { headers: { apikey: CLOUD.key } }); const j = await r.json(); providers = j.external || {}; }
+        catch (e) { providers = {}; }
+        return providers;
+      }
+      async function authReq(path, body, method) {
+        const h = { apikey: CLOUD.key, 'Content-Type': 'application/json' };
+        if (sess && sess.access_token && /^(user|logout)/.test(path)) h.Authorization = 'Bearer ' + sess.access_token;
+        const r = await fetch(CLOUD.url + '/auth/v1/' + path, { method: method || 'POST', headers: h, body: body ? JSON.stringify(body) : undefined });
+        const t = await r.text(); let j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) {}
+        if (!r.ok) throw Object.assign(new Error(j.msg || j.error_description || j.message || ('Ошибка ' + r.status)), { code: j.error_code || j.code || r.status });
+        return j;
+      }
+      function userInfo(u) {
+        if (!u) return (sess && sess.user) || null;
+        const m = u.user_metadata || {};
+        return { id: u.id, email: u.email || m.email || '', name: m.full_name || m.name || '', avatar: m.avatar_url || m.picture || '' };
+      }
+      function takeSession(j) {
+        if (!j || !j.access_token) return false;
+        sess = { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Date.now() + (Number(j.expires_in) || 3600) * 1000, user: j.user ? userInfo(j.user) : (sess && sess.user) || null };
+        store(); return true;
+      }
+      async function token() {
+        if (!sess) return null;
+        if (Date.now() < sess.expires_at - 60000) return sess.access_token;
+        try { takeSession(await authReq('token?grant_type=refresh_token', { refresh_token: sess.refresh_token })); }
+        catch (e) {
+          // a dead session (signed out elsewhere, revoked): forget it; network trouble: try later
+          if (e && !/Failed to fetch|NetworkError/i.test(e.message)) { sess = null; store(); render(); }
+          return null;
+        }
+        return sess && sess.access_token;
+      }
+      async function rest(path, opts) {
+        const t = await token(); if (!t) throw new Error('not signed in');
+        const r = await fetch(CLOUD.url + '/rest/v1/' + path, Object.assign({}, opts, { headers: Object.assign({ apikey: CLOUD.key, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' }, (opts && opts.headers) || {}) }));
+        if (!r.ok) throw new Error('rest ' + r.status);
+        const txt = await r.text(); return txt ? JSON.parse(txt) : null;
+      }
+
+      // ---- keep the account's list of maps and this device in step ----
+      let syncing = false;
+      async function register(id) {
+        const L = Cloud.links()[id]; if (!sess || !L) return;
+        const rec = mapsCollection.find(m => m.id === id);
+        try {
+          await rest('fm_user_rooms?on_conflict=user_id,room_id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ room_id: L.room, secret: L.secret, name: (rec && rec.name) || '', updated_at: new Date().toISOString() }) });
+          L.acct = true; Cloud.saveLinks();
+        } catch (e) {}
+      }
+      async function syncAccount(first) {
+        if (!sess || syncing || !navigator.onLine) return;
+        syncing = true; render();
+        let added = 0;
+        try {
+          const list = await rest('fm_user_rooms?select=room_id,secret,name&order=created_at.asc');
+          const mine = new Set(list.map(r => r.room_id));
+          // maps from other devices → here
+          for (const r of list) {
+            const links = Cloud.links();
+            const have = Object.keys(links).some(id => links[id].room === r.room_id && mapsCollection.some(m => m.id === id));
+            if (!have) { const id = await Cloud.join(r.room_id, r.secret, true); if (id) added++; }
+          }
+          // maps deleted on another device → remove here too
+          const links = Cloud.links();
+          let removed = false;
+          Object.keys(links).forEach(id => {
+            const L = links[id];
+            if (L.acct && !mine.has(L.room) && mapsCollection.some(m => m.id === id) && mapsCollection.length > 1) {
+              mapsCollection = mapsCollection.filter(m => m.id !== id);
+              delete links[id]; removed = true;
+              if (activeMapId === id) { activeMapId = mapsCollection[0].id; persistMaps(); resetWorkspace(); load(); showActiveMap(); }
+            }
+          });
+          if (removed) { Cloud.saveLinks(); persistMaps(); }
+          // a fresh device that only had the untouched starter map: drop it once the account's maps are here
+          if (first && added && mapsCollection.length > 1) {
+            save();
+            const starter = mapsCollection.find(m => !Cloud.links()[m.id] && isStarterMap(m));
+            if (starter) {
+              mapsCollection = mapsCollection.filter(m => m !== starter);
+              const wasActive = activeMapId === starter.id;
+              if (wasActive) activeMapId = mapsCollection[0].id;
+              persistMaps();
+              if (wasActive) { resetWorkspace(); load(); showActiveMap(); }
+            }
+          }
+          refreshMapSelect();
+          // maps of this device → into the account
+          for (const m of mapsCollection.slice()) {
+            if (!Cloud.links()[m.id]) { try { await Cloud.share(m.id); } catch (e) { continue; } }
+            const L2 = Cloud.links()[m.id];
+            if (L2 && !mine.has(L2.room)) await register(m.id);
+          }
+        } catch (e) {} finally { syncing = false; render(); }
+        return added;
+      }
+      Cloud.hooks(id => { if (sess) register(id); }, gone => {
+        if (!sess || !gone || !gone.acct) return;
+        rest('fm_user_rooms?room_id=eq.' + encodeURIComponent(gone.room), { method: 'DELETE', headers: { Prefer: 'return=minimal' } }).catch(() => {});
+      });
+
+      // ---- sign in / up / out ----
+      async function signIn(email, password) { takeSession(await authReq('token?grant_type=password', { email, password })); await afterSignIn(); }
+      async function signUp(email, password) {
+        const j = await authReq('signup?redirect_to=' + encodeURIComponent(back()), { email, password });
+        if (takeSession(j)) { await afterSignIn(); return 'in'; }
+        return 'confirm';
+      }
+      async function recover(email) { await authReq('recover?redirect_to=' + encodeURIComponent(back()), { email }); }
+      function google() { location.href = CLOUD.url + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(back()); }
+      async function signOut() {
+        try { await authReq('logout', null); } catch (e) {}
+        sess = null; store(); render();
+        showToast('Вы вышли. Карты остались на этом устройстве');
+      }
+      async function afterSignIn() {
+        try { const u = await authReq('user', null, 'GET'); sess.user = userInfo(u); store(); } catch (e) {}
+        render();
+        showToast('Вы вошли как ' + ((sess.user && (sess.user.name || sess.user.email)) || 'пользователь') + '. Сохраняю карты в облако…');
+        const added = await syncAccount(true);
+        showToast(added ? 'Из аккаунта загружено карт: ' + added : 'Карты сохранены в аккаунте');
+      }
+      // returning from Google / an email link: #access_token=…
+      if (enabled) {
+        const h = location.hash || '';
+        if (/access_token=|error_description=/.test(h)) {
+          const q = new URLSearchParams(h.slice(1));
+          try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+          if (q.get('error_description')) setTimeout(() => showToast('Не получилось войти: ' + q.get('error_description').replace(/\+/g, ' ')), 600);
+          else if (takeSession({ access_token: q.get('access_token'), refresh_token: q.get('refresh_token'), expires_in: q.get('expires_in') })) {
+            try { localStorage.setItem('factmap-tour-done-v1', '1'); } catch (e) {}
+            document.querySelectorAll('.tour, .tour-ov').forEach(o => o.remove());
+            const type = q.get('type');
+            setTimeout(async () => {
+              await afterSignIn();
+              if (type === 'recovery') openAccount('newpass');
+            }, 400);
+          }
+        } else if (sess) setTimeout(() => syncAccount(false), 1500);
+        setInterval(() => { if (sess && document.visibilityState === 'visible') syncAccount(false); }, 30000);
+        window.addEventListener('online', () => { if (sess) syncAccount(false); });
+      }
+
+      // ---- the account dialog ----
+      const esc = t => escapeHtml(String(t || ''));
+      const GOOGLE_SVG = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+      function openAccount(mode) {
+        if (window.closeFactSettings) window.closeFactSettings();
+        if (sess && mode !== 'newpass') {
+          const u = sess.user || {};
+          const n = Object.keys(Cloud.links()).filter(id => Cloud.links()[id].acct).length;
+          openSheet('Аккаунт', '', '<div class="sh-card acc-me">' + (u.avatar ? '<img class="acc-ava" alt="" src="' + esc(u.avatar) + '" referrerpolicy="no-referrer">' : '<div class="acc-ava acc-ini">' + esc((u.name || u.email || '?').slice(0, 1).toUpperCase()) + '</div>') +
+            '<div><b>' + esc(u.name || u.email) + '</b>' + (u.name ? '<br><small>' + esc(u.email) + '</small>' : '') + '</div></div>' +
+            '<div class="sh-card"><p>Карты сохраняются в облако и появляются на всех устройствах, где вы вошли в этот аккаунт. Сейчас в аккаунте карт: <b>' + n + '</b>.</p>' +
+            '<div class="sh-acts"><button type="button" class="btn" data-a="sync">Синхронизировать сейчас</button><button type="button" class="btn danger" data-a="out">Выйти</button></div></div>',
+            (ov, close) => ov.addEventListener('click', async e => {
+              const b = e.target.closest('[data-a]'); if (!b) return;
+              if (b.dataset.a === 'out') { close(); signOut(); }
+              else { b.disabled = true; b.textContent = 'Синхронизирую…'; await syncAccount(false); close(); showToast('Готово: карты синхронизированы'); }
+            }));
+          return;
+        }
+        if (mode === 'newpass') {
+          openSheet('Новый пароль', '', '<div class="sh-card"><form class="acc-form"><input class="sh-link" type="password" name="p" placeholder="Новый пароль (от 6 символов)" autocomplete="new-password" minlength="6" required><div class="sh-acts"><button class="btn primary" type="submit">Сохранить пароль</button></div><p class="acc-msg"></p></form></div>', (ov, close) => {
+            ov.querySelector('form').addEventListener('submit', async e => {
+              e.preventDefault(); const p = e.target.p.value;
+              try { await token(); await authReq('user', { password: p }, 'PUT'); close(); showToast('Пароль изменён'); }
+              catch (err) { ov.querySelector('.acc-msg').textContent = ruError(err); }
+            });
+          });
+          return;
+        }
+        openSheet('Вход в Факт-карту', 'Войдите, чтобы карты хранились в облаке и были на всех ваших устройствах',
+          '<div class="sh-card acc-google" hidden><div class="sh-acts"><button type="button" class="btn acc-gbtn" data-a="google">' + GOOGLE_SVG + ' Войти через Google</button></div></div>' +
+          '<div class="sh-card"><form class="acc-form"><input class="sh-link" type="email" name="e" placeholder="Почта" autocomplete="email" required><input class="sh-link" type="password" name="p" placeholder="Пароль (от 6 символов)" autocomplete="current-password" minlength="6" required>' +
+          '<div class="sh-acts"><button class="btn primary" type="submit" data-a="in">Войти</button><button class="btn" type="submit" data-a="up">Создать аккаунт</button></div>' +
+          '<div class="sh-acts" style="margin-top:6px"><button type="button" class="btn link-btn" data-a="forgot">Забыли пароль?</button></div><p class="acc-msg"></p></form></div>' +
+          '<p class="modal-note">Без входа приложение работает как раньше: карты хранятся только на этом устройстве.</p>',
+          (ov, close) => {
+            settings().then(pr => { if (pr.google) ov.querySelector('.acc-google').hidden = false; });
+            const form = ov.querySelector('form'), msg = ov.querySelector('.acc-msg');
+            let act = 'in';
+            form.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b) act = b.dataset.a; });
+            ov.querySelector('.acc-google').addEventListener('click', e => { if (e.target.closest('[data-a="google"]')) google(); });
+            ov.querySelector('[data-a="forgot"]').addEventListener('click', async () => {
+              const email = form.e.value.trim();
+              if (!email) { msg.textContent = 'Впишите почту — пришлём ссылку для нового пароля'; form.e.focus(); return; }
+              try { await recover(email); msg.textContent = 'Письмо отправлено на ' + email + '. Откройте ссылку из него на этом устройстве.'; }
+              catch (err) { msg.textContent = ruError(err); }
+            });
+            form.addEventListener('submit', async e => {
+              e.preventDefault();
+              const email = form.e.value.trim(), pass = form.p.value;
+              msg.textContent = act === 'up' ? 'Создаю аккаунт…' : 'Вхожу…';
+              const btns = form.querySelectorAll('button'); btns.forEach(b => { b.disabled = true; });
+              try {
+                if (act === 'up') {
+                  const r = await signUp(email, pass);
+                  if (r === 'confirm') { msg.textContent = 'Почти готово: мы отправили письмо на ' + email + '. Откройте ссылку из него — и вы войдёте.'; btns.forEach(b => { b.disabled = false; }); return; }
+                } else await signIn(email, pass);
+                close();
+              } catch (err) {
+                msg.textContent = ruError(err);
+                btns.forEach(b => { b.disabled = false; });
+              }
+            });
+          });
+      }
+      function ruError(err) {
+        const m = String((err && err.message) || ''), c = String((err && err.code) || '');
+        if (/invalid_credentials|Invalid login/i.test(c + m)) return 'Неверная почта или пароль';
+        if (/email_not_confirmed|not confirmed/i.test(c + m)) return 'Почта ещё не подтверждена — откройте ссылку из письма';
+        if (/user_already_exists|already registered/i.test(c + m)) return 'Такой аккаунт уже есть — нажмите «Войти»';
+        if (/weak_password|at least 6/i.test(c + m)) return 'Пароль слишком простой: нужно от 6 символов';
+        if (/over_email_send_rate_limit|rate limit/i.test(c + m)) return 'Слишком много писем за короткое время — попробуйте через час';
+        if (/validation_failed|invalid format|Unable to validate email/i.test(c + m)) return 'Проверьте, правильно ли написана почта';
+        if (/Failed to fetch|NetworkError/i.test(m)) return 'Нет связи с сервером — проверьте интернет';
+        return 'Не получилось: ' + m;
+      }
+      // ---- menu entry ----
+      function render() {
+        const box = document.getElementById('acc-box'); if (!box) return;
+        box.hidden = !enabled;
+        const t = box.querySelector('.acc-title'), b = box.querySelector('#btn-account');
+        if (sess) { const u = sess.user || {}; t.textContent = (u.name || u.email || 'Вход выполнен') + (syncing ? ' · синхронизация…' : ' · карты в облаке'); b.textContent = 'Аккаунт'; }
+        else { t.textContent = 'Войдите, чтобы карты были на всех ваших устройствах'; b.textContent = 'Войти или создать аккаунт'; }
+      }
+      window.__fmSignedIn = () => !!sess;
+      const btn = document.getElementById('btn-account');
+      if (btn) btn.addEventListener('click', () => openAccount());
+      render();
+      return { enabled, signedIn: () => !!sess, open: openAccount, sync: syncAccount };
+    })();
+
     (function bindBackup() {
       const imp = document.getElementById('btn-import');
       const inp = document.getElementById('import-file');
