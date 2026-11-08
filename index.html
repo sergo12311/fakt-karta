@@ -1889,6 +1889,135 @@
       .np-dot, .op-colors .color-dot, .radial-tools-panel .color-dot { width: 32px; height: 32px; }
       #btn-add { min-width: 40px !important; flex-shrink: 0; }
     }
+    /* =====================================================================
+       Welcome, ideas bank, feedback
+       ===================================================================== */
+    .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .ob-ov, .ib-ov, .fb-ov { position: fixed; inset: 0; z-index: 10040; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(8,10,20,.72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    .ob-card, .ib-card, .fb-card { position: relative; width: min(440px, 100%); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,.5); overflow: hidden; animation: obIn .28s ease-out; }
+    @keyframes obIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .ob-card, .ib-card, .fb-card, .ib-big { animation: none !important; } }
+    .ob-top { display: flex; align-items: center; gap: 10px; padding: 14px 18px 0; font-size: 14px; }
+    .ob-top b { flex: 1; }
+    .ob-skip { background: none; border: 0; color: var(--text-muted); font: inherit; font-size: 13px; padding: 8px 4px; cursor: pointer; }
+    .ob-dots { display: flex; gap: 5px; }
+    .ob-dots i { width: 18px; height: 4px; border-radius: 2px; background: var(--border); }
+    .ob-dots i.on { background: var(--accent); }
+    .ob-body { flex: 1; overflow-y: auto; padding: 12px 20px 8px; }
+    .ob-body h1 { font-size: 24px; margin: 14px 0 8px; line-height: 1.2; }
+    .ob-body h2 { font-size: 20px; margin: 10px 0 8px; line-height: 1.25; }
+    .ob-body p { margin: 0 0 10px; line-height: 1.5; font-size: 15px; }
+    .ob-muted { color: var(--text-muted); font-size: 13px !important; }
+    .ob-fig { margin: 4px 0 0; padding: 14px 12px 10px; background: #151826; border-radius: 16px; }
+    .ob-desk { display: block; width: 100%; height: auto; }
+    .ob-fig figcaption { display: flex; justify-content: space-around; font-size: 12px; margin-top: 4px; }
+    .ob-mess { color: #ff9f43; } .ob-order { color: #3dd68c; }
+    .ob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+    .ob-tile { display: flex; flex-direction: column; gap: 6px; padding: 14px 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); min-height: 120px; }
+    .ob-tile b { font-size: 15px; } .ob-tile span { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+    .ob-sw { width: 30px; height: 22px; border-radius: 6px; display: block; }
+    .ob-plan { margin: 6px 0 0; padding: 0; list-style: none; counter-reset: p; }
+    .ob-plan li { counter-increment: p; display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 14px; border-bottom: 1px dashed var(--border); }
+    .ob-plan li::before { content: counter(p); width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--accent); font-size: 12px; font-weight: 700; }
+    .ob-label { display: block; font-size: 13px; color: var(--text-muted); margin: 12px 0 6px; }
+    .ob-input, .fb-input { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 16px; resize: vertical; }
+    .ob-input:focus, .fb-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .ob-title-preview { padding: 12px 14px; border-radius: 12px; border: 2px solid var(--accent); font-weight: 700; font-size: 17px; text-align: center; }
+    .ob-topics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+    .ob-topic { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; cursor: pointer; min-height: 52px; }
+    .ob-topic b { display: block; font-size: 14px; } .ob-topic small { color: var(--text-muted); font-size: 12px; }
+    .ob-topic.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .ob-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .ob-chip { padding: 7px 11px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text); font: inherit; font-size: 13px; cursor: pointer; min-height: 34px; }
+    .ob-chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .ob-foot { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 20px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); }
+    .ob-foot .ob-main { flex: 1; min-height: 46px; font-size: 15px; }
+    .ob-foot .ob-alt:not(.ob-back) { flex-basis: 100%; min-height: 40px; background: none; border-color: transparent; color: var(--text-muted); }
+    .ob-foot .ob-back { min-height: 46px; }
+
+    /* coach additions */
+    .c-crit { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,67,.14); border: 1px solid rgba(255,159,67,.45); font-size: 13px; line-height: 1.45; }
+    .c-cheer { margin: 8px 0; padding: 9px 12px; border-radius: 10px; background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.35); font-size: 13px; }
+
+    /* ideas tab next to the map tabs */
+    .tabs-row { display: flex; align-items: stretch; flex-shrink: 0; position: relative; z-index: 400; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .tabs-row .map-tabs { flex: 1; min-width: 0; border-bottom: 0; }
+    .ideas-tab { flex-shrink: 0; display: flex; align-items: center; gap: 5px; margin: 6px 8px 5px 2px; padding: 0 10px; height: 30px; border-radius: 999px; border: 1px solid rgba(250,204,21,.45); background: rgba(250,204,21,.1); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; position: relative; }
+    .ideas-tab svg { width: 17px; height: 17px; }
+    .ideas-tab .ib-cnt:empty { display: none; }
+    .ideas-tab .ib-cnt { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #facc15; color: #222; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-sizing: border-box; }
+    .ideas-tab.due::after { content: ''; position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; border-radius: 50%; background: #f472b6; box-shadow: 0 0 0 2px var(--surface); }
+    @media (max-width: 340px) { .ideas-tab .ib-lbl { display: none; } .ideas-tab { padding: 0 8px; } }
+    .ib-x, .fb-x { width: 38px; height: 38px; flex-shrink: 0; display: grid; place-items: center; padding: 0; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; }
+    html[data-theme="pc"] .tabs-row { background: #c0c0c0; border-bottom: 1px solid #000; }
+    html[data-theme="paper"] .tabs-row { background: #f3ecd6; border-bottom: 2px solid rgba(39,64,139,.55); }
+
+    /* ideas bank */
+    .ib-card { width: min(720px, 100%); height: min(880px, calc(100dvh - 32px)); }
+    .ib-head { display: flex; gap: 12px; align-items: flex-start; padding: 18px 20px 10px; }
+    .ib-head h1 { margin: 0 0 4px; font-size: 22px; } .ib-head p { margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
+    .ib-head div { flex: 1; }
+    .ib-scroll { flex: 1; overflow-y: auto; padding: 4px 20px calc(20px + env(safe-area-inset-bottom, 0px)); }
+    .ib-add { display: flex; gap: 8px; margin-bottom: 12px; }
+    .ib-add input { flex: 1; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 16px; }
+    .ib-add .btn { min-width: 48px; font-size: 20px; }
+    .ib-nudge { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); margin-bottom: 12px; }
+    .ib-nudge.due { background: linear-gradient(135deg, rgba(250,204,21,.16), rgba(244,114,182,.12)); border-color: rgba(250,204,21,.45); }
+    .ib-nudge div { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+    .ib-nudge span { color: var(--text-muted); line-height: 1.4; }
+    .ib-filters { display: flex; gap: 6px; margin-bottom: 12px; }
+    .ib-f { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border); background: none; color: var(--text); font: inherit; font-size: 13px; cursor: pointer; min-height: 34px; }
+    .ib-f.on { background: var(--text); color: var(--surface); border-color: var(--text); }
+    .ib-grid { columns: 2 200px; column-gap: 10px; }
+    .ib-item { break-inside: avoid; position: relative; margin: 0 0 10px; padding: 14px 14px 8px 18px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; }
+    .ib-item > i { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+    .ib-item p { margin: 0 0 8px; font-size: 15px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .ib-meta { display: flex; align-items: center; gap: 6px; }
+    .ib-map { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 4px 0; color: var(--text-muted); font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ib-heart { width: 36px; height: 36px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; border: 0; background: none; color: var(--text-muted); cursor: pointer; }
+    .ib-heart.on { color: #f472b6; }
+    .ib-empty { text-align: center; color: var(--text-muted); padding: 40px 10px; line-height: 1.5; }
+    .ib-read { padding: 16px 20px calc(18px + env(safe-area-inset-bottom, 0px)); }
+    .ib-rtop { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
+    .ib-bar { height: 4px; border-radius: 2px; background: var(--border); margin: 12px 0; overflow: hidden; }
+    .ib-bar i { display: block; height: 100%; background: #facc15; transition: width .3s; }
+    .ib-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 0; }
+    .ib-big { width: 100%; box-sizing: border-box; padding: 30px 24px; border-radius: 22px; background: linear-gradient(160deg, rgba(250,204,21,.14), rgba(108,140,255,.1)); border: 1px solid rgba(250,204,21,.35); }
+    .ib-big.a1 { animation: ideaIn .45s cubic-bezier(.2,.9,.3,1.2); } .ib-big.a2 { animation: ideaIn2 .45s cubic-bezier(.2,.9,.3,1.2); }
+    @keyframes ideaIn { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
+    @keyframes ideaIn2 { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
+    .ib-big p { font-size: 21px; line-height: 1.4; margin: 12px 0 10px; font-weight: 600; overflow-wrap: anywhere; }
+    .ib-big small, .ib-fin small { color: var(--text-muted); font-size: 12px; }
+    .ib-fin h2 { margin: 14px 0 6px; } .ib-fin p { color: var(--text-muted); line-height: 1.5; margin: 0 0 8px; }
+    .ib-ask { text-align: center; color: var(--text-muted); font-size: 13px; margin: 6px 0 10px; }
+    .ib-racts { display: flex; gap: 10px; }
+    .ib-racts .btn { flex: 1; min-height: 48px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .ib-like.on { border-color: #f472b6; color: #f472b6; }
+
+    /* feedback after a day */
+    .fb-card { padding: 22px 22px calc(18px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; text-align: center; background: radial-gradient(120% 60% at 50% 0%, rgba(244,114,182,.16), transparent 70%), var(--surface); }
+    .fb-x { position: absolute; top: 10px; right: 10px; }
+    .fb-art { display: flex; justify-content: center; margin: 2px 0 6px; }
+    .fb-art svg { animation: fbBeat 2.4s ease-in-out infinite; }
+    @keyframes fbBeat { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.07); } 24% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .fb-art svg { animation: none; } }
+    .fb-card h2 { font-size: 21px; margin: 4px 0 10px; line-height: 1.25; }
+    .fb-praise { margin: 0 0 10px; line-height: 1.5; font-size: 15px; }
+    .fb-ask { margin: 0 0 14px; line-height: 1.5; font-size: 14px; color: var(--text-muted); }
+    .fb-moods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+    .fb-mood { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; cursor: pointer; }
+    .fb-mood span { font-size: 26px; line-height: 1; } .fb-mood small { font-size: 12px; color: var(--text-muted); }
+    .fb-mood.on { border-color: #f472b6; box-shadow: inset 0 0 0 1px #f472b6; background: rgba(244,114,182,.12); }
+    .fb-input { text-align: left; margin-bottom: 8px; }
+    .fb-err { color: #ff8a80; font-size: 13px; margin: 0 0 8px; }
+    .fb-acts { display: flex; gap: 8px; margin-top: 4px; }
+    .fb-acts .btn { min-height: 46px; } .fb-acts .fb-main { flex: 1; }
+    .fb-thanks .fb-main { width: 100%; min-height: 46px; margin-top: 6px; }
+    .fb-thanks p { line-height: 1.5; color: var(--text-muted); }
+    .fb-sign { margin: 12px 0 0; font-size: 12px; color: var(--text-muted); font-style: italic; }
+    html[data-theme="paper"] .ob-card, html[data-theme="paper"] .ib-card, html[data-theme="paper"] .fb-card { background: #fffef8; color: #1c2b5a; border: 2px solid #27408b; }
+    html[data-theme="paper"] .ob-fig { background: #1c2238; }
+    html[data-theme="pc"] .ob-card, html[data-theme="pc"] .ib-card, html[data-theme="pc"] .fb-card { border-radius: 0; background: #c0c0c0; color: #000; border: 1px solid #000; }
   </style>
 </head>
 <body>
@@ -2013,7 +2142,7 @@
 
           <h3>Обучение</h3>
           <p class="modal-note">Короткая экскурсия по главным возможностям — около минуты.</p>
-          <div class="backup-row"><button class="btn" id="btn-tour" type="button">Показать обучение</button></div>
+          <div class="backup-row"><button class="btn" id="btn-tour" type="button">Показать обучение</button> <button class="btn" id="btn-welcome" type="button">Знакомство заново</button> <button class="btn" id="btn-feedback" type="button">Оставить отзыв</button></div>
 
           <div id="autofile-section">
           <h3>Резервная копия на компьютере</h3>
@@ -2070,7 +2199,7 @@
       </div>
     </div>
 
-    <div class="map-tabs" id="map-tabs" role="tablist" aria-label="Карты"></div>
+    <div class="tabs-row"><div class="map-tabs" id="map-tabs" role="tablist" aria-label="Карты"></div><button type="button" class="ideas-tab" id="btn-ideas" title="Банк идей" aria-label="Банк идей"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z" fill="none" stroke="#facc15" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="ib-lbl">Идеи</span><span class="ib-cnt"></span></button></div>
 
     <div id="board-container">
       <button type="button" class="music-fab" id="music-fab" title="Музыка: играть / пауза" aria-label="Музыка: играть или пауза">
@@ -2112,8 +2241,15 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.2';
+    const APP_VERSION = '2.3';
     const APP_CHANGES = [
+      { v: '2.3', date: '8 ноября 2026', items: [
+        'Знакомство для новых пользователей: подпишите карту своим именем и пройдите 6 простых вопросов',
+        'Шаг «Идеи»: все идеи хороши, критика выключена, а кнопка «Подкинь вопрос» помогает придумать ещё',
+        'Банк идей — вкладка «Идеи» рядом с картами: все идеи в одном месте, лайки и режим «Перечитать»',
+        'Через день приложение предложит вернуться к карте и дописать новое — можно пропустить',
+        'Меню → «Оставить отзыв»: расскажите, что нравится и чего не хватает'
+      ] },
       { v: '2.2', date: '8 ноября 2026', items: [
         'Аккаунт: Меню → «Войти или создать аккаунт» — по почте или через Google',
         'После входа все карты сохраняются в облако и появляются на всех ваших устройствах',
@@ -3161,6 +3297,7 @@
     const OPINION_RE = /(^|[^а-яё])(наверное|кажется|видимо|по-моему|думаю|считаю|всегда|никогда|никто|все время|всё время|должен|должна|должны|обязан|плох\w*|ужасн\w*|отличн\w*|лен\w*|виноват\w*|специально|назло|не хочет|не любит|не умеет|не способен|слишком|бесполезн\w*|глуп\w*|дурак\w*|идеальн\w*)(?=$|[^а-яё])/i;
     const looksLikeOpinion = n => isPlainFact(n) && OPINION_RE.test(' ' + (n.text || '').toLowerCase() + ' ');
 
+    const SPARKS = ['А если бы денег было в 10 раз больше?', 'А если бы времени был всего один день?', 'Как бы сделал это ребёнок?', 'Что сделать наоборот?', 'Кого можно позвать на помощь?', 'Как сделать это бесплатно?', 'Что сделал бы самый смелый человек, которого я знаю?', 'Какую идею я бы сразу отбросил? Запишите её!'];
     const S = {
       problem: (hint, qs) => ({ key: 'main', t: 'Назовите главное', why: 'Пока задача не названа точно, мысли ходят по кругу. Запишите её в центре карты одним предложением.', qs, main: hint,
         check: () => { const m = state.nodes.find(n => n.isMain); return m && (m.text || '').trim().length > 3 ? [true, 'Есть'] : [false, 'Нажмите на карточку в центре и напишите одну фразу']; } }),
@@ -3181,11 +3318,38 @@
       pause: () => ({ key: 'pause', t: 'Пауза', pause: true, optional: true,
         why: 'Отойдите от карты на 15–30 минут. Когда вы не заняты задачей, мозг продолжает её обдумывать. Вернитесь и допишите то, что пришло в голову, — карту полезно дополнять несколько раз.',
         qs: ['Что новое пришло в голову?', 'Что теперь кажется не таким важным?'] }),
+      ideas: (t, why) => ({ key: 'ideas', t: t || 'Идеи', ideas: true,
+        why: why || 'Идей не бывает много: чем их больше, тем выше шанс, что одна принесёт успех. Главное правило — не критиковать: ни свои, ни чужие. Записывайте всё подряд, оценим потом.',
+        qs: ['Что можно попробовать?', 'Кто уже так делал?', 'Что самое простое и быстрое?', 'Что сделать уже завтра?', 'У кого можно спросить совета?'],
+        add: { label: 'Добавить идею', shape: 'idea' }, count: ofShape('idea'), min: 3,
+        check: () => { const n = state.nodes.filter(ofShape('idea')).filter(x => (x.text || '').trim()).length; return n >= 3 ? [true, 'Идей: ' + n] : [false, 'Идей: ' + n + ' — запишите хотя бы 3']; } }),
       first: (qs) => ({ key: 'first', t: 'Первое действие', why: 'Подробный план не нужен. Нужен один конкретный шаг, который можно сделать сегодня или завтра. Остальное станет понятнее после него.',
         qs: qs || ['Что я сделаю первым?', 'Когда именно?', 'Как пойму, что сделал?'], add: { label: 'Записать действие', shape: 'process', color: 'red' }, count: n => n.gs === 'first', min: 1 })
     };
 
     const TEMPLATES = [
+      { id: 'first', hidden: true, name: 'Первая карта', when: 'Знакомство: разложить свою ситуацию', icon: '✨', mins: '10–15 мин',
+        steps: [
+          S.typed('has', 'Что у меня есть', 'Начнём с опоры: всё, на что можно рассчитывать уже сейчас. Деньги, время, люди, умения, вещи. Одна мысль — одна карточка, сколько угодно.',
+            ['Что у меня уже есть для этого?', 'Сколько времени в неделю я готов тратить?', 'Кто может помочь?', 'Что я уже умею?', 'Сколько денег могу выделить?', 'Какой у меня опыт?', 'Какие вещи и инструменты у меня есть?', 'Что у меня получалось раньше?'], 2, 'resource', 'Добавить факт'),
+          S.facts('work', 'Чем я занят', 'Чем наполнены ваши дни: работа, учёба, дом, увлечения. Так видно, сколько сил и времени остаётся на главное.',
+            ['Работаю или учусь — где?', 'Какой у меня график?', 'Чем я занимаюсь каждый день?', 'Что там получается лучше всего?', 'Сколько я зарабатываю?', 'С кем я работаю рядом?', 'Сколько времени уходит на дорогу?', 'Чему я там научился?'], 2, { label: 'Добавить факт', color: 'purple' }),
+          S.typed('block', 'Что мне мешает', 'Честно выпишите, что тормозит. Это не жалобы, а факты, с которыми можно работать.',
+            ['Что мешало раньше?', 'На что уходит время?', 'Чего я опасаюсь?', 'Чего мне не хватает?', 'Кто или что меня отвлекает?', 'Что я откладываю?', 'Сколько я сплю?', 'Какие у меня обязательства?', 'Что забирает силы?'], 2, 'problem', 'Добавить факт'),
+          S.typed('want', 'Что я хочу', 'Опишите результат, к которому идёте. Чем конкретнее — тем проще понять, что делать.',
+            ['Чего я хочу через год?', 'Как пойму, что получилось?', 'Зачем мне это?', 'Что изменится в моей жизни?', 'К какому сроку?', 'Сколько это стоит?', 'Что я почувствую, когда добьюсь?'], 1, 'goal', 'Добавить факт'),
+          S.ideas(),
+          S.key('Главное', 'Посмотрите на карту целиком. Какие 1–3 карточки важнее всего? Выделите карточку и нажмите ★.'),
+          S.first()
+        ] },
+      { id: 'revisit', hidden: true, name: 'Возвращение к карте', when: 'Дописать то, что появилось', icon: '🔄', mins: '5 мин',
+        steps: [
+          S.facts('new', 'Что нового?', 'Прошло немного времени — что изменилось? Новые факты, новые мысли, что-то получилось или не получилось. Добавьте всё, даже мелочи.',
+            ['Что изменилось с прошлого раза?', 'Что у меня получилось?', 'Что не получилось и почему?', 'Что я узнал нового?', 'Что теперь мешает?', 'Кто или что помогло?'], 1, { label: 'Добавить факт', color: 'green' }),
+          S.ideas('Новые идеи', 'Свежая голова — новые идеи. Запишите любые, даже странные: все идеи хороши, и чем больше, тем лучше.'),
+          S.key('Главное сейчас', 'Остались ли главными те же карточки? Переставьте ★, если что-то изменилось.'),
+          S.first(['Какой следующий шаг?', 'Когда я его сделаю?'])
+        ] },
       { id: 'problem', name: 'Разобраться в проблеме', when: 'Что-то не получается, и непонятно почему', icon: '🧩', mins: '20–40 мин',
         steps: [
           S.problem('Что именно не так? Одной фразой…', ['Что конкретно происходит — а не что я об этом думаю?', 'Где и когда это проявляется?', 'Почему важно решить именно сейчас?']),
@@ -3288,7 +3452,7 @@
     }
     function coachAdd(spec, hint, stepKey) {
       const p = placeInView(200, 80);
-      const node = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: spec.shape || 'rect', color: spec.color || (spec.shape && KINDS[spec.shape] ? KINDS[spec.shape].colorName : 'blue'), gs: stepKey };
+      const node = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: spec.shape || 'rect', color: spec.color || (spec.shape && KINDS[spec.shape] ? KINDS[spec.shape].colorName : 'blue'), gs: stepKey, ca: Date.now() };
       if (spec.kind) { node.kind = spec.kind; node.shape = 'rect'; }
       if (hint) node.hint = hint;
       state.nodes.push(node);
@@ -3320,7 +3484,9 @@
         const facts = state.nodes.filter(n => !n.isMain).length, links = state.edges.length, keys = state.nodes.filter(n => n.key).length;
         coachEl.innerHTML = '<header><span class="c-ico">' + tpl.icon + '</span><div><small>' + escapeHtml(tpl.name) + '</small><b>Карта готова</b></div><button type="button" class="c-x" data-c="hide" aria-label="Скрыть помощника">×</button></header>' +
           '<div class="c-body"><p>Карточек: ' + facts + ' · связей: ' + links + ' · главных: ' + keys + '.</p>' +
-          '<p>Сделайте первое действие. Через день-два вернитесь: допишите новые факты и проверьте, что изменилось.</p>' +
+          (tpl.id === 'first' || tpl.id === 'revisit'
+            ? '<p>Отличная работа! Сделайте первый шаг. ' + (tpl.id === 'first' ? 'Завтра' : 'Через пару дней') + ' я предложу вернуться и дописать новое — это можно будет пропустить.</p><div class="c-tools"><button type="button" class="btn" data-c="ideas">💡 Мои идеи в «Банке идей»</button></div>'
+            : '<p>Сделайте первое действие. Через день-два вернитесь: допишите новые факты и проверьте, что изменилось.</p>') +
           '<div class="c-nav"><button type="button" class="btn" data-c="back">Назад</button><button type="button" class="btn" data-c="restart">Пройти заново</button><button type="button" class="btn primary" data-c="hide">Закрыть</button></div></div>';
         updateCoachButton(); return;
       }
@@ -3334,6 +3500,13 @@
           ? '<ul class="c-bad">' + bad.slice(0, 6).map(n => '<li><span>«' + escapeHtml((n.text || '').slice(0, 70)) + '»</span><span class="c-bad-acts"><button type="button" class="btn" data-c="show" data-id="' + n.id + '">Показать</button><button type="button" class="btn" data-c="tosticker" data-id="' + n.id + '" title="Оставить как мнение — жёлтым стикером, отдельно от фактов">В стикер</button></span></li>').join('') + '</ul>' +
             '<p class="c-tip">Перепишите как факт (что видно, слышно, можно посчитать) или вынесите в стикер — мнения тоже полезны, но отдельно.</p>'
           : '<p class="c-ok">Карточек, похожих на оценки, не нашлось. Перечитайте их ещё раз сами — проверка подсказывает, но не заменяет вас.</p>';
+      }
+      if (st.ideas) {
+        const ideas = state.nodes.filter(ofShape('idea')).filter(x => (x.text || '').trim()), k = ideas.length;
+        const crit = ideas.find(x => CRITIC_RE.test(x.text || ''));
+        if (crit) extra += '<p class="c-crit"><b>Стоп, не критикуем!</b> «' + escapeHtml((crit.text || '').slice(0, 60)) + '» — звучит как оценка. Сейчас любая идея ценна, даже «нереальная». Запишите её как есть, оценим потом.</p>';
+        extra += '<p class="c-cheer">' + (k === 0 ? 'Все идеи хороши — и чем больше, тем лучше. Запишите любую!' : k < 3 ? 'Идей: ' + k + '. Отлично, продолжайте — не останавливайтесь на первых.' : k < 5 ? 'Идей: ' + k + '. Вы разогнались! Попробуйте дойти до 5.' : k < 10 ? 'Идей: ' + k + '. Отличный поток! Самые интересные часто приходят после пятой.' : 'Идей: ' + k + '. Мощно! Теперь шанс найти удачную очень высок.') + '</p>' +
+          '<div class="c-tools"><button type="button" class="btn" data-c="spark">🎲 Подкинь вопрос</button></div>';
       }
       if (st.pause) {
         const left = pauseEnd - Date.now();
@@ -3373,7 +3546,13 @@
       if (a === 'collapse') { coachCollapsed = !coachCollapsed; coachRender(); return; }
       if (a === 'hide') { g.hidden = true; save(); coachRender(); showToast('Помощник закрыт. Вернуть — кнопка «Шаги» вверху'); return; }
       if (a === 'restart') { g.step = 0; save(); coachRender(); return; }
-      if (a === 'next') { g.step = (g.step || 0) + 1; save(); coachRender(); return; }
+      if (a === 'next') {
+        g.step = (g.step || 0) + 1; save(); coachRender();
+        if (g.step >= tpl.steps.length && (tpl.id === 'first' || tpl.id === 'revisit')) { try { ReturnNudge.guideFinished(activeMapId, tpl.id); IdeasBank.updateCount(); } catch (er) {} }
+        return;
+      }
+      if (a === 'ideas') { IdeasBank.open(); return; }
+      if (a === 'spark') { const sp = SPARKS[Math.floor(Math.random() * SPARKS.length)]; coachAdd(st.add, sp, st.key); return; }
       if (a === 'back') { g.step = Math.max(0, (g.step || 0) - 1); save(); coachRender(); return; }
       if (a === 'add') { if (st.key === 'main') { const m = state.nodes.find(n => n.isMain); if (m) startEditingNode(m.id); } else coachAdd(st.add, '', st.key); return; }
       if (a === 'q') {
@@ -3421,7 +3600,7 @@
       ov.innerHTML = '<section class="ask-box tpl-box" role="dialog" aria-modal="true" aria-labelledby="tpl-h">' +
         '<header><h2 id="tpl-h">С чего начнём?</h2><button type="button" class="btn op-x" data-t="close" aria-label="Закрыть">×</button></header>' +
         '<p class="modal-note">Выберите цель — помощник проведёт по шагам: задаст нужные вопросы и подскажет, что делать на карте.</p>' +
-        '<div class="tpl-grid">' + TEMPLATES.map(t => '<button type="button" class="tpl-card" data-t="' + t.id + '"><span class="tpl-i">' + t.icon + '</span><b>' + escapeHtml(t.name) + '</b><small>' + escapeHtml(t.when) + '</small><em>' + t.steps.length + ' шагов · ' + t.mins + '</em></button>').join('') +
+        '<div class="tpl-grid">' + TEMPLATES.filter(t => !t.hidden).map(t => '<button type="button" class="tpl-card" data-t="' + t.id + '"><span class="tpl-i">' + t.icon + '</span><b>' + escapeHtml(t.name) + '</b><small>' + escapeHtml(t.when) + '</small><em>' + t.steps.length + ' шагов · ' + t.mins + '</em></button>').join('') +
         '<button type="button" class="tpl-card blank" data-t="blank"><span class="tpl-i">＋</span><b>Пустая карта</b><small>Без подсказок, всё сами</small></button></div></section>';
       const close = () => { ov.remove(); document.removeEventListener('keydown', onKey, true); };
       const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
@@ -6393,8 +6572,439 @@
       if (tb) tb.addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); setTimeout(start, 120); });
       let done = false;
       try { done = localStorage.getItem(TOUR_KEY) === '1' || !!document.getElementById('factmap-incoming'); } catch (e) { done = true; }   // no storage (preview, thumbnail) or a map someone sent → don't cover the page
-      if (!done) setTimeout(() => { if (!document.querySelector('.ask-overlay, .lightbox')) start(); }, 900);
+      if (!done) setTimeout(() => {
+        if (document.querySelector('.ask-overlay, .lightbox, .ob-ov')) return;
+        save(); const fresh = mapsCollection.length <= 1 && (isBlankMap() || isStarterMap(mapsCollection[0]));
+        if (fresh && window.__fmOnboard) window.__fmOnboard(); else start();
+      }, 900);
     })();
+
+    // ==================== First visit: welcome → first map with the guide ====================
+    const DESK_SVG = '<svg viewBox="0 0 340 150" class="ob-desk" aria-hidden="true">' +
+      '<rect x="6" y="118" width="148" height="7" rx="3.5" fill="#2e3349"/><path d="M20 125v20M140 125v20" stroke="#2e3349" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M30 104c-8-10 6-22 14-12s-10 18 2 20 12-22 22-14-2 18 8 16" fill="none" stroke="#6b7290" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<g transform="rotate(-16 40 104)"><path d="M18 84h42l-4 24H22z" fill="#1d2238" stroke="#6c8cff" stroke-width="2" stroke-linejoin="round"/><rect x="25" y="89" width="28" height="12" rx="2" fill="#6c8cff" opacity=".35"/><rect x="14" y="108" width="50" height="5" rx="2.5" fill="#6c8cff"/></g>' +
+      '<rect x="62" y="104" width="28" height="3.5" rx="1" fill="#6b7290" transform="rotate(-24 76 106)"/><rect x="70" y="112" width="28" height="3.5" rx="1" fill="#5c6380" transform="rotate(14 84 114)"/><rect x="58" y="70" width="28" height="3.5" rx="1" fill="#4b5168" transform="rotate(38 72 72)"/>' +
+      '<rect x="88" y="62" width="30" height="2.5" rx="1.2" fill="#facc15" transform="rotate(-32 103 63)"/>' +
+      '<g transform="translate(-10 0) rotate(84 112 110)"><rect x="105" y="99" width="14" height="19" rx="3" fill="#3ecf8e"/><path d="M119 104c5 0 5 8 0 8" fill="none" stroke="#3ecf8e" stroke-width="2"/></g>' +
+      '<path d="M110 117c5 1 9 0 13 1" stroke="#ff9f43" stroke-width="2.5" stroke-linecap="round" opacity=".75"/>' +
+      '<g transform="translate(-17 5) rotate(66 140 110)"><rect x="134" y="104" width="12" height="8" rx="2" fill="#4b5168"/><path d="M140 104c0-10 0-16 0-20M140 90c-6-2-9-7-8-12 6 1 9 6 8 12zM140 86c5-3 9-8 8-13-6 2-9 7-8 13z" fill="#3ecf8e" stroke="#3ecf8e" stroke-width="1.5" stroke-linejoin="round"/></g>' +
+      '<circle cx="132" cy="116" r="1.6" fill="#7a5a3a"/><circle cx="127" cy="117" r="1.2" fill="#7a5a3a"/><path d="M112 72l3 5M121 69l-1 6M128 75l-5 2" stroke="#ff9f43" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M160 90h16m-6-6 6 6-6 6" fill="none" stroke="#8fa6ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<rect x="184" y="118" width="150" height="7" rx="3.5" fill="#2e3349"/><path d="M198 125v20M320 125v20" stroke="#2e3349" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M200 114c-6 0-8 2-8 4" fill="none" stroke="#6b7290" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<path d="M206 86h42l-4 24h-34z" fill="#1d2238" stroke="#6c8cff" stroke-width="2" stroke-linejoin="round"/><rect x="213" y="91" width="28" height="12" rx="2" fill="#6c8cff" opacity=".35"/><rect x="202" y="110" width="50" height="5" rx="2.5" fill="#6c8cff"/>' +
+      '<rect x="258" y="108" width="28" height="3.5" rx="1" fill="#4b5168"/><rect x="258" y="104" width="28" height="3.5" rx="1" fill="#5c6380"/><rect x="258" y="100" width="28" height="3.5" rx="1" fill="#6b7290"/><rect x="257" y="113" width="30" height="2.5" rx="1.2" fill="#facc15"/>' +
+      '<rect x="294" y="104" width="12" height="8" rx="2" fill="#4b5168"/><path d="M300 104c0-10 0-16 0-20M300 90c-6-2-9-7-8-12 6 1 9 6 8 12zM300 86c5-3 9-8 8-13-6 2-9 7-8 13z" fill="#3ecf8e" stroke="#3ecf8e" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<rect x="313" y="98" width="14" height="19" rx="3" fill="#3ecf8e"/><path d="M327 103c5 0 5 8 0 8" fill="none" stroke="#3ecf8e" stroke-width="2"/></svg>';
+    // «Карта Василия» — a light genitive for common Russian names
+    function nameGenitive(n) {
+      n = (n || '').trim(); if (!n) return '';
+      if (/\s/.test(n)) return '«' + n + '»';
+      const l = n.slice(-1).toLowerCase(), b = n.slice(0, -1);
+      if (l === 'й') return b + 'я';
+      if (l === 'а') return b + (/[гкхжчшщ]$/i.test(b) ? 'и' : 'ы');
+      if (l === 'я') return b + 'и';
+      if (l === 'ь') return b + 'я';
+      if (/[бвгдзклмнпрстфхжчшщц]/i.test(l)) return n + 'а';
+      return '«' + n + '»';
+    }
+    const Onboard = (function () {
+      const TOPICS = [
+        { id: 'goal', t: 'Цель', d: 'хочу добиться', label: 'Чего вы хотите добиться?', list: ['Сдать сессию без долгов', 'Накопить на ноутбук к лету', 'Найти работу по специальности', 'Выучить английский до уровня B1', 'Похудеть на 5 кг к весне', 'Запустить своё приложение'] },
+        { id: 'problem', t: 'Проблема', d: 'что-то не так', label: 'Что именно не так?', list: ['Не хватает денег до зарплаты', 'Постоянно не высыпаюсь', 'Не успеваю учиться и работать', 'Поссорился с близким человеком', 'Откладываю важные дела', 'Устаю на работе'] },
+        { id: 'choice', t: 'Выбор', d: 'нужно решить', label: 'Что нужно решить?', list: ['Менять ли работу?', 'Переезжать ли в другой город?', 'Брать ли кредит на машину?', 'Какую профессию выбрать?', 'Идти ли в магистратуру?', 'Какой ноутбук купить?'] },
+        { id: 'free', t: 'Просто подумать', d: 'о чём угодно', label: 'О чём хотите подумать?', list: ['Как устроить мой день', 'Чем я хочу заниматься через 5 лет', 'Что мне приносит радость', 'Как провести отпуск', 'На что уходят мои деньги', 'Кто для меня важен'] }
+      ];
+      let ov = null, st = { screen: 'hello', name: '', topic: 'goal', q: '' };
+      try { st.name = localStorage.getItem('factmap-user-name') || ''; } catch (e) {}
+      const PLAN = ['Подпишем карту и назовём, о чём думаем', 'Что у меня есть', 'Чем я занят', 'Что мне мешает', 'Что я хочу', 'Идеи', 'Главное и первый шаг'];
+      function screenHtml() {
+        const s = st.screen;
+        if (s === 'hello') return '<div class="ob-body"><figure class="ob-fig">' + DESK_SVG + '<figcaption><span class="ob-mess">Мысли в голове</span><span class="ob-order">Мысли на карте</span></figcaption></figure>' +
+          '<h1>Добро пожаловать!</h1><p>Факт-карта помогает разложить в голове любую ситуацию: цель, проблему или выбор. Вы выписываете факты, видите связи — и понимаете, что делать дальше.</p><p class="ob-muted">Покажем за 30 секунд, как это устроено.</p></div>' +
+          '<div class="ob-foot"><button type="button" class="btn primary ob-main" data-o="next">Показать</button></div>';
+        if (s === 'features') return '<div class="ob-body"><h2>Что умеет карта</h2><div class="ob-grid">' +
+          '<div class="ob-tile"><i class="ob-sw" style="background:#3dd68c"></i><b>Факты</b><span>Одна мысль — одна карточка.</span></div>' +
+          '<div class="ob-tile"><svg width="34" height="24" viewBox="0 0 34 24" aria-hidden="true"><circle cx="5" cy="12" r="4" fill="#6c8cff"/><circle cx="29" cy="12" r="4" fill="#6c8cff"/><path d="M9 12h16" stroke="#8fa6ff" stroke-width="2"/></svg><b>Связи</b><span>Протяните линию от карточки к карточке для соединения фактов.</span></div>' +
+          '<div class="ob-tile"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.5 9.3l6.6-.8z" fill="#facc15"/></svg><b>Главное</b><span>Отметьте ★ факты, на которых всё держится.</span></div>' +
+          '<div class="ob-tile"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round"/></svg><b>Банк идей</b><span>Все идеи в одном месте — их можно перечитывать.</span></div>' +
+          '</div></div><div class="ob-foot"><button type="button" class="btn primary ob-main" data-o="next">Понятно</button></div>';
+        if (s === 'start') return '<div class="ob-body"><h2>Создадим вашу первую карту?</h2><p>Это займёт 10–15 минут. Мы будем задавать простые вопросы — вы отвечаете фактами, а карта собирается сама.</p>' +
+          '<ol class="ob-plan">' + PLAN.map(p => '<li>' + p + '</li>').join('') + '</ol></div>' +
+          '<div class="ob-foot"><button type="button" class="btn primary ob-main" data-o="next">Создать первую карту</button><button type="button" class="btn ob-alt" data-o="later">Позже — открыть пустую карту</button></div>';
+        if (s === 'name') return '<div class="ob-body"><h2>Как подписать карту?</h2><p>Имя появится в заголовке. Можно своё, можно любое прозвище.</p>' +
+          '<label class="ob-label" for="ob-name">Ваше имя или подпись</label><input id="ob-name" class="ob-input" autocomplete="given-name" placeholder="Например: Василий" value="' + escapeHtml(st.name) + '">' +
+          '<p class="ob-muted">Так будет выглядеть заголовок:</p><div class="ob-title-preview">' + escapeHtml(mapTitle()) + '</div></div>' +
+          '<div class="ob-foot"><button type="button" class="btn ob-alt ob-back" data-o="back">Назад</button><button type="button" class="btn primary ob-main" data-o="next"' + (st.name.trim() ? '' : ' disabled') + '>Дальше</button></div>';
+        if (s === 'topic') {
+          const tp = TOPICS.find(t => t.id === st.topic) || TOPICS[0];
+          return '<div class="ob-body"><h2>' + (st.name.trim() ? escapeHtml(st.name.trim()) + ', о чём хотите подумать?' : 'О чём хотите подумать?') + '</h2><p>Не торопитесь. Подумайте минуту: что сейчас занимает голову больше всего?</p>' +
+            '<div class="ob-topics">' + TOPICS.map(t => '<button type="button" class="ob-topic' + (t.id === st.topic ? ' on' : '') + '" data-o="topic" data-v="' + t.id + '" aria-pressed="' + (t.id === st.topic) + '"><b>' + t.t + '</b><small>' + t.d + '</small></button>').join('') + '</div>' +
+            '<label class="ob-label" for="ob-q">' + tp.label + '</label>' +
+            '<div class="ob-ex">' + tp.list.map(x => '<button type="button" class="ob-chip' + (st.q === x ? ' on' : '') + '" data-o="ex" data-v="' + escapeHtml(x) + '">' + escapeHtml(x) + '</button>').join('') + '</div>' +
+            '<textarea id="ob-q" class="ob-input" rows="2" placeholder="Например: «' + escapeHtml(tp.list[0]) + '»">' + escapeHtml(st.q) + '</textarea>' +
+            '<p class="ob-muted">Нажмите на пример или напишите своё — одним предложением. Это будет центр карты, от него пойдут факты.</p></div>' +
+            '<div class="ob-foot"><button type="button" class="btn ob-alt ob-back" data-o="back">Назад</button><button type="button" class="btn primary ob-main" data-o="go"' + (st.q.trim().length > 2 ? '' : ' disabled') + '>Поставить в центр карты</button></div>';
+        }
+        return '';
+      }
+      const ORDER = ['hello', 'features', 'start', 'name', 'topic'];
+      function mapTitle() { const n = st.name.trim(); return n ? 'Карта ' + nameGenitive(n) : 'Моя карта'; }
+      function render(focus) {
+        const i = ORDER.indexOf(st.screen), dots = i >= 3 ? '<div class="ob-dots" aria-hidden="true">' + [0, 1].map(k => '<i class="' + (k === i - 3 ? 'on' : '') + '"></i>').join('') + '</div>' : '';
+        ov.innerHTML = '<div class="ob-card" role="dialog" aria-modal="true" aria-label="Знакомство с Факт-картой"><div class="ob-top"><b>Факт-карта</b>' + dots + '<button type="button" class="ob-skip" data-o="later">Пропустить</button></div>' + screenHtml() + '</div>';
+        const inp = ov.querySelector('#ob-name, #ob-q');
+        if (inp && focus !== false && !IS_TOUCH) { inp.focus(); const L = inp.value.length; try { inp.setSelectionRange(L, L); } catch (e) {} }
+        else { const b = ov.querySelector('.ob-main'); if (b && !IS_TOUCH) b.focus(); }
+      }
+      function close() { if (ov) { ov.remove(); ov = null; } try { localStorage.setItem('factmap-tour-done-v1', '1'); } catch (e) {} }
+      function finishLater() {
+        close();
+        if (window.startFactTour) setTimeout(() => window.startFactTour(), 250);
+      }
+      function createFirstMap() {
+        const q = st.q.trim(), title = mapTitle();
+        try { localStorage.setItem('factmap-user-name', st.name.trim()); } catch (e) {}
+        close();
+        save();
+        const starter = mapsCollection.length === 1 && isStarterMap(mapsCollection[0]) ? mapsCollection[0].id : null;
+        createMap(title);
+        if (starter) { mapsCollection = mapsCollection.filter(m => m.id !== starter); persistMaps(); }
+        const m = state.nodes.find(n => n.isMain);
+        if (m) m.text = q;
+        state.guide = { tpl: 'first', step: 0, hidden: false, startedAt: Date.now() };
+        coachCollapsed = false;
+        renderNodes(); save(); persistMaps(); refreshMapSelect(); fitView(); updateTransform();
+        coachRender();
+        if (m) { const v = visibleArea(), c = getNodeCenter(m); state.offsetX = v.w / 2 - c.x * state.scale; state.offsetY = v.h * 0.42 - c.y * state.scale; updateTransform(); }
+      }
+      function onClick(e) {
+        const b = e.target.closest('[data-o]'); if (!b || b.disabled) return;
+        const a = b.dataset.o, i = ORDER.indexOf(st.screen);
+        if (a === 'next') { st.screen = ORDER[Math.min(ORDER.length - 1, i + 1)]; render(); }
+        else if (a === 'back') { st.screen = ORDER[Math.max(0, i - 1)]; render(); }
+        else if (a === 'later') finishLater();
+        else if (a === 'topic') { st.topic = b.dataset.v; render(false); }
+        else if (a === 'ex') { st.q = b.dataset.v; render(false); }
+        else if (a === 'go') createFirstMap();
+      }
+      function onInput(e) {
+        if (e.target.id === 'ob-name') {
+          st.name = e.target.value;
+          const p = ov.querySelector('.ob-title-preview'); if (p) p.textContent = mapTitle();
+          const nb = ov.querySelector('.ob-main'); if (nb) nb.disabled = !st.name.trim();
+        } else if (e.target.id === 'ob-q') {
+          st.q = e.target.value;
+          ov.querySelectorAll('.ob-chip').forEach(c => c.classList.toggle('on', c.dataset.v === st.q));
+          const nb = ov.querySelector('.ob-main'); if (nb) nb.disabled = st.q.trim().length <= 2;
+        }
+      }
+      function onKey(e) {
+        if (!ov) return;
+        if (e.key === 'Enter' && e.target.id === 'ob-name' && st.name.trim()) { e.preventDefault(); st.screen = 'topic'; render(); }
+        if (e.key === 'Enter' && e.target.id === 'ob-q' && !e.shiftKey && st.q.trim().length > 2) { e.preventDefault(); createFirstMap(); }
+      }
+      function open() {
+        if (ov) return;
+        document.querySelectorAll('.tour-ov, .tour').forEach(o => o.remove());
+        st.screen = 'hello';
+        ov = document.createElement('div'); ov.className = 'ob-ov';
+        ov.addEventListener('click', onClick); ov.addEventListener('input', onInput); ov.addEventListener('keydown', onKey);
+        ov.addEventListener('pointerdown', e => e.stopPropagation());
+        document.body.appendChild(ov);
+        render();
+      }
+      return { open };
+    })();
+
+    // ==================== Ideas bank ====================
+    const CRITIC_RE = /(не получится|не выйдет|не сработает|бред|глупо|глупая|ерунда|невозможно|нереально|плохая идея|не вариант|смешно)/i;
+    const IdeasBank = (function () {
+      const READ_KEY = 'factmap-ideas-read';
+      let ov = null, mode = 'list', filter = 'all', order = [], idx = 0;
+      const isIdea = n => n && n.shape === 'idea' && !n.kind && (n.text || '').trim();
+      function all() {
+        const out = [];
+        mapsCollection.forEach(m => {
+          const nodes = m.id === activeMapId ? state.nodes : ((m.data && m.data.nodes) || []);
+          nodes.forEach(n => { if (isIdea(n)) out.push({ mapId: m.id, id: n.id, text: n.text.trim(), map: m.name || 'Без названия', ca: n.ca || 0, liked: !!n.liked }); });
+        });
+        return out.sort((a, b) => (b.ca || 0) - (a.ca || 0));
+      }
+      function nodeOf(mapId, id) {
+        if (mapId === activeMapId) return getNode(id);
+        const m = mapsCollection.find(x => x.id === mapId);
+        return m && m.data && (m.data.nodes || []).find(n => n.id === id);
+      }
+      function toggleLike(mapId, id) {
+        const n = nodeOf(mapId, id); if (!n) return;
+        n.liked = !n.liked;
+        if (mapId === activeMapId) { save(); renderNodes(); } else persistMaps();
+        render();
+      }
+      const lastRead = () => { try { return +localStorage.getItem(READ_KEY) || 0; } catch (e) { return 0; } };
+      const due = () => all().length >= 3 && Date.now() - lastRead() > 7 * 864e5;
+      function updateCount() {
+        const b = document.getElementById('btn-ideas'); if (!b) return;
+        const k = all().length;
+        b.querySelector('.ib-cnt').textContent = k ? String(k) : '';
+        b.classList.toggle('due', due());
+      }
+      const fmtDate = t => { if (!t) return ''; try { return new Date(t).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); } catch (e) { return ''; } };
+      const HEART = on => '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.8 3.6 4.5 7 4.5c2 0 3.6 1.1 5 2.9 1.4-1.8 3-2.9 5-2.9 3.4 0 5.6 3.3 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z" fill="' + (on ? '#f472b6' : 'none') + '" stroke="' + (on ? '#f472b6' : 'currentColor') + '" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+      const BULB = '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const TONES = ['#b07cff', '#3dd68c', '#5b8def', '#ff9f43', '#facc15', '#2dd4bf', '#f472b6'];
+      const tone = mapId => TONES[Math.abs([...mapId].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7)) % TONES.length];
+      function render() {
+        if (!ov) return;
+        const items = all(), liked = items.filter(x => x.liked);
+        if (mode === 'read') {
+          const cur = items.find(x => x.mapId + '|' + x.id === order[idx]);
+          const pct = order.length ? Math.round(Math.min(1, (idx + (cur ? 1 : 0)) / order.length) * 100) : 100;
+          ov.innerHTML = '<div class="ib-card ib-read" role="dialog" aria-modal="true" aria-label="Перечитать идеи"><div class="ib-rtop"><button type="button" class="btn" data-i="list">Закрыть</button><span>' + (cur ? 'Идея ' + (idx + 1) + ' из ' + order.length : 'Готово') + '</span></div><div class="ib-bar"><i style="width:' + pct + '%"></i></div>' +
+            (cur
+              ? '<div class="ib-stage"><div class="ib-big ' + (idx % 2 ? 'a2' : 'a1') + '">' + BULB + '<p>' + escapeHtml(cur.text) + '</p><small>Карта «' + escapeHtml(cur.map) + '»' + (cur.ca ? ' · ' + fmtDate(cur.ca) : '') + '</small></div></div>' +
+                '<p class="ib-ask">Как вам эта идея сейчас?</p><div class="ib-racts"><button type="button" class="btn ib-like' + (cur.liked ? ' on' : '') + '" data-i="like" data-m="' + cur.mapId + '" data-n="' + cur.id + '" aria-pressed="' + cur.liked + '">' + HEART(cur.liked) + (cur.liked ? ' Нравится' : ' Лайк') + '</button><button type="button" class="btn primary" data-i="nextidea">Следующая</button></div>'
+              : '<div class="ib-stage ib-fin"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="#2a2610"/><path d="M28 39s-11-6.7-13.6-13.4C12.5 20.6 15.7 16 20.6 16c2.9 0 5.3 1.6 7.4 4.2 2.1-2.6 4.4-4.2 7.4-4.2 4.9 0 8.1 4.6 6.2 9.6C39 32.3 28 39 28 39z" fill="#facc15"/></svg><h2>Все идеи перечитаны</h2><p>Вы перечитали ' + order.length + ' идей. В любимых сейчас: ' + liked.length + '. Может, пора превратить одну из них в первый шаг на карте?</p><small>Напомним перечитать через неделю.</small></div><div class="ib-racts"><button type="button" class="btn primary" data-i="list">К банку идей</button></div>') +
+            '</div>';
+          return;
+        }
+        const shown = filter === 'liked' ? liked : items;
+        ov.innerHTML = '<div class="ib-card" role="dialog" aria-modal="true" aria-label="Банк идей"><header class="ib-head"><div><h1>Банк идей</h1><p>Все идеи со всех карт. Здесь их не критикуют — только собирают и иногда перечитывают.</p></div><button type="button" class="c-x ib-x" data-i="close" aria-label="Закрыть">×</button></header>' +
+          '<div class="ib-scroll">' +
+          '<form class="ib-add"><label for="ib-new" class="vh">Новая идея</label><input id="ib-new" placeholder="Записать идею… любую!" autocomplete="off"><button type="submit" class="btn primary" aria-label="Добавить идею">+</button></form>' +
+          (items.length >= 2 ? '<div class="ib-nudge' + (due() ? ' due' : '') + '">' + BULB + '<div><b>' + (due() ? 'Пора перечитать идеи' : 'Перечитать идеи') + '</b><span>' + (lastRead() ? 'Последний раз — ' + fmtDate(lastRead()) + '. ' : '') + 'Старая идея на свежую голову часто оказывается лучшей.</span></div><button type="button" class="btn" data-i="read">Перечитать</button></div>' : '') +
+          '<div class="ib-filters"><button type="button" class="ib-f' + (filter === 'all' ? ' on' : '') + '" data-i="all" aria-pressed="' + (filter === 'all') + '">Все · ' + items.length + '</button><button type="button" class="ib-f' + (filter === 'liked' ? ' on' : '') + '" data-i="liked" aria-pressed="' + (filter === 'liked') + '">Любимые · ' + liked.length + '</button></div>' +
+          (shown.length ? '<div class="ib-grid">' + shown.map(x => '<div class="ib-item"><i style="background:' + tone(x.mapId) + '"></i><p>' + escapeHtml(x.text) + '</p><div class="ib-meta"><button type="button" class="ib-map" data-i="goto" data-m="' + x.mapId + '" data-n="' + x.id + '" title="Показать на карте">«' + escapeHtml(x.map) + '»' + (x.ca ? ' · ' + fmtDate(x.ca) : '') + '</button><button type="button" class="ib-heart' + (x.liked ? ' on' : '') + '" data-i="like" data-m="' + x.mapId + '" data-n="' + x.id + '" aria-pressed="' + x.liked + '" aria-label="' + (x.liked ? 'Убрать из любимых' : 'В любимые') + '">' + HEART(x.liked) + '</button></div></div>').join('') + '</div>'
+            : '<p class="ib-empty">' + (filter === 'liked' ? 'Пока нет любимых идей. Отмечайте их сердечком — особенно когда перечитываете.' : 'Идей пока нет. Запишите первую — все идеи хороши, и чем их больше, тем лучше.') + '</p>') +
+          '</div></div>';
+      }
+      function onClick(e) {
+        if (e.target === ov) { close(); return; }
+        const b = e.target.closest('[data-i]'); if (!b) return;
+        const a = b.dataset.i;
+        if (a === 'close') close();
+        else if (a === 'all' || a === 'liked') { filter = a; render(); }
+        else if (a === 'like') toggleLike(b.dataset.m, b.dataset.n);
+        else if (a === 'read') {
+          order = all().map(x => x.mapId + '|' + x.id).sort(() => Math.random() - 0.5); idx = 0; mode = 'read'; render();
+          try { localStorage.setItem(READ_KEY, String(Date.now())); } catch (er) {}
+          updateCount();
+        }
+        else if (a === 'nextidea') { idx++; render(); }
+        else if (a === 'list') { mode = 'list'; render(); }
+        else if (a === 'goto') { const m = b.dataset.m, n = b.dataset.n; close(); if (m !== activeMapId) switchMap(m); setTimeout(() => { selectNode(n); renderNodes(); centerOnNode(n); }, 60); }
+      }
+      function onSubmit(e) {
+        e.preventDefault();
+        const inp = ov.querySelector('#ib-new'), t = (inp.value || '').trim(); if (!t) return;
+        const p = placeInView(200, 80);
+        state.nodes.push({ id: uid(), text: t, x: p.x, y: p.y, isMain: false, shape: 'idea', color: 'yellow', ca: Date.now() });
+        renderNodes(); renderEdges(); save(); persistMaps();
+        showToast(CRITIC_RE.test(t) ? 'Записано. И помните: идеи не критикуем — оценим потом' : 'Идея записана на карту «' + ((mapsCollection.find(m => m.id === activeMapId) || {}).name || '') + '»');
+        render();
+        const ni = ov.querySelector('#ib-new'); if (ni && !IS_TOUCH) ni.focus();
+      }
+      function onKey(e) { if (e.key === 'Escape' && ov) { e.stopPropagation(); close(); } }
+      function open(startReading) {
+        if (window.closeFactSettings) window.closeFactSettings();
+        if (!ov) {
+          ov = document.createElement('div'); ov.className = 'ib-ov';
+          ov.addEventListener('click', onClick); ov.addEventListener('submit', onSubmit);
+          ov.addEventListener('pointerdown', e => e.stopPropagation());
+          document.addEventListener('keydown', onKey, true);
+          document.body.appendChild(ov);
+        }
+        mode = 'list'; render();
+        if (startReading) onClick({ target: { closest: () => ({ dataset: { i: 'read' } }) } });
+      }
+      function close() { if (ov) { ov.remove(); ov = null; document.removeEventListener('keydown', onKey, true); } updateCount(); }
+      return { open, updateCount, due, count: () => all().length };
+    })();
+
+    // ==================== Coming back to a finished map ====================
+    const ReturnNudge = (function () {
+      const KEY = 'factmap-return-v1', DAY = 864e5;
+      let data = {};
+      try { data = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { data = {}; }
+      const store = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} };
+      let shownThisSession = false;
+      function guideFinished(mapId, tplId) {
+        const r = data[mapId] || (data[mapId] = {});
+        r.doneAt = Date.now();
+        r.next = Date.now() + (tplId === 'revisit' ? 3 * DAY : DAY);
+        store();
+      }
+      function check() {
+        if (shownThisSession || document.querySelector('.ob-ov, .ib-ov, .fb-ov, .sh-ov, .tour, .ask-overlay, .modal-overlay.open')) return;
+        const now = Date.now();
+        const id = Object.keys(data).find(k => data[k].next && !data[k].off && data[k].next <= now && mapsCollection.some(m => m.id === k));
+        if (!id) {
+          // nothing to come back to — maybe it's time to re-read ideas
+          if (IdeasBank.due()) {
+            shownThisSession = true;
+            showToast('Пора перечитать идеи: их уже ' + IdeasBank.count(), { label: 'Перечитать', fn: () => IdeasBank.open(true) });
+          }
+          return;
+        }
+        shownThisSession = true;
+        const m = mapsCollection.find(x => x.id === id);
+        const days = Math.max(1, Math.round((now - (data[id].doneAt || now)) / DAY));
+        openSheet('Вернёмся к карте?', '«' + (m.name || 'Без названия') + '»',
+          '<div class="sh-card"><p>Прошло ' + days + ' ' + (days === 1 ? 'день' : days < 5 ? 'дня' : 'дней') + '. Может, появились новые факты или идеи? Добавьте их — так карта становится точнее, а решение — яснее.</p>' +
+          '<div class="sh-acts"><button type="button" class="btn primary" data-r="go">Добавить</button><button type="button" class="btn" data-r="skip">Пропустить</button></div>' +
+          '<div class="sh-acts" style="margin-top:6px"><button type="button" class="btn link-btn" data-r="off">Не напоминать про эту карту</button></div></div>',
+          (ov, close) => ov.addEventListener('click', e => {
+            const b = e.target.closest('[data-r]'); if (!b) return;
+            const r = data[id] || {};
+            if (b.dataset.r === 'go') {
+              close(); r.next = 0; store();
+              if (id !== activeMapId) switchMap(id);
+              state.guide = { tpl: 'revisit', step: 0, hidden: false, startedAt: Date.now() };
+              coachCollapsed = false; save(); coachRender();
+            } else if (b.dataset.r === 'skip') { close(); r.next = Date.now() + DAY; store(); showToast('Хорошо, напомним завтра'); }
+            else { close(); r.off = true; store(); showToast('Больше не напомним про эту карту'); }
+          }));
+      }
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(() => { if (!Feedback.check()) check(); }, 800); });
+      return { guideFinished, check, _data: () => data };
+    })();
+
+    // ==================== «What do you think?» after a day with the app ====================
+    // replies go to the author's inbox through formsubmit.co (no server of our own)
+    const FB_ART = '<svg viewBox="0 0 120 84" width="120" height="84" aria-hidden="true"><circle cx="60" cy="44" r="34" fill="#232845"/>' +
+      '<path d="M60 66s-19-11.6-23.5-23.2C33.2 34.1 38.8 26 47.3 26c5 0 9.2 2.8 12.7 7.3 3.5-4.5 7.7-7.3 12.7-7.3 8.5 0 14.1 8.1 10.8 16.8C79 54.4 60 66 60 66z" fill="#f472b6"/>' +
+      '<path d="M50 38c1.5-2.2 4-3 6-2" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".55"/>' +
+      '<path d="M18 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM101 12l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6zM104 58l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z" fill="#facc15"/>' +
+      '<circle cx="14" cy="60" r="3" fill="#6c8cff"/><circle cx="92" cy="76" r="2.5" fill="#3dd68c"/></svg>';
+    const FEEDBACK_TO = 'vasabutko29@gmail.com';
+    const Feedback = (function () {
+      const KEY = 'factmap-feedback-v1', DAY = 864e5;
+      let d = {};
+      try { d = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { d = {}; }
+      const store = () => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} };
+      if (!d.first) { d.first = Date.now(); store(); }
+      let ov = null, mood = '';
+      const MOODS = [['love', '😍', 'Очень нравится'], ['ok', '🙂', 'Неплохо'], ['hard', '🤔', 'Есть сложности']];
+      function stats() {
+        let cards = 0, ideas = 0;
+        mapsCollection.forEach(m => { const ns = m.id === activeMapId ? state.nodes : ((m.data && m.data.nodes) || []); ns.forEach(n => { if (!n.isMain && (n.text || '').trim()) { cards++; if (n.shape === 'idea' && !n.kind) ideas++; } }); });
+        return { maps: mapsCollection.length, cards, ideas };
+      }
+      const plural = (n, a, b, c) => { const k = n % 10, h = n % 100; return n + ' ' + (k === 1 && h !== 11 ? a : k >= 2 && k <= 4 && (h < 12 || h > 14) ? b : c); };
+      async function send(item) {
+        const r = await fetch('https://formsubmit.co/ajax/' + FEEDBACK_TO, {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.assign({ _subject: 'Факт-карта: новый отзыв', _template: 'table', _captcha: 'false' }, item))
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json().catch(() => ({}));
+        if (j && (j.success === false || j.success === 'false')) throw new Error(j.message || 'not sent');
+      }
+      async function flush() {
+        if (!d.queue || !d.queue.length || !navigator.onLine) return;
+        const left = [];
+        for (const it of d.queue) { try { await send(it); } catch (e) { left.push(it); } }
+        d.queue = left; store();
+      }
+      function render(screen) {
+        if (!ov) return;
+        const name = (() => { try { return (localStorage.getItem('factmap-user-name') || '').trim(); } catch (e) { return ''; } })();
+        if (screen === 'thanks') {
+          ov.innerHTML = '<div class="fb-card fb-thanks" role="dialog" aria-modal="true" aria-label="Спасибо"><div class="fb-art">' + FB_ART + '</div><h2>Спасибо' + (name ? ', ' + escapeHtml(name) : '') + '!</h2><p>Ваш ответ уже летит ко мне. Я прочитаю его сам — и постараюсь сделать Факт-карту ещё удобнее.</p><button type="button" class="btn primary fb-main" data-f="close">Вернуться к карте</button></div>';
+          return;
+        }
+        const s = stats();
+        const praise = s.cards
+          ? 'За это время вы записали ' + plural(s.cards, 'карточку', 'карточки', 'карточек') + (s.ideas ? ' и ' + plural(s.ideas, 'идею', 'идеи', 'идей') : '') + '. Разложить мысли по полочкам — это настоящая работа, и вы с ней справляетесь. Вы молодец!'
+          : 'Даже просто открыть приложение и попробовать — уже шаг к тому, чтобы в голове стало спокойнее. Вы молодец!';
+        ov.innerHTML = '<div class="fb-card" role="dialog" aria-modal="true" aria-labelledby="fb-h"><button type="button" class="c-x fb-x" data-f="later" aria-label="Закрыть">×</button>' +
+          '<div class="fb-art">' + FB_ART + '</div>' +
+          '<h2 id="fb-h">' + (name ? escapeHtml(name) + ', вы' : 'Вы') + ' с нами уже целый день!</h2>' +
+          '<p class="fb-praise">' + praise + '</p>' +
+          '<p class="fb-ask">Мне правда важно, что вы думаете. Что понравилось, что мешает, чего не хватает? Я читаю каждый ответ.</p>' +
+          '<div class="fb-moods" role="radiogroup" aria-label="Как вам приложение">' + MOODS.map(m => '<button type="button" role="radio" class="fb-mood' + (mood === m[0] ? ' on' : '') + '" data-f="mood" data-v="' + m[0] + '" aria-checked="' + (mood === m[0]) + '"><span>' + m[1] + '</span><small>' + m[2] + '</small></button>').join('') + '</div>' +
+          '<label class="vh" for="fb-text">Ваш отзыв или идея</label><textarea id="fb-text" class="fb-input" rows="4" placeholder="Например: хочу, чтобы можно было…"></textarea>' +
+          '<label class="vh" for="fb-mail">Почта для ответа</label><input id="fb-mail" class="fb-input" type="email" autocomplete="email" placeholder="Почта, если хотите ответ (необязательно)">' +
+          '<p class="fb-err" hidden></p>' +
+          '<div class="fb-acts"><button type="button" class="btn fb-alt" data-f="later">Позже</button><button type="button" class="btn primary fb-main" data-f="send" disabled>Отправить</button></div>' +
+          '<p class="fb-sign">— Василий, автор Факт-карты</p></div>';
+      }
+      function canSend() {
+        const t = ov.querySelector('#fb-text'); const b = ov.querySelector('[data-f="send"]');
+        if (b) b.disabled = !(mood || (t && t.value.trim()));
+      }
+      async function doSend() {
+        const text = ov.querySelector('#fb-text').value.trim(), mail = ov.querySelector('#fb-mail').value.trim();
+        const err = ov.querySelector('.fb-err'), btn = ov.querySelector('[data-f="send"]');
+        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { err.textContent = 'Проверьте почту — кажется, в ней опечатка'; err.hidden = false; return; }
+        const s = stats();
+        const item = {
+          'Оценка': (MOODS.find(m => m[0] === mood) || ['', '', '—'])[2],
+          'Отзыв': text || '—',
+          'Почта для ответа': mail || '—',
+          'Имя': (() => { try { return localStorage.getItem('factmap-user-name') || '—'; } catch (e) { return '—'; } })(),
+          'Карт / карточек / идей': s.maps + ' / ' + s.cards + ' / ' + s.ideas,
+          'Версия': APP_VERSION,
+          'Устройство': (IS_TOUCH ? 'телефон/планшет' : 'компьютер') + ' · ' + navigator.userAgent.slice(0, 120)
+        };
+        if (mail) item._replyto = mail;
+        btn.disabled = true; btn.textContent = 'Отправляю…'; err.hidden = true;
+        try { await send(item); }
+        catch (e) { d.queue = (d.queue || []).concat([item]); }   // offline or blocked — retried on the next start
+        d.sent = Date.now(); d.next = 0; store();
+        render('thanks');
+      }
+      function onClick(e) {
+        const b = e.target.closest('[data-f]');
+        if (!b) { if (e.target === ov) later(); return; }
+        const a = b.dataset.f;
+        if (a === 'mood') { mood = b.dataset.v; ov.querySelectorAll('.fb-mood').forEach(x => { const on = x.dataset.v === mood; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); }); canSend(); }
+        else if (a === 'send') doSend();
+        else if (a === 'later') later();
+        else if (a === 'close') close();
+      }
+      function later() { if (!d.sent) { d.next = Date.now() + 2 * DAY; store(); } close(); }
+      function onKey(e) { if (e.key === 'Escape' && ov) { e.stopPropagation(); later(); } }
+      function open(manual) {
+        if (ov) return;
+        if (window.closeFactSettings) window.closeFactSettings();
+        mood = '';
+        if (!manual) { d.shown = (d.shown || 0) + 1; store(); }
+        ov = document.createElement('div'); ov.className = 'fb-ov';
+        ov.addEventListener('click', onClick); ov.addEventListener('input', canSend);
+        ov.addEventListener('pointerdown', e => e.stopPropagation());
+        document.addEventListener('keydown', onKey, true);
+        document.body.appendChild(ov);
+        render();
+        const t = ov.querySelector('#fb-text'); if (t && !IS_TOUCH) t.focus();
+      }
+      function close() { if (ov) { ov.remove(); ov = null; document.removeEventListener('keydown', onKey, true); } }
+      // after a full day since the first visit; «Позже» asks again in two days, at most 3 times
+      function due() { const now = Date.now(); return !d.sent && (d.shown || 0) < 3 && now - d.first >= DAY && (!d.next || now >= d.next); }
+      function check() {
+        if (!due() || document.querySelector('.ob-ov, .ib-ov, .fb-ov, .sh-ov, .tour, .ask-overlay, .modal-overlay.open')) return false;
+        open(); return true;
+      }
+      setTimeout(flush, 5000);
+      window.addEventListener('online', flush);
+      const mb = document.getElementById('btn-feedback');
+      if (mb) mb.addEventListener('click', () => open(true));
+      return { open, check, due, _data: () => d };
+    })();
+
+    window.__fmOnboard = Onboard.open;
+    window.__fmIdeas = IdeasBank;
+    window.__fmReturn = ReturnNudge;
+    window.__fmFeedback = Feedback;
+    document.getElementById('btn-ideas').addEventListener('click', () => IdeasBank.open());
+    { const wb = document.getElementById('btn-welcome'); if (wb) wb.addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); setTimeout(Onboard.open, 120); }); }
+    IdeasBank.updateCount();
+    setInterval(() => IdeasBank.updateCount(), 4000);
+    // the day-one feedback window takes priority over the «come back» reminder
+    setTimeout(() => { if (!Feedback.check()) ReturnNudge.check(); }, 3000);
+
 
     // quick control on the map itself — shows only while the map is zoomed far out
     // tapping a key-fact label selects that fact (works even when the card itself is off-screen)
