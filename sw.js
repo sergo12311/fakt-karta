@@ -1,5 +1,5 @@
-// Факт-карта — offline support. Version 2.5 (change → phones pick up the new app)
-const CACHE = 'fakt-karta-2.5';
+// Факт-карта — offline support. Version 2.6 (change → phones pick up the new app)
+const CACHE = 'fakt-karta-2.6';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-192.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon.png'];
 
 self.addEventListener('install', e => {

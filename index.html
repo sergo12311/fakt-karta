@@ -2021,6 +2021,18 @@
       .ib-offer { padding: 10px 12px; gap: 8px 10px; }
       .ib-oacts { width: 100%; } .ib-oacts .btn { flex: 1; }
     }
+    /* coach: fact-or-opinion review + plain checklist */
+    .coach .c-qs.plain .c-q.plain { border: 0; background: none; padding: 2px 0 2px 18px; position: relative; color: var(--text-muted); font-size: 13px; min-height: 0; }
+    .coach .c-qs.plain .c-q.plain::before { content: '•'; position: absolute; left: 4px; top: 1px; color: var(--accent); font-weight: 700; }
+    .coach .c-qs.plain { gap: 2px; flex-direction: column !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+    .coach .c-rev { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .coach .c-rev small { font-size: 11.5px; color: var(--text-muted); }
+    .coach .c-rev > p { margin: 0; }
+    .coach .c-rev > p:first-of-type { font-size: 15px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+    .coach .c-rev-warn { color: #ff9f43; font-weight: 600; }
+    .coach .c-rev-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+    .coach .c-rev-acts .btn { padding: 6px 10px; font-size: 13px; min-height: 36px; height: auto; }
+    .coach .c-rev .link-btn { align-self: flex-start; font-size: 12.5px; padding: 2px 0; }
     /* coach additions */
     .c-crit { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,67,.14); border: 1px solid rgba(255,159,67,.45); font-size: 13px; line-height: 1.45; }
     .c-cheer { margin: 8px 0; padding: 9px 12px; border-radius: 10px; background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.35); font-size: 13px; }
@@ -2062,6 +2074,9 @@
     .ib-map { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 4px 0; color: var(--text-muted); font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .ib-heart { width: 36px; height: 36px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; border: 0; background: none; color: var(--text-muted); cursor: pointer; }
     .ib-heart.on { color: #f472b6; }
+    .ib-heart { width: auto; min-width: 36px; padding: 0 6px; border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+    .ib-heart b { font-size: 13px; font-variant-numeric: tabular-nums; }
+    .ib-lc { font-size: 12px; opacity: .8; font-variant-numeric: tabular-nums; }
     .ib-empty { text-align: center; color: var(--text-muted); padding: 40px 10px; line-height: 1.5; }
     .ib-read { padding: 16px 20px calc(18px + env(safe-area-inset-bottom, 0px)); }
     .ib-rtop { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
@@ -2327,8 +2342,14 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.5';
+    const APP_VERSION = '2.6';
     const APP_CHANGES = [
+      { v: '2.6', date: '8 ноября 2026', items: [
+        'Шаблоны раскладывают карточки по зонам вокруг вопроса: у каждого шага — своё место, без общей кучи',
+        'Лайки в банке идей копятся: каждое ♥ — плюс один, самые любимые идеи — наверху',
+        'Шаг «Факт или мнение?» стал понятным: «Проверить карточки по одной» — и для каждой выбрать «Это факт», «Мнение → в стикер» или «Исправить»',
+        'Вопросы на шагах-проверках больше не выглядят как кнопки'
+      ] },
       { v: '2.5', date: '8 ноября 2026', items: [
         'При входе приложение предлагает пролистать ваши идеи: свайп вправо — нравится, влево — дальше, а в конце можно записать пару новых',
         'Телефон: помощник стал компактнее — описание сворачивается в 2 строки, вопросы листаются одной строкой',
@@ -3405,7 +3426,7 @@
       opinions: () => ({ key: 'opinions', t: 'Факт или мнение?', opinions: true,
         why: 'Мозг любит готовые объяснения: «он всегда опаздывает», «я ленивый». Это не факты, а истории о фактах. Факт можно увидеть, проверить или посчитать.',
         qs: ['Это можно проверить или посчитать?', 'Что конкретно было — без оценок?', 'Откуда я это знаю: видел сам или мне так кажется?'],
-        check: () => { const bad = state.nodes.filter(looksLikeOpinion); return bad.length ? [false, 'Похоже на мнение: ' + bad.length] : [true, 'Мнения не найдены']; } }),
+        check: () => { const bad = state.nodes.filter(looksLikeOpinion); if (coachReview && coachReview.i >= coachReview.ids.length) return [true, 'Все карточки проверены']; return bad.length ? [false, 'Похоже на мнение: ' + bad.length] : [true, 'Явных оценок не найдено']; } }),
       missing: (qs) => ({ key: 'missing', t: 'Чего не хватает?', why: 'Посмотрите на карту целиком. Самое важное часто всплывает только сейчас, когда остальное уже снаружи.', qs, add: { label: 'Добавить факт', color: 'blue' }, optional: true }),
       links: (min) => ({ key: 'links', t: 'Свяжите', why: 'Соедините то, что влияет друг на друга: что из чего следует, что чему мешает, что чем вызвано. Выделите карточку и тяните синий кружок сбоку к другой карточке.',
         qs: ['Что здесь причина, а что следствие?', 'Какие факты противоречат друг другу?', 'Что повторяется в разных местах карты?'],
@@ -3583,8 +3604,29 @@
       state.offsetY = v.h / 2 - c.y * state.scale;
       updateTransform();
     }
+    // Guided cards don't pile up in the middle: every step of the template gets its own zone
+    // around the central question (clockwise from the top), and its cards fill that zone in two columns.
+    function guideZonePlace(stepKey) {
+      const tpl = tplOf(state.guide); if (!tpl || !stepKey) return null;
+      const keys = []; tpl.steps.forEach(st => { if (st.add && st.key !== 'main' && keys.indexOf(st.key) < 0) keys.push(st.key); });
+      const zi = keys.indexOf(stepKey); if (zi < 0) return null;
+      const main = state.nodes.find(n => n.isMain); if (!main) return null;
+      const c = getNodeCenter(main), N = keys.length;
+      const a = -Math.PI / 2 + zi * (Math.PI * 2 / N);
+      const R = 300 + N * 28, ax = c.x + Math.cos(a) * R * 1.45, ay = c.y + Math.sin(a) * R;
+      const W = 200, H = 80, GX = 222, GY = 100;
+      const dirY = Math.sin(a) < -0.3 ? -1 : 1;
+      const rects = state.nodes.filter(n => !n.hiddenBy).map(n => { const k = getNodeCenter(n); return { x: k.x - k.w / 2, y: k.y - k.h / 2, w: k.w, h: k.h }; });
+      const free = (x, y) => rects.every(r => x + W + 10 < r.x || x > r.x + r.w + 10 || y + H + 10 < r.y || y > r.y + r.h + 10);
+      for (let k = 0; k < 60; k++) {
+        const col = k % 2, row = Math.floor(k / 2);
+        const x = ax - GX / 2 - W / 2 + col * GX, y = ay - H / 2 + dirY * row * GY;
+        if (free(x, y)) return { x, y };
+      }
+      return null;
+    }
     function coachAdd(spec, hint, stepKey) {
-      const p = placeInView(200, 80);
+      const p = guideZonePlace(stepKey) || placeInView(200, 80);
       const node = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: spec.shape || 'rect', color: spec.color || (spec.shape && KINDS[spec.shape] ? KINDS[spec.shape].colorName : 'blue'), gs: stepKey, ca: Date.now() };
       if (spec.kind) { node.kind = spec.kind; node.shape = 'rect'; }
       if (hint) node.hint = hint;
@@ -3595,7 +3637,9 @@
     }
 
     // ---- the helper panel ----
-    let coachEl = null, coachCollapsed = false, pauseTimer = null, pauseEnd = 0, coachWhyOpen = false;
+    let coachEl = null, coachCollapsed = false, pauseTimer = null, pauseEnd = 0, coachWhyOpen = false, coachReview = null;
+    const reviewable = n => !n.isMain && !n.kind && n.shape !== 'idea' && (n.text || '').trim();
+    function focusCard(id) { const n = getNode(id); if (!n) return; selectNode(id); renderNodes(); const v = visibleArea(), c = getNodeCenter(n); state.offsetX = v.w / 2 - c.x * state.scale; state.offsetY = v.h / 2 - c.y * state.scale; updateTransform(); }
     function tplOf(g) { return g && TEMPLATES.find(t => t.id === g.tpl); }
     function coachRender() {
       const g = state.guide, tpl = tplOf(g);
@@ -3626,11 +3670,25 @@
       const dots = tpl.steps.map((_, k) => '<i class="' + (k < i ? 'done' : k === i ? 'on' : '') + '"></i>').join('');
       let extra = '';
       if (st.opinions) {
-        const bad = state.nodes.filter(looksLikeOpinion);
-        extra = bad.length
-          ? '<ul class="c-bad">' + bad.slice(0, 6).map(n => '<li><span>«' + escapeHtml((n.text || '').slice(0, 70)) + '»</span><span class="c-bad-acts"><button type="button" class="btn" data-c="show" data-id="' + n.id + '">Показать</button><button type="button" class="btn" data-c="tosticker" data-id="' + n.id + '" title="Оставить как мнение — жёлтым стикером, отдельно от фактов">В стикер</button></span></li>').join('') + '</ul>' +
-            '<p class="c-tip">Перепишите как факт (что видно, слышно, можно посчитать) или вынесите в стикер — мнения тоже полезны, но отдельно.</p>'
-          : '<p class="c-ok">Карточек, похожих на оценки, не нашлось. Перечитайте их ещё раз сами — проверка подсказывает, но не заменяет вас.</p>';
+        const R = coachReview;
+        if (R && R.i < R.ids.length && getNode(R.ids[R.i])) {
+          const n = getNode(R.ids[R.i]);
+          extra = '<div class="c-rev"><small>Карточка ' + (R.i + 1) + ' из ' + R.ids.length + (looksLikeOpinion(n) ? ' · <b class="c-rev-warn">похоже на оценку</b>' : '') + '</small><p>«' + escapeHtml((n.text || '').slice(0, 140)) + '»</p>' +
+            '<p class="c-tip">Это можно увидеть, проверить или посчитать? Тогда это факт.</p>' +
+            '<div class="c-rev-acts"><button type="button" class="btn primary" data-c="rv-fact">✓ Это факт</button><button type="button" class="btn" data-c="rv-op">Мнение → в стикер</button><button type="button" class="btn" data-c="rv-edit">Исправить</button></div>' +
+            '<button type="button" class="btn link-btn" data-c="rv-stop">Закончить проверку</button></div>';
+        } else if (R) {
+          extra = '<p class="c-ok">Проверка готова: фактов — ' + R.f + ', вынесено в стикеры — ' + R.o + '. Мнения тоже полезны, просто теперь они отдельно от фактов.</p>' +
+            '<div class="c-tools"><button type="button" class="btn" data-c="rv-start">Проверить ещё раз</button></div>';
+        } else {
+          const bad = state.nodes.filter(looksLikeOpinion);
+          const total = state.nodes.filter(reviewable).length;
+          extra = (bad.length
+            ? '<p class="c-tip">Похоже на оценки: ' + bad.length + '. Их стоит переписать как факт или вынести в стикер.</p>'
+            : '') +
+            (total ? '<div class="c-tools"><button type="button" class="btn primary" data-c="rv-start">Проверить карточки по одной (' + total + ')</button></div><p class="c-tip">Покажу каждую карточку — вы решите: факт это или мнение.</p>'
+                   : '<p class="c-tip">Пока нет карточек для проверки — вернитесь назад и добавьте факты.</p>');
+        }
       }
       if (st.ideas) {
         const ideas = state.nodes.filter(ofShape('idea')).filter(x => (x.text || '').trim()), k = ideas.length;
@@ -3652,7 +3710,7 @@
         '<button type="button" class="c-x" data-c="collapse" title="' + (coachCollapsed ? 'Развернуть' : 'Свернуть') + '" aria-label="' + (coachCollapsed ? 'Развернуть' : 'Свернуть') + '">' + (coachCollapsed ? '▴' : '▾') + '</button>' +
         '<button type="button" class="c-x" data-c="hide" title="Закрыть помощника (вернуть — кнопка «Шаги» вверху)" aria-label="Закрыть помощника">×</button></header>' +
         '<div class="c-body"><div class="c-dots">' + dots + '</div><p class="c-why' + (coachWhyOpen ? ' open' : '') + '">' + escapeHtml(st.why) + '</p>' +
-        (qs ? '<p class="c-label">Спросите себя</p><ul class="c-qs">' + qs + '</ul>' : '') + extra +
+        (qs ? '<p class="c-label">' + (st.add ? 'Спросите себя — нажмите, чтобы ответить' : 'Спросите себя о каждой карточке') + '</p><ul class="c-qs' + (st.add ? '' : ' plain') + '">' + qs + '</ul>' : '') + extra +
         (st.add ? '<div class="c-tools"><button type="button" class="btn primary" data-c="add">＋ ' + escapeHtml(st.add.label) + '</button></div>' : '') +
         '<p class="c-check ' + (ok ? 'ok' : '') + '">' + (ok ? '✓ ' : '○ ') + escapeHtml(msg) + '</p>' +
         '<div class="c-nav"><button type="button" class="btn" data-c="back"' + (i === 0 ? ' disabled' : '') + '>Назад</button>' +
@@ -3678,7 +3736,16 @@
       if (a === 'collapse') { coachCollapsed = !coachCollapsed; coachRender(); return; }
       if (a === 'hide') { g.hidden = true; save(); coachRender(); showToast('Помощник закрыт. Вернуть — кнопка «Шаги» вверху'); return; }
       if (a === 'restart') { g.step = 0; save(); coachRender(); return; }
-      if (a === 'next' || a === 'back' || a === 'restart') coachWhyOpen = false;
+      if (a === 'next' || a === 'back' || a === 'restart') { coachWhyOpen = false; coachReview = null; }
+      if (a === 'rv-start') { const ids = state.nodes.filter(reviewable).sort((x, y) => (looksLikeOpinion(y) ? 1 : 0) - (looksLikeOpinion(x) ? 1 : 0)).map(n => n.id); coachReview = { ids, i: 0, f: 0, o: 0 }; if (ids[0]) focusCard(ids[0]); coachRender(); return; }
+      if (a === 'rv-fact' || a === 'rv-op') {
+        const R = coachReview; if (!R) return;
+        const n = getNode(R.ids[R.i]);
+        if (n && a === 'rv-op') { n.kind = 'sticker'; n.shape = 'rect'; n.color = 'yellow'; renderNodes(); renderEdges(); save(); R.o++; } else R.f++;
+        R.i++; if (R.ids[R.i]) focusCard(R.ids[R.i]); coachRender(); return;
+      }
+      if (a === 'rv-edit') { const R = coachReview; if (R && R.ids[R.i]) { focusCard(R.ids[R.i]); startEditingNode(R.ids[R.i]); } return; }
+      if (a === 'rv-stop') { coachReview = null; coachRender(); return; }
       if (a === 'next') {
         g.step = (g.step || 0) + 1; save(); coachRender();
         if (g.step >= tpl.steps.length) { try { ReturnNudge.guideFinished(activeMapId, tpl.id); IdeasBank.updateCount(); } catch (er) {} }
@@ -6718,7 +6785,7 @@
       '<rect x="258" y="108" width="28" height="3.5" rx="1" fill="#4b5168"/><rect x="258" y="104" width="28" height="3.5" rx="1" fill="#5c6380"/><rect x="258" y="100" width="28" height="3.5" rx="1" fill="#6b7290"/><rect x="257" y="113" width="30" height="2.5" rx="1.2" fill="#facc15"/>' +
       '<rect x="294" y="104" width="12" height="8" rx="2" fill="#4b5168"/><path d="M300 104c0-10 0-16 0-20M300 90c-6-2-9-7-8-12 6 1 9 6 8 12zM300 86c5-3 9-8 8-13-6 2-9 7-8 13z" fill="#3ecf8e" stroke="#3ecf8e" stroke-width="1.5" stroke-linejoin="round"/>' +
       '<rect x="313" y="98" width="14" height="19" rx="3" fill="#3ecf8e"/><path d="M327 103c5 0 5 8 0 8" fill="none" stroke="#3ecf8e" stroke-width="2"/></svg>';
-    // «Карта Василия» — a light genitive for common Russian names
+    // «Карта Ивана» from «Иван» — a light genitive for common Russian names
     function nameGenitive(n) {
       n = (n || '').trim(); if (!n) return '';
       if (/\s/.test(n)) return '«' + n + '»';
@@ -6764,7 +6831,7 @@
           '<ol class="ob-plan">' + plan().map(p => '<li>' + escapeHtml(p) + '</li>').join('') + '</ol></div>' +
           '<div class="ob-foot"><button type="button" class="btn primary ob-main" data-o="next">Начать</button><button type="button" class="btn ob-alt" data-o="later">Отмена</button></div>'; }
         if (s === 'name') return '<div class="ob-body"><h2>Как подписать карту?</h2><p>Имя появится в заголовке. Можно своё, можно любое прозвище.</p>' +
-          '<label class="ob-label" for="ob-name">Ваше имя или подпись</label><input id="ob-name" class="ob-input" autocomplete="given-name" placeholder="Например: Василий" value="' + escapeHtml(st.name) + '">' +
+          '<label class="ob-label" for="ob-name">Ваше имя или подпись</label><input id="ob-name" class="ob-input" autocomplete="given-name" placeholder="Как к вам обращаться" value="' + escapeHtml(st.name) + '">' +
           '<p class="ob-muted">Так будет выглядеть заголовок:</p><div class="ob-title-preview">' + escapeHtml(mapTitle()) + '</div></div>' +
           '<div class="ob-foot"><button type="button" class="btn ob-alt ob-back" data-o="back">Назад</button><button type="button" class="btn primary ob-main" data-o="next"' + (st.name.trim() ? '' : ' disabled') + '>Дальше</button></div>';
         if (s === 'topic' && !isFirst()) {
@@ -6875,11 +6942,13 @@
       let ov = null, mode = 'list', filter = 'all', order = [], idx = 0, addDone = false, added = 0, likedNow = 0;
       const OFFER_KEY = 'factmap-ideas-offer';
       const isIdea = n => n && n.shape === 'idea' && !n.kind && (n.text || '').trim();
+      // likes add up: every «Нравится» is +1 (older ideas with a single heart count as 1)
+      const likesOf = n => +n.likes || (n.liked ? 1 : 0);
       function all() {
         const out = [];
         mapsCollection.forEach(m => {
           const nodes = m.id === activeMapId ? state.nodes : ((m.data && m.data.nodes) || []);
-          nodes.forEach(n => { if (isIdea(n)) out.push({ mapId: m.id, id: n.id, text: n.text.trim(), map: m.name || 'Без названия', ca: n.ca || 0, liked: !!n.liked }); });
+          nodes.forEach(n => { if (isIdea(n)) { const likes = likesOf(n); out.push({ mapId: m.id, id: n.id, text: n.text.trim(), map: m.name || 'Без названия', ca: n.ca || 0, likes, liked: likes > 0 }); } });
         });
         return out.sort((a, b) => (b.ca || 0) - (a.ca || 0));
       }
@@ -6890,7 +6959,7 @@
       }
       function toggleLike(mapId, id) {
         const n = nodeOf(mapId, id); if (!n) return;
-        n.liked = !n.liked;
+        n.likes = likesOf(n) + 1; n.liked = true;
         if (mapId === activeMapId) { save(); renderNodes(); } else persistMaps();
         render();
       }
@@ -6916,9 +6985,9 @@
           const mapName = (mapsCollection.find(m => m.id === activeMapId) || {}).name || '';
           let body;
           if (cur) {
-            body = '<div class="ib-stage"><div class="ib-big ' + (idx % 2 ? 'a2' : 'a1') + '"><span class="ib-badge yes">Нравится</span><span class="ib-badge no">Дальше</span>' + BULB + '<p>' + escapeHtml(cur.text) + '</p><small>Карта «' + escapeHtml(cur.map) + '»' + (cur.ca ? ' · ' + fmtDate(cur.ca) : '') + '</small></div></div>' +
+            body = '<div class="ib-stage"><div class="ib-big ' + (idx % 2 ? 'a2' : 'a1') + '"><span class="ib-badge yes">Нравится</span><span class="ib-badge no">Дальше</span>' + BULB + '<p>' + escapeHtml(cur.text) + '</p><small>Карта «' + escapeHtml(cur.map) + '»' + (cur.ca ? ' · ' + fmtDate(cur.ca) : '') + (cur.likes ? ' · ♥ ' + cur.likes : '') + '</small></div></div>' +
               '<p class="ib-ask">' + (IS_TOUCH ? 'Свайп вправо — нравится, влево — дальше' : 'Нравится? Клавиши: → дальше, ↑ нравится') + '</p>' +
-              '<div class="ib-racts"><button type="button" class="btn" data-i="nextidea">Дальше</button><button type="button" class="btn ib-like' + (cur.liked ? ' on' : '') + '" data-i="likenext" aria-pressed="' + cur.liked + '">' + HEART(true) + (cur.liked ? ' Уже в любимых' : ' Нравится') + '</button></div>';
+              '<div class="ib-racts"><button type="button" class="btn" data-i="nextidea">Дальше</button><button type="button" class="btn ib-like' + (cur.liked ? ' on' : '') + '" data-i="likenext">' + HEART(true) + ' Нравится' + (cur.likes ? ' <span class="ib-lc">' + cur.likes + ' → ' + (cur.likes + 1) + '</span>' : '') + '</button></div>';
           } else if (!addDone) {
             const sp = SPARKS.slice().sort(() => Math.random() - 0.5);
             body = '<div class="ib-stage ib-fin"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="#2a2610"/><path d="M28 39s-11-6.7-13.6-13.4C12.5 20.6 15.7 16 20.6 16c2.9 0 5.3 1.6 7.4 4.2 2.1-2.6 4.4-4.2 7.4-4.2 4.9 0 8.1 4.6 6.2 9.6C39 32.3 28 39 28 39z" fill="#facc15"/></svg>' +
@@ -6936,14 +7005,14 @@
           if (cur) bindSwipe(ov.querySelector('.ib-big'));
           return;
         }
-        const shown = filter === 'liked' ? liked : items;
+        const shown = filter === 'liked' ? liked.slice().sort((x, y) => y.likes - x.likes) : items;
         ov.innerHTML = '<div class="ib-card" role="dialog" aria-modal="true" aria-label="Банк идей"><header class="ib-head"><div><h1>Банк идей</h1><p>Все идеи со всех карт. Здесь их не критикуют — только собирают и иногда перечитывают.</p></div><button type="button" class="c-x ib-x" data-i="close" aria-label="Закрыть">×</button></header>' +
           '<div class="ib-scroll">' +
           '<form class="ib-add"><label for="ib-new" class="vh">Новая идея</label><input id="ib-new" placeholder="Записать идею… любую!" autocomplete="off"><button type="submit" class="btn primary" aria-label="Добавить идею">+</button></form>' +
           (items.length >= 2 ? '<div class="ib-nudge' + (due() ? ' due' : '') + '">' + BULB + '<div><b>' + (due() ? 'Пора перечитать идеи' : 'Перечитать идеи') + '</b><span>' + (lastRead() ? 'Последний раз — ' + fmtDate(lastRead()) + '. ' : '') + 'Старая идея на свежую голову часто оказывается лучшей.</span></div><button type="button" class="btn" data-i="read">Перечитать</button></div>' : '') +
           '<div class="ib-filters"><button type="button" class="ib-f' + (filter === 'all' ? ' on' : '') + '" data-i="all" aria-pressed="' + (filter === 'all') + '">Все · ' + items.length + '</button><button type="button" class="ib-f' + (filter === 'liked' ? ' on' : '') + '" data-i="liked" aria-pressed="' + (filter === 'liked') + '">Любимые · ' + liked.length + '</button></div>' +
-          (shown.length ? '<div class="ib-grid">' + shown.map(x => '<div class="ib-item"><i style="background:' + tone(x.mapId) + '"></i><p>' + escapeHtml(x.text) + '</p><div class="ib-meta"><button type="button" class="ib-map" data-i="goto" data-m="' + x.mapId + '" data-n="' + x.id + '" title="Показать на карте">«' + escapeHtml(x.map) + '»' + (x.ca ? ' · ' + fmtDate(x.ca) : '') + '</button><button type="button" class="ib-heart' + (x.liked ? ' on' : '') + '" data-i="like" data-m="' + x.mapId + '" data-n="' + x.id + '" aria-pressed="' + x.liked + '" aria-label="' + (x.liked ? 'Убрать из любимых' : 'В любимые') + '">' + HEART(x.liked) + '</button></div></div>').join('') + '</div>'
-            : '<p class="ib-empty">' + (filter === 'liked' ? 'Пока нет любимых идей. Отмечайте их сердечком — особенно когда перечитываете.' : 'Идей пока нет. Запишите первую — все идеи хороши, и чем их больше, тем лучше.') + '</p>') +
+          (shown.length ? '<div class="ib-grid">' + shown.map(x => '<div class="ib-item"><i style="background:' + tone(x.mapId) + '"></i><p>' + escapeHtml(x.text) + '</p><div class="ib-meta"><button type="button" class="ib-map" data-i="goto" data-m="' + x.mapId + '" data-n="' + x.id + '" title="Показать на карте">«' + escapeHtml(x.map) + '»' + (x.ca ? ' · ' + fmtDate(x.ca) : '') + '</button><button type="button" class="ib-heart' + (x.liked ? ' on' : '') + '" data-i="like" data-m="' + x.mapId + '" data-n="' + x.id + '" aria-label="Нравится, +1' + (x.likes ? ' (сейчас ' + x.likes + ')' : '') + '">' + HEART(x.liked) + (x.likes ? '<b>' + x.likes + '</b>' : '') + '</button></div></div>').join('') + '</div>'
+            : '<p class="ib-empty">' + (filter === 'liked' ? 'Пока нет любимых идей. Ставьте ♥ — лайки копятся, и самые любимые поднимаются наверх.' : 'Идей пока нет. Запишите первую — все идеи хороши, и чем их больше, тем лучше.') + '</p>') +
           '</div></div>';
       }
       function onClick(e) {
@@ -6968,8 +7037,7 @@
       function likeAndNext() {
         const c = curItem(); if (!c) return;
         const n = nodeOf(c.mapId, c.id);
-        if (n && !n.liked) { n.liked = true; likedNow++; if (c.mapId === activeMapId) { save(); renderNodes(); } else persistMaps(); }
-        else if (n && n.liked) likedNow++;
+        if (n) { n.likes = likesOf(n) + 1; n.liked = true; likedNow++; if (c.mapId === activeMapId) { save(); renderNodes(); } else persistMaps(); }
         idx++; render();
       }
       // drag the card: right = like, left = next
@@ -6997,13 +7065,13 @@
         e.preventDefault();
         if (e.target.classList.contains('ib-more')) {
           const ts = [...e.target.querySelectorAll('input')].map(i => (i.value || '').trim()).filter(Boolean);
-          ts.forEach(t => { const p = placeInView(200, 80); state.nodes.push({ id: uid(), text: t, x: p.x, y: p.y, isMain: false, shape: 'idea', color: 'yellow', ca: Date.now() }); });
+          ts.forEach(t => { const p = guideZonePlace('ideas') || placeInView(200, 80); state.nodes.push({ id: uid(), text: t, x: p.x, y: p.y, isMain: false, shape: 'idea', color: 'yellow', ca: Date.now() }); });
           if (ts.length) { renderNodes(); renderEdges(); save(); persistMaps(); }
           added = ts.length; addDone = true; render(); updateCount();
           return;
         }
         const inp = ov.querySelector('#ib-new'), t = (inp.value || '').trim(); if (!t) return;
-        const p = placeInView(200, 80);
+        const p = guideZonePlace('ideas') || placeInView(200, 80);
         state.nodes.push({ id: uid(), text: t, x: p.x, y: p.y, isMain: false, shape: 'idea', color: 'yellow', ca: Date.now() });
         renderNodes(); renderEdges(); save(); persistMaps();
         showToast(CRITIC_RE.test(t) ? 'Записано. И помните: идеи не критикуем — оценим потом' : 'Идея записана на карту «' + ((mapsCollection.find(m => m.id === activeMapId) || {}).name || '') + '»');
@@ -7158,7 +7226,7 @@
           '<label class="vh" for="fb-mail">Почта для ответа</label><input id="fb-mail" class="fb-input" type="email" autocomplete="email" placeholder="Почта, если хотите ответ (необязательно)">' +
           '<p class="fb-err" hidden></p>' +
           '<div class="fb-acts"><button type="button" class="btn fb-alt" data-f="later">Позже</button><button type="button" class="btn primary fb-main" data-f="send" disabled>Отправить</button></div>' +
-          '<p class="fb-sign">— Василий, автор Факт-карты</p></div>';
+          '<p class="fb-sign">— автор Факт-карты</p></div>';
       }
       function canSend() {
         const t = ov.querySelector('#fb-text'); const b = ov.querySelector('[data-f="send"]');
