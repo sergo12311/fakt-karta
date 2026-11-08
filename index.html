@@ -2021,6 +2021,97 @@
       .ib-offer { padding: 10px 12px; gap: 8px 10px; }
       .ib-oacts { width: 100%; } .ib-oacts .btn { flex: 1; }
     }
+    /* =====================================================================
+       Table mode — everything even: columns, rows, numbers
+       ===================================================================== */
+    .tv { display: none; }
+    body.table-mode .tv { display: block; position: absolute; inset: 0; z-index: 60; overflow: auto; background: var(--bg); color: var(--text); padding: 18px 22px 40px; font-variant-numeric: tabular-nums; cursor: auto; -webkit-overflow-scrolling: touch; }
+    body.table-mode.has-coach .tv { padding-right: 400px; }
+    body.table-mode #btn-pen, body.table-mode #btn-zoom-out, body.table-mode #btn-zoom-in, body.table-mode #btn-fit, body.table-mode .ink-bar, body.table-mode .zoom-indicator, body.table-mode .music-fab, body.table-mode .card-bar { display: none !important; }
+    #btn-view { display: inline-flex; align-items: center; gap: 6px; }
+    #btn-view svg { width: 18px; height: 18px; }
+    #btn-view[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+    .tv-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .tv-titlebox { min-width: 0; flex: 1 1 320px; }
+    .tv-titlebox small { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .tv-titlebox h1 { margin: 0; font-size: 22px; line-height: 1.3; }
+    .tv-main { all: unset; cursor: text; display: block; border-radius: 6px; overflow-wrap: anywhere; }
+    .tv-main:hover, .tv-main:focus-visible { background: var(--surface-2); outline: none; }
+    .tv-mainedit { font-size: 20px !important; font-weight: 700; }
+    .tv-stats { margin: 6px 0 0; font-size: 12.5px; color: var(--text-muted); }
+    .tv-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tv-seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
+    .tv-seg button { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 7px; cursor: pointer; min-height: 32px; }
+    .tv-seg button.on { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); font-weight: 600; }
+    .tv-tidy { font-size: 13px; }
+    .tv-cols { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 1fr); gap: 14px; align-items: start; overflow-x: auto; padding-bottom: 8px; }
+    .tv-col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .tv-colhead { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 12px; border-bottom: 1px solid var(--border); border-top: 3px solid var(--c, var(--accent)); position: sticky; top: 0; background: var(--surface); z-index: 1; }
+    .tv-colhead > i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex-shrink: 0; }
+    .tv-colhead > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .tv-colhead b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tv-colhead small { font-size: 11.5px; color: var(--text-muted); }
+    .tv-count { min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 11px; background: var(--surface-2); color: var(--text-muted); font-size: 12px; display: grid; place-items: center; }
+    .tv-add { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 18px; line-height: 1; cursor: pointer; }
+    .tv-add:hover { border-color: var(--c); color: var(--c); }
+    .tv-rows { list-style: none; margin: 0; padding: 0; }
+    .tv-row { display: grid; grid-template-columns: 30px 1fr 34px 34px; align-items: start; gap: 4px; padding: 8px 6px 8px 10px; border-bottom: 1px solid var(--border); min-height: 44px; box-sizing: border-box; }
+    .tv-row:last-child { border-bottom: 0; }
+    .tv-row:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+    .tv-row.key { box-shadow: inset 3px 0 0 #facc15; }
+    .tv-row.editing { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+    .tv-row.flash { animation: tvFlash 1.4s ease-out; }
+    @keyframes tvFlash { 0%, 30% { background: color-mix(in srgb, var(--accent) 28%, transparent); } 100% { background: transparent; } }
+    .tv-num { font-size: 12px; color: var(--text-muted); padding-top: 6px; font-weight: 600; }
+    .tv-cell { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+    .tv-text { all: unset; cursor: text; display: block; padding: 4px 6px; margin: 0 -6px; border-radius: 6px; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .tv-text:hover, .tv-text:focus-visible { background: var(--surface-2); outline: none; }
+    .tv-text.empty { color: var(--text-muted); font-style: italic; }
+    .tv-edit { width: 100%; box-sizing: border-box; resize: none; font: inherit; font-size: 14px; line-height: 1.45; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--accent); background: var(--bg); color: var(--text); outline: none; }
+    .tv-help { font-size: 11px; color: var(--text-muted); }
+    .tv-meta { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tv-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font: inherit; font-size: 11.5px; text-decoration: none; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tv-chip button { border: 0; background: none; color: inherit; cursor: pointer; font-size: 14px; padding: 0 0 0 2px; }
+    .tv-like { color: #f472b6; border-color: rgba(244,114,182,.4); cursor: default; }
+    .tv-type { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font: inherit; font-size: 12px; color: var(--text); border: 1px solid color-mix(in srgb, var(--c) 55%, transparent); background: color-mix(in srgb, var(--c) 14%, transparent); cursor: pointer; }
+    .tv-type::before { content: ''; width: 7px; height: 7px; border-radius: 2px; background: var(--c); }
+    .tv-type.on { box-shadow: 0 0 0 2px var(--c); }
+    .tv-meta .tv-type { cursor: default; font-size: 11px; padding: 1px 7px; }
+    .tv-ic { width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--text-muted); cursor: pointer; }
+    .tv-ic:hover { background: var(--surface-2); color: var(--text); }
+    .tv-star.on { color: #facc15; }
+    .tv-empty { margin: 0; padding: 16px 12px; font-size: 13px; color: var(--text-muted); }
+    .tv-addrow { display: block; width: 100%; border: 0; border-top: 1px dashed var(--border); background: none; color: var(--text-muted); font: inherit; font-size: 13px; padding: 9px 12px; text-align: left; cursor: pointer; }
+    .tv-addrow:hover { color: var(--c); }
+    .tv-ghost { border-style: dashed; background: transparent; }
+    .tv-ghost .tv-colhead { border-top-color: var(--border); background: transparent; position: static; }
+    .tv-ghostlist { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px; }
+    .tv-menu { position: fixed; z-index: 10060; box-sizing: border-box; max-height: calc(100dvh - 16px); overflow-y: auto; padding: 12px; border-radius: 14px; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 18px 44px rgba(0,0,0,.5); font-size: 13px; }
+    .tv-mtitle { margin: 0 0 6px; font-weight: 700; font-size: 14px; overflow-wrap: anywhere; }
+    .tv-mlab { margin: 10px 0 6px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+    .tv-mtypes, .tv-mlinks { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tv-mnote { margin: 0; color: var(--text-muted); }
+    .tv-select { width: 100%; margin-top: 6px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; }
+    .tv-macts { display: flex; gap: 6px; margin-top: 12px; }
+    .tv-macts .btn { flex: 1; font-size: 13px; }
+    .tv-del { color: var(--danger); }
+    html[data-theme="paper"] .tv-col, html[data-theme="paper"] .tv-colhead { background: #fffef8; }
+    html[data-theme="pc"] .tv-col, html[data-theme="pc"] .tv-colhead { border-radius: 0; background: #dfdfdf; color: #000; }
+    @media (max-width: 600px) {
+      body.table-mode .tv { padding: 12px 12px 30px; }
+      body.table-mode.has-coach .tv { padding-right: 12px; padding-bottom: 50vh; }
+      .tv-head { gap: 10px; padding-bottom: 10px; margin-bottom: 12px; }
+      .tv-titlebox h1 { font-size: 18px; }
+      .tv-tools { width: 100%; }
+      .tv-seg { flex: 1; } .tv-seg button { flex: 1; padding: 6px 6px; font-size: 12.5px; }
+      .tv-tidy { width: 100%; }
+      .tv-cols { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: 1fr; gap: 10px; overflow: visible; }
+      .tv-colhead { top: -12px; }
+      .tv-row { grid-template-columns: 24px 1fr 32px 32px; padding: 7px 4px 7px 8px; }
+      .tv-text { font-size: 14px; }
+      .tv-edit { font-size: 16px; }
+      #btn-view .tb-label { display: none; }
+    }
     /* coach: fact-or-opinion review + plain checklist */
     .coach .c-qs.plain .c-q.plain { border: 0; background: none; padding: 2px 0 2px 18px; position: relative; color: var(--text-muted); font-size: 13px; min-height: 0; }
     .coach .c-qs.plain .c-q.plain::before { content: '•'; position: absolute; left: 4px; top: 1px; color: var(--accent); font-weight: 700; }
@@ -2171,6 +2262,7 @@
       <button type="button" class="btn tb-icon" id="pill-redo" title="Вернуть (Ctrl+Y)" aria-label="Вернуть" disabled=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M20 9H10a6 6 0 000 12h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
 
       <button type="button" class="btn coach-btn" id="btn-coach" hidden title="Показать шаги шаблона" aria-label="Шаги шаблона"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="18" r="1.4" fill="currentColor"/></svg><span class="tb-label">Шаги</span></button>
+      <button type="button" class="btn" id="btn-view" aria-pressed="false" title="Режим таблицы — всё ровно, колонками" aria-label="Таблица или доска"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3.5 9.5h17M9.3 9.5v10M14.8 9.5v10" stroke="currentColor" stroke-width="1.9"/></svg><span class="tb-label"> Таблица</span></button>
       <div class="toolbar-spacer"></div>
       <button class="btn" id="btn-zoom-out" title="Отдалить">−</button>
       <button class="btn" id="btn-zoom-in" title="Приблизить">+</button>
@@ -2342,8 +2434,14 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.6';
+    const APP_VERSION = '2.7';
     const APP_CHANGES = [
+      { v: '2.7', date: '8 ноября 2026', items: [
+        'Режим для перфекционистов: кнопка «Таблица» показывает карту ровными колонками — по шагам шаблона, по типам или по группам',
+        'В таблице работает всё: писать и править текст, ★ главное, тип карточки, связи, перенос между шагами, удаление и помощник по шагам',
+        'Кнопка «Выровнять доску» расставляет карточки на доске такими же ровными колонками (можно отменить)',
+        'Набор текста в полях больше никогда не удаляет выделенную карточку и не меняет масштаб'
+      ] },
       { v: '2.6', date: '8 ноября 2026', items: [
         'Шаблоны раскладывают карточки по зонам вокруг вопроса: у каждого шага — своё место, без общей кучи',
         'Лайки в банке идей копятся: каждое ♥ — плюс один, самые любимые идеи — наверху',
@@ -3639,7 +3737,7 @@
     // ---- the helper panel ----
     let coachEl = null, coachCollapsed = false, pauseTimer = null, pauseEnd = 0, coachWhyOpen = false, coachReview = null;
     const reviewable = n => !n.isMain && !n.kind && n.shape !== 'idea' && (n.text || '').trim();
-    function focusCard(id) { const n = getNode(id); if (!n) return; selectNode(id); renderNodes(); const v = visibleArea(), c = getNodeCenter(n); state.offsetX = v.w / 2 - c.x * state.scale; state.offsetY = v.h / 2 - c.y * state.scale; updateTransform(); }
+    function focusCard(id) { if (window.__fmTable && window.__fmTable.flash(id)) return; const n = getNode(id); if (!n) return; selectNode(id); renderNodes(); const v = visibleArea(), c = getNodeCenter(n); state.offsetX = v.w / 2 - c.x * state.scale; state.offsetY = v.h / 2 - c.y * state.scale; updateTransform(); }
     function tplOf(g) { return g && TEMPLATES.find(t => t.id === g.tpl); }
     function coachRender() {
       const g = state.guide, tpl = tplOf(g);
@@ -4166,6 +4264,7 @@
     }
 
     function renderNodes() {
+      if (window.__fmTable) window.__fmTable.schedule();
       // Remove old nodes
       board.querySelectorAll('.node').forEach(n => n.remove());
 
@@ -4795,6 +4894,7 @@
     }
 
     function startEditingNode(id) {
+      if (window.__fmTable && window.__fmTable.on() && window.__fmTable.edit(id)) return;
       const nn = getNode(id);
       if (nn && nn.collapsed) return;
       if (nn && nn.kind === 'trash') { openContainerPanel(id); return; }
@@ -5164,6 +5264,7 @@
     // Keyboard
     document.addEventListener('keydown', (e) => {
       if (e.target.contentEditable === 'true') return;
+      if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;   // typing in a field never deletes cards or zooms
       if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
       if (e.key === 'Escape') {
         clearSelection();
@@ -5356,6 +5457,7 @@
     let mapsCollection = [];
 
     function save() {
+      if (window.__fmTable) window.__fmTable.schedule();
       const payload = {
         version: 2,
         savedAt: new Date().toISOString(),
@@ -6662,6 +6764,7 @@
         { el: '#map-tabs', t: 'Несколько карт', b: ['Каждая тема — на своей вкладке. «+» рядом создаёт новую карту.'] },
         { el: '#btn-ideas', t: 'Банк идей', b: ['Все идеи со всех карт в одном месте. Отмечайте любимые сердечком.', 'При входе приложение предложит быстро пролистать идеи: ' + (IS_TOUCH ? 'свайп вправо — нравится, влево — дальше' : 'кнопки «Нравится» и «Дальше»') + '. В конце — записать пару новых.'], tip: 'Идеи не критикуем: все хороши, и чем больше, тем лучше.' },
         { rect: () => unionRect(['#btn-zoom-out', '#btn-zoom-in', '#btn-fit']), t: 'Масштаб', b: ['Отдалите карту — главные факты останутся читаемыми крупными подписями.', '«Всё» показывает всю карту целиком.'], tip: 'На телефоне — щипок двумя пальцами.' },
+        { el: '#btn-view', t: 'Режим таблицы', b: ['Для тех, кто любит порядок: та же карта ровными колонками и пронумерованными строками — по шагам, по типам или по группам.', 'Всё работает и здесь: писать, отмечать ★, менять тип, связывать. Кнопка «Выровнять доску» расставит доску так же ровно.'] },
         { el: '#btn-share', t: 'Поделиться', b: ['Отправьте копию карты файлом — её откроют в любом браузере.', 'Или пригласите человека в совместную карту.'] },
         { el: '#btn-settings', t: 'Меню', b: ['Аккаунт и облако, темы оформления, резервная копия, экспорт и импорт.', 'Здесь же — «Показать обучение», «Знакомство заново» и «Оставить отзыв».'] },
         { t: 'Шаблоны по методу Курпатова', b: ['Через «+» → «Шаблон» помощник проведёт по шагам метода факт-карт: факты → факт или мнение → группы → связи → пауза → идеи → вывод → первый шаг.', 'Есть и «Первая карта — как для новичка» — её можно пройти заново в любой момент.'] },
@@ -7291,6 +7394,286 @@
       return { open, check, due, _data: () => d };
     })();
 
+
+    // ==================== Table mode («режим для перфекциониста») ====================
+    // The same map shown as even columns and rows. Nothing is converted: switch back and the board is as it was.
+    const TableView = (function () {
+      const VIEW_KEY = 'factmap-view', GROUP_KEY = 'factmap-table-group';
+      let on = false, wrap = null, group = 'auto', pending = false, editing = null, openMenu = null, extraTypes = [];
+      try { on = localStorage.getItem(VIEW_KEY) === 'table'; group = localStorage.getItem(GROUP_KEY) || 'auto'; } catch (e) {}
+      const hexOf = c => COLOR_HEX[c] || '#5b8def';
+      const FILE_KINDS = n => n.kind && n.kind !== 'sticker' && n.kind !== 'box' && n.kind !== 'trash';
+      const cards = () => state.nodes.filter(n => !n.isMain && n.kind !== 'box' && n.kind !== 'trash' && !n.hiddenBy);
+      const byPlace = (a, b) => (a.y - b.y) || (a.x - b.x);
+
+      function columnsFor(mode) {
+        const all = cards();
+        if (mode === 'steps') {
+          const tpl = tplOf(state.guide), cols = [], seen = [];
+          (tpl ? tpl.steps : []).forEach(st => {
+            if (!st.add || st.key === 'main' || seen.indexOf(st.key) >= 0) return; seen.push(st.key);
+            const shape = st.add.shape || 'rect', color = st.add.color || (KINDS[shape] ? KINDS[shape].colorName : 'blue');
+            cols.push({ id: 's-' + st.key, title: st.t, color: hexOf(st.add.kind === 'sticker' ? 'yellow' : color), filter: n => n.gs === st.key, make: { shape, color, kind: st.add.kind, gs: st.key }, keep: true });
+          });
+          cols.push({ id: 's-other', title: 'Другое', color: '#8a90a6', filter: n => !seen.includes(n.gs), make: { shape: 'rect', color: 'blue' } });
+          return cols;
+        }
+        if (mode === 'groups') {
+          const heads = all.filter(n => n.gs === 'groups').sort(byPlace), used = new Set(heads.map(h => h.id));
+          const cols = heads.map(h => {
+            const mem = new Set(state.edges.filter(e => e.from === h.id || e.to === h.id).map(e => e.from === h.id ? e.to : e.from));
+            mem.forEach(id => used.add(id));
+            return { id: 'g-' + h.id, title: (h.text || '').trim() || 'Группа без названия', head: h.id, color: hexOf(h.color || 'teal'), filter: n => mem.has(n.id) && n.gs !== 'groups', make: { shape: 'rect', color: 'blue' }, linkTo: h.id, keep: true };
+          });
+          cols.push({ id: 'g-none', title: 'Без группы', color: '#8a90a6', filter: n => !used.has(n.id), make: { shape: 'rect', color: 'blue' }, keep: true });
+          return cols;
+        }
+        const cols = [{ id: 't-fact', title: 'Факты', color: '#5b8def', filter: n => !n.kind && !KINDS[n.shape || 'rect'], make: { shape: 'rect', color: 'blue' }, keep: true }];
+        Object.keys(KINDS).forEach(k => cols.push({ id: 't-' + k, title: KINDS[k].label, sub: KINDS[k].hint, color: KINDS[k].color, filter: n => !n.kind && n.shape === k, make: { shape: k, color: KINDS[k].colorName }, keep: extraTypes.indexOf(k) >= 0 }));
+        cols.push({ id: 't-sticker', title: 'Стикеры', sub: 'мысли и чувства', color: '#facc15', filter: n => n.kind === 'sticker', make: { kind: 'sticker', shape: 'rect', color: 'yellow' } });
+        cols.push({ id: 't-files', title: 'Файлы и ссылки', color: '#8a90a6', filter: FILE_KINDS, make: null });
+        return cols;
+      }
+      function modeNow() {
+        const hasTpl = !!tplOf(state.guide) || state.nodes.some(n => n.gs);
+        const hasGroups = state.nodes.some(n => n.gs === 'groups');
+        let m = group;
+        if (m === 'steps' && !hasTpl) m = 'types';
+        if (m === 'groups' && !hasGroups) m = 'types';
+        if (m === 'auto') m = hasTpl ? 'steps' : 'types';
+        return { m, hasTpl, hasGroups };
+      }
+      function layout() {
+        const { m } = modeNow();
+        const used = new Set();
+        return columnsFor(m).map(c => {
+          const rows = cards().filter(n => !used.has(n.id) && c.filter(n)).sort(byPlace);
+          if (m !== 'groups') rows.forEach(n => used.add(n.id));
+          return Object.assign({ rows }, c);
+        }).filter(c => c.rows.length || c.keep);
+      }
+
+      const ICON = {
+        star: on => '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z" fill="' + (on ? '#facc15' : 'none') + '" stroke="' + (on ? '#facc15' : 'currentColor') + '" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+        more: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>',
+        link: '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+      };
+      const label = n => ((n.text || '').trim() || (n.kind === 'photo' ? 'Фото' : n.kind === 'link' ? (n.url || 'Ссылка') : 'Без текста'));
+      const short = (t, k) => t.length > k ? t.slice(0, k - 1) + '…' : t;
+      function linksOf(n) { return state.edges.filter(e => e.from === n.id || e.to === n.id).map(e => ({ e, other: getNode(e.from === n.id ? e.to : e.from) })).filter(x => x.other && !x.other.isMain); }
+      function typeName(n) { if (n.kind === 'sticker') return 'Стикер'; if (n.kind) return n.kind === 'photo' ? 'Фото' : n.kind === 'link' ? 'Ссылка' : 'Файл'; return KINDS[n.shape] ? KINDS[n.shape].label : 'Факт'; }
+      function typeColor(n) { return n.kind === 'sticker' ? '#facc15' : KINDS[n.shape] ? KINDS[n.shape].color : hexOf(n.color); }
+
+      function rowHtml(n, i, col) {
+        const links = linksOf(n), ed = editing === n.id;
+        const meta = [];
+        const colType = col.make ? (col.make.kind === 'sticker' ? 'Стикер' : KINDS[col.make.shape] ? KINDS[col.make.shape].label : 'Факт') : '';
+        if ((col.id.indexOf('t-') !== 0 || col.id === 't-files') && typeName(n) !== colType) meta.push('<span class="tv-type" style="--c:' + typeColor(n) + '">' + typeName(n) + '</span>');
+        if (n.kind === 'link' && n.url) meta.push('<a class="tv-chip" href="' + escapeHtml(n.url) + '" target="_blank" rel="noopener noreferrer">' + ICON.link + ' ' + escapeHtml(short(domainOf(n.url), 28)) + '</a>');
+        links.slice(0, 3).forEach(x => meta.push('<button type="button" class="tv-chip" data-t="goto" data-id="' + x.other.id + '" title="Перейти к связанной карточке">' + ICON.link + ' ' + escapeHtml(short(label(x.other), 26)) + '</button>'));
+        if (links.length > 3) meta.push('<span class="tv-chip">+' + (links.length - 3) + '</span>');
+        if (n.shape === 'idea' && (n.likes || n.liked)) meta.push('<span class="tv-chip tv-like">♥ ' + (+n.likes || 1) + '</span>');
+        return '<li class="tv-row' + (n.key ? ' key' : '') + (ed ? ' editing' : '') + '" data-id="' + n.id + '">' +
+          '<span class="tv-num">' + String(i + 1).padStart(2, '0') + '</span>' +
+          '<div class="tv-cell">' + (ed
+            ? '<textarea class="tv-edit" rows="2" aria-label="Текст карточки" placeholder="' + escapeHtml(n.hint || 'Напишите факт…') + '">' + escapeHtml(n.text || '') + '</textarea><small class="tv-help">Enter — сохранить · Esc — отмена</small>'
+            : '<button type="button" class="tv-text' + ((n.text || '').trim() ? '' : ' empty') + '" data-t="edit">' + escapeHtml((n.text || '').trim() || n.hint || 'Нажмите, чтобы написать') + '</button>') +
+          (meta.length && !ed ? '<div class="tv-meta">' + meta.join('') + '</div>' : '') + '</div>' +
+          '<button type="button" class="tv-ic tv-star' + (n.key ? ' on' : '') + '" data-t="star" aria-pressed="' + !!n.key + '" title="Главный факт" aria-label="Главный факт">' + ICON.star(n.key) + '</button>' +
+          '<button type="button" class="tv-ic" data-t="menu" title="Ещё" aria-label="Действия с карточкой">' + ICON.more + '</button></li>';
+      }
+      function render(force) {
+        pending = false;
+        if (!on || !wrap) return;
+        const ae = document.activeElement;
+        if (!force && ae && wrap.contains(ae) && ae.classList.contains('tv-edit')) { pending = true; return; }   // don't throw away what is being typed
+        const main = state.nodes.find(n => n.isMain);
+        const { m, hasTpl, hasGroups } = modeNow();
+        const cols = layout();
+        const total = cards().length, keys = cards().filter(n => n.key).length;
+        const seg = [['steps', 'По шагам', hasTpl], ['types', 'По типам', true], ['groups', 'По группам', hasGroups]];
+        const hiddenTypes = m === 'types' ? Object.keys(KINDS).filter(k => !cols.some(c => c.id === 't-' + k)) : [];
+        const scrollL = wrap.querySelector('.tv-cols') ? wrap.querySelector('.tv-cols').scrollLeft : 0, scrollT = wrap.scrollTop;
+        wrap.innerHTML =
+          '<header class="tv-head"><div class="tv-titlebox"><small>' + escapeHtml(((mapsCollection.find(x => x.id === activeMapId) || {}).name) || 'Карта') + '</small>' +
+          '<h1><button type="button" class="tv-main" data-t="main">' + escapeHtml((main && (main.text || '').trim()) || 'Нажмите, чтобы написать главный вопрос') + '</button></h1>' +
+          '<p class="tv-stats">' + total + ' ' + plural(total, 'карточка', 'карточки', 'карточек') + ' · ' + state.edges.length + ' ' + plural(state.edges.length, 'связь', 'связи', 'связей') + ' · ★ ' + keys + '</p></div>' +
+          '<div class="tv-tools"><div class="tv-seg" role="group" aria-label="Как разложить по колонкам">' + seg.filter(s => s[2]).map(s => '<button type="button" data-t="group" data-v="' + s[0] + '" class="' + (m === s[0] ? 'on' : '') + '" aria-pressed="' + (m === s[0]) + '">' + s[1] + '</button>').join('') + '</div>' +
+          '<button type="button" class="btn tv-tidy" data-t="tidy" title="Расставить карточки на доске такими же ровными колонками">Выровнять доску</button></div></header>' +
+          '<div class="tv-cols">' + cols.map(c =>
+            '<section class="tv-col" style="--c:' + c.color + '"><div class="tv-colhead"><i></i><div><b>' + escapeHtml(c.title) + '</b>' + (c.sub ? '<small>' + escapeHtml(c.sub) + '</small>' : '') + '</div><span class="tv-count">' + c.rows.length + '</span>' +
+            (c.make ? '<button type="button" class="tv-add" data-t="add" data-col="' + c.id + '" aria-label="Добавить в «' + escapeHtml(c.title) + '»">+</button>' : '') + '</div>' +
+            (c.rows.length ? '<ol class="tv-rows">' + c.rows.map((n, i) => rowHtml(n, i, c)).join('') + '</ol>' : '<p class="tv-empty">Пусто. ' + (c.make ? 'Нажмите «+», чтобы добавить.' : '') + '</p>') +
+            (c.make && c.rows.length ? '<button type="button" class="tv-addrow" data-t="add" data-col="' + c.id + '">+ Добавить</button>' : '') + '</section>').join('') +
+          (hiddenTypes.length ? '<section class="tv-col tv-ghost"><div class="tv-colhead"><div><b>Ещё колонка</b><small>по типу карточки</small></div></div><div class="tv-ghostlist">' + hiddenTypes.map(k => '<button type="button" class="tv-type" style="--c:' + KINDS[k].color + '" data-t="addtype" data-v="' + k + '">+ ' + KINDS[k].label + '</button>').join('') + '</div></section>' : '') +
+          '</div>';
+        const cw = wrap.querySelector('.tv-cols'); if (cw) cw.scrollLeft = scrollL; wrap.scrollTop = scrollT;
+        if (editing) {
+          const ta = wrap.querySelector('.tv-row.editing .tv-edit');
+          if (ta) { ta.focus(); const L = ta.value.length; try { ta.setSelectionRange(L, L); } catch (e) {} autosize(ta); const r = ta.closest('.tv-row'); if (r && r.scrollIntoView) r.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+        }
+      }
+      function plural(n, a, b, c) { const k = n % 10, h = n % 100; return k === 1 && h !== 11 ? a : k >= 2 && k <= 4 && (h < 12 || h > 14) ? b : c; }
+      function autosize(ta) { ta.style.height = 'auto'; ta.style.height = Math.min(220, ta.scrollHeight + 2) + 'px'; }
+      function schedule() { if (!on || pending) return; pending = true; requestAnimationFrame(render); }
+
+      function addTo(colId) {
+        const c = columnsFor(modeNow().m).find(x => x.id === colId); if (!c || !c.make) return;
+        const mk = c.make, p = guideZonePlace(mk.gs) || placeInView(200, 80);
+        const node = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: mk.shape || 'rect', color: mk.color || 'blue', ca: Date.now() };
+        if (mk.kind) node.kind = mk.kind; if (mk.gs) node.gs = mk.gs;
+        state.nodes.push(node);
+        if (c.linkTo) state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 5), from: c.linkTo, to: node.id, type: state.currentEdgeType || 'normal' });
+        editing = node.id; save(); renderNodes(); renderEdges(); render(true);
+      }
+      function finishEdit(commit) {
+        const id = editing; if (!id) return;
+        const ta = wrap && wrap.querySelector('.tv-row.editing .tv-edit');
+        const n = getNode(id); editing = null;
+        if (n && ta && commit) n.text = ta.value.replace(/\s+$/, '');
+        if (n && !(n.text || '').trim() && !n.kind) { removeNode(id); showToast('Пустая карточка убрана'); }
+        else save();
+        renderNodes(); renderEdges(); render(true);
+        try { if (window.__coachRefresh) window.__coachRefresh(); } catch (e) {}
+      }
+      function edit(id) {
+        if (!on) return false;
+        const n = getNode(id); if (!n) return false;
+        if (n.isMain) { editMain(); return true; }
+        if (editing && editing !== id) finishEdit(true);
+        editing = id; render(true); return true;
+      }
+      function editMain() {
+        const m = state.nodes.find(n => n.isMain); if (!m) return;
+        const h = wrap.querySelector('.tv-main'); if (!h) return;
+        const ta = document.createElement('textarea'); ta.className = 'tv-edit tv-mainedit'; ta.value = m.text || ''; ta.rows = 2; ta.setAttribute('aria-label', 'Главный вопрос');
+        h.replaceWith(ta); ta.focus(); autosize(ta);
+        const done = ok => { if (ok) { m.text = ta.value.trim(); save(); renderNodes(); } ta.removeEventListener('blur', onBlur); render(true); };
+        const onBlur = () => done(true);
+        ta.addEventListener('blur', onBlur);
+        ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ta.blur(); } else if (e.key === 'Escape') { ta.removeEventListener('blur', onBlur); done(false); } });
+      }
+      function closeMenu() { if (openMenu) { openMenu.remove(); openMenu = null; } }
+      function menuFor(id, anchor) {
+        closeMenu();
+        const n = getNode(id); if (!n) return;
+        const links = linksOf(n), others = cards().filter(x => x.id !== id && !links.some(l => l.other.id === x.id));
+        const { m } = modeNow(); const tpl = tplOf(state.guide);
+        const steps = m === 'steps' && tpl ? columnsFor('steps').filter(c => c.make && c.id !== 's-other') : [];
+        const pop = document.createElement('div'); pop.className = 'tv-menu'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'Действия с карточкой');
+        pop.innerHTML = '<p class="tv-mtitle">' + escapeHtml(short(label(n), 60)) + '</p>' +
+          (!n.kind || n.kind === 'sticker' ? '<p class="tv-mlab">Тип</p><div class="tv-mtypes">' +
+            '<button type="button" class="tv-type" style="--c:#5b8def" data-m="type" data-v="rect">Факт</button>' +
+            Object.keys(KINDS).map(k => '<button type="button" class="tv-type' + (!n.kind && n.shape === k ? ' on' : '') + '" style="--c:' + KINDS[k].color + '" data-m="type" data-v="' + k + '">' + KINDS[k].label + '</button>').join('') +
+            '<button type="button" class="tv-type' + (n.kind === 'sticker' ? ' on' : '') + '" style="--c:#facc15" data-m="type" data-v="sticker">Стикер</button></div>' : '') +
+          (steps.length ? '<p class="tv-mlab">Перенести в шаг</p><div class="tv-mtypes">' + steps.map(c => '<button type="button" class="tv-type' + (n.gs === c.make.gs ? ' on' : '') + '" style="--c:' + c.color + '" data-m="step" data-v="' + c.make.gs + '">' + escapeHtml(c.title) + '</button>').join('') + '</div>' : '') +
+          '<p class="tv-mlab">Связи</p>' + (links.length ? '<div class="tv-mlinks">' + links.map(x => '<span class="tv-chip">' + escapeHtml(short(label(x.other), 30)) + '<button type="button" data-m="unlink" data-v="' + x.e.id + '" aria-label="Убрать связь">×</button></span>').join('') + '</div>' : '<p class="tv-mnote">Пока нет связей</p>') +
+          (others.length ? '<label class="vh" for="tv-linkto">Связать с карточкой</label><select id="tv-linkto" class="tv-select"><option value="">+ Связать с…</option>' + others.map(o => '<option value="' + o.id + '">' + escapeHtml(short(label(o), 50)) + '</option>').join('') + '</select>' : '') +
+          '<div class="tv-macts"><button type="button" class="btn" data-m="board">Показать на доске</button><button type="button" class="btn tv-del" data-m="del">Удалить</button></div>';
+        document.body.appendChild(pop); openMenu = pop;
+        const r = anchor.getBoundingClientRect(), W = Math.min(320, window.innerWidth - 16);
+        pop.style.width = W + 'px';
+        const ph = pop.offsetHeight;
+        let top = r.bottom + 6; if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
+        pop.style.left = Math.max(8, Math.min(window.innerWidth - W - 8, r.right - W)) + 'px'; pop.style.top = top + 'px';
+        pop.addEventListener('pointerdown', e => e.stopPropagation());
+        pop.addEventListener('change', e => {
+          if (e.target.id !== 'tv-linkto' || !e.target.value) return;
+          state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 5), from: id, to: e.target.value, type: state.currentEdgeType || 'normal' });
+          save(); renderEdges(); closeMenu(); render(); showToast('Связь добавлена');
+        });
+        pop.addEventListener('click', e => {
+          const b = e.target.closest('[data-m]'); if (!b) return;
+          const a = b.dataset.m, v = b.dataset.v;
+          if (a === 'type') {
+            if (v === 'sticker') { n.kind = 'sticker'; n.shape = 'rect'; n.color = 'yellow'; }
+            else { delete n.kind; n.shape = v; n.color = KINDS[v] ? KINDS[v].colorName : (n.color && n.color !== 'yellow' ? n.color : 'blue'); }
+          } else if (a === 'step') {
+            const c = steps.find(x => x.make.gs === v); n.gs = v;
+            if (c) { if (c.make.kind) { n.kind = c.make.kind; n.shape = 'rect'; n.color = 'yellow'; } else { delete n.kind; n.shape = c.make.shape; n.color = c.make.color; } }
+          } else if (a === 'unlink') { state.edges = state.edges.filter(x => x.id !== v); }
+          else if (a === 'board') { closeMenu(); setOn(false); setTimeout(() => { selectNode(id); renderNodes(); centerOnNode(id); }, 60); return; }
+          else if (a === 'del') { closeMenu(); askConfirm('Удалить карточку «' + short(label(n), 40) + '»?', () => { removeNode(id); renderNodes(); renderEdges(); render(); }); return; }
+          save(); renderNodes(); renderEdges(); closeMenu(); render();
+        });
+      }
+      // lay the board out in the same columns (one step back with «Отменить»)
+      function tidyBoard() {
+        const cols = layout().filter(c => c.rows.length);
+        const main = state.nodes.find(n => n.isMain);
+        const mc = main ? getNodeCenter(main) : { x: 0, y: 0, h: 80 };
+        const sizes = id => { const n = getNode(id), k = n ? getNodeCenter(n) : null; return { w: k && k.w ? k.w : 200, h: k && k.h ? k.h : 80 }; };
+        const widths = cols.map(c => Math.max(200, ...c.rows.map(n => sizes(n.id).w)));
+        const gap = 48, totalW = widths.reduce((a, b) => a + b, 0) + gap * (cols.length - 1);
+        let x = mc.x - totalW / 2; const top = mc.y + (mc.h || 80) / 2 + 110;
+        const placed = new Set();
+        cols.forEach((c, i) => {
+          let y = top;
+          c.rows.forEach(n => { if (placed.has(n.id)) return; placed.add(n.id); const s = sizes(n.id); n.x = Math.round(x + (widths[i] - s.w) / 2); n.y = Math.round(y); y += s.h + 22; });
+          x += widths[i] + gap;
+        });
+        save(); renderNodes(); renderEdges();
+        showToast('Доска выровнена по колонкам', { label: 'Посмотреть', fn: () => { setOn(false); setTimeout(() => { fitView(); updateTransform(); }, 60); } });
+      }
+      function onClick(e) {
+        const b = e.target.closest('[data-t]');
+        if (!b) return;
+        const a = b.dataset.t, row = b.closest('.tv-row'), id = row && row.dataset.id;
+        if (a === 'edit' && id) edit(id);
+        else if (a === 'main') editMain();
+        else if (a === 'star' && id) { const n = getNode(id); if (n) { n.key = !n.key; save(); renderNodes(); render(); try { if (window.__coachRefresh) window.__coachRefresh(); } catch (er) {} } }
+        else if (a === 'menu' && id) menuFor(id, b);
+        else if (a === 'add') { if (editing) finishEdit(true); addTo(b.dataset.col); }
+        else if (a === 'group') { group = b.dataset.v; try { localStorage.setItem(GROUP_KEY, group); } catch (er) {} render(); }
+        else if (a === 'addtype') { extraTypes.push(b.dataset.v); addTo('t-' + b.dataset.v); }
+        else if (a === 'tidy') tidyBoard();
+        else if (a === 'goto') { const t = wrap.querySelector('.tv-row[data-id="' + b.dataset.id + '"]'); if (t) flashRow(t); }
+      }
+      function flashRow(el) { el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      function flash(id) { if (!on || !wrap) return false; render(); const el = wrap.querySelector('.tv-row[data-id="' + id + '"]'); if (el) flashRow(el); return true; }
+      function onKey(e) {
+        e.stopPropagation();   // typing here never reaches the board shortcuts (Delete, +, −)
+        const ta = e.target.closest && e.target.closest('.tv-row .tv-edit');
+        if (!ta) return;
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); finishEdit(true); }
+        else if (e.key === 'Escape') { e.preventDefault(); finishEdit(false); }
+        else if (e.key === 'Tab' && !e.shiftKey) {
+          e.preventDefault();
+          const col = ta.closest('.tv-col'), btn = col && col.querySelector('[data-t="add"]');
+          const cid = btn && btn.dataset.col; finishEdit(true); if (cid) addTo(cid);
+        }
+      }
+      function build() {
+        if (wrap) return;
+        const host = document.getElementById('board-container');
+        wrap = document.createElement('div'); wrap.className = 'tv'; wrap.setAttribute('aria-label', 'Карта в виде таблицы');
+        ['pointerdown', 'pointermove', 'touchstart', 'touchmove', 'wheel', 'dblclick', 'contextmenu', 'gesturestart'].forEach(t => wrap.addEventListener(t, e => e.stopPropagation(), { passive: true }));
+        wrap.addEventListener('click', onClick);
+        wrap.addEventListener('keydown', onKey);
+        wrap.addEventListener('input', e => { if (e.target.classList.contains('tv-edit')) autosize(e.target); });
+        wrap.addEventListener('focusout', e => {
+          const ta = e.target.closest && e.target.closest('.tv-row .tv-edit');
+          if (!ta) return;
+          setTimeout(() => { if (editing && !(wrap.contains(document.activeElement) && document.activeElement.classList.contains('tv-edit'))) finishEdit(true); }, 120);
+        });
+        host.appendChild(wrap);
+        document.addEventListener('pointerdown', e => { if (openMenu && !openMenu.contains(e.target)) closeMenu(); }, true);
+      }
+      function setOn(v) {
+        on = !!v; editing = null; closeMenu();
+        try { localStorage.setItem(VIEW_KEY, on ? 'table' : 'board'); } catch (e) {}
+        document.body.classList.toggle('table-mode', on);
+        const btn = document.getElementById('btn-view');
+        if (btn) { btn.setAttribute('aria-pressed', on); btn.querySelector('.tb-label').textContent = on ? ' Доска' : ' Таблица'; btn.title = on ? 'Вернуться к доске' : 'Режим таблицы — всё ровно, колонками'; }
+        if (on) { build(); clearSelection(); if (state.penOn && typeof setPenMode === 'function') setPenMode(false); render(); }
+        else if (wrap) { wrap.innerHTML = ''; renderNodes(); renderEdges(); }
+      }
+      return { setOn, toggle: () => setOn(!on), on: () => on, schedule, edit, flash, render };
+    })();
+    window.__fmTable = TableView;
+
+    document.getElementById('btn-view').addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); TableView.toggle(); showToast(TableView.on() ? 'Режим таблицы: всё ровно, по колонкам' : 'Вернулись к доске'); });
+    if (TableView.on()) TableView.setOn(true);
     window.__fmOnboard = Onboard.open;
     window.__fmIdeas = IdeasBank;
     window.__fmReturn = ReturnNudge;
