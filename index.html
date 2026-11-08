@@ -2022,6 +2022,38 @@
       .ib-oacts { width: 100%; } .ib-oacts .btn { flex: 1; }
     }
     /* =====================================================================
+       «Простой» theme — the classic look with only the essentials
+       ===================================================================== */
+    .simple-add, .simple-tip { display: none; }
+    html[data-theme="simple"] .simple-add:not([hidden]) {
+      display: inline-flex; align-items: center; gap: 8px; position: fixed; z-index: 80; left: 50%; transform: translateX(-50%);
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px)); height: 56px; padding: 0 26px 0 20px; border-radius: 28px; border: 0;
+      background: var(--accent); color: #fff; font: 700 17px/1 var(--font-main); cursor: pointer; box-shadow: 0 10px 28px rgba(108,140,255,.45);
+    }
+    html[data-theme="simple"] .simple-add span { font-size: 26px; font-weight: 400; margin-top: -2px; }
+    html[data-theme="simple"] .simple-add:hover { background: var(--accent-hover, #8aa4ff); }
+    html[data-theme="simple"] .simple-add:active { transform: translateX(-50%) scale(.96); }
+    html[data-theme="simple"] .simple-tip:not([hidden]) {
+      display: block; position: fixed; z-index: 79; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+      max-width: min(560px, calc(100vw - 32px)); box-sizing: border-box; padding: 9px 16px; border-radius: 14px; text-align: center;
+      background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,.35); font-size: 14px; line-height: 1.4; pointer-events: none;
+    }
+    html[data-theme="simple"] .simple-tip.pop { animation: tipPop .35s ease-out; }
+    @keyframes tipPop { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    @media (prefers-reduced-motion: reduce) { html[data-theme="simple"] .simple-tip.pop { animation: none; } }
+    html[data-theme="simple"] #btn-add, html[data-theme="simple"] #radial-tools-wrap, html[data-theme="simple"] #btn-pen,
+    html[data-theme="simple"] #pill-redo, html[data-theme="simple"] #btn-coach, html[data-theme="simple"] #btn-view,
+    html[data-theme="simple"] #btn-zoom-out, html[data-theme="simple"] #btn-zoom-in, html[data-theme="simple"] #btn-fit,
+    html[data-theme="simple"] #btn-share, html[data-theme="simple"] .sync-pill, html[data-theme="simple"] #btn-ideas,
+    html[data-theme="simple"] .music-fab, html[data-theme="simple"] .zl-quick, html[data-theme="simple"] .zoom-indicator,
+    html[data-theme="simple"] .coach, html[data-theme="simple"] #hint, html[data-theme="simple"] .ink-bar,
+    html[data-theme="simple"] .ib-offer, html[data-theme="simple"] .tv { display: none !important; }
+    html[data-theme="simple"] #pill-undo::after { content: ' Назад'; font-size: 13px; margin-left: 4px; }
+    html[data-theme="simple"] #pill-undo { width: auto; padding: 0 12px; display: inline-flex; align-items: center; }
+    html[data-theme="simple"] .card-bar button { height: 42px; padding: 0 12px; font-size: 14px; }
+    @media (max-width: 600px) { html[data-theme="simple"] .simple-tip:not([hidden]) { font-size: 13.5px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
+
+    /* =====================================================================
        Table mode — everything even: columns, rows, numbers
        ===================================================================== */
     .tv { display: none; }
@@ -2040,9 +2072,6 @@
     .tv-mainedit { font-size: 20px !important; font-weight: 700; }
     .tv-stats { margin: 6px 0 0; font-size: 12.5px; color: var(--text-muted); }
     .tv-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .tv-seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
-    .tv-seg button { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 7px; cursor: pointer; min-height: 32px; }
-    .tv-seg button.on { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); font-weight: 600; }
     .tv-tidy { font-size: 13px; }
     .tv-cols { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 1fr); gap: 14px; align-items: start; overflow-x: auto; padding-bottom: 8px; }
     .tv-col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
@@ -2059,11 +2088,6 @@
     .tv-row:last-child { border-bottom: 0; }
     .tv-row:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
     .tv-row.key { box-shadow: inset 3px 0 0 #facc15; }
-    .tv-row.head { background: color-mix(in srgb, var(--c) 10%, transparent) !important; }
-    .tv-row.head .tv-text { font-weight: 700; font-size: 15px; }
-    .tv-row.head .tv-num { color: var(--c); font-size: 14px; }
-    .tv-row.sub .tv-cell { padding-left: calc((var(--d) - 1) * 16px + 14px); position: relative; }
-    .tv-row.sub .tv-cell::before { content: ''; position: absolute; left: calc((var(--d) - 1) * 16px + 1px); top: 4px; width: 8px; height: 11px; border-left: 1.5px solid var(--border); border-bottom: 1.5px solid var(--border); border-bottom-left-radius: 4px; }
     .tv-row.editing { background: color-mix(in srgb, var(--accent) 9%, transparent); }
     .tv-row.flash { animation: tvFlash 1.4s ease-out; }
     @keyframes tvFlash { 0%, 30% { background: color-mix(in srgb, var(--accent) 28%, transparent); } 100% { background: transparent; } }
@@ -2108,8 +2132,7 @@
       .tv-head { gap: 10px; padding-bottom: 10px; margin-bottom: 12px; }
       .tv-titlebox h1 { font-size: 18px; }
       .tv-tools { width: 100%; }
-      .tv-seg { flex: 1; } .tv-seg button { flex: 1; padding: 6px 6px; font-size: 12.5px; }
-      .tv-tidy { width: 100%; }
+        .tv-tidy { width: 100%; }
       .tv-cols { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: 1fr; gap: 10px; overflow: visible; }
       .tv-colhead { top: -12px; }
       .tv-row { grid-template-columns: 24px 1fr 32px 32px; padding: 7px 4px 7px 8px; }
@@ -2374,10 +2397,15 @@
           <input type="file" id="audio-file" accept="audio/*" multiple="" class="vh-file">
 
           <h3>Стиль оформления</h3>
+          <p class="modal-note">«Простой» — только карточки, цвета, форма и связи. «Классическая» — все возможности: шаблоны, банк идей, таблица, рисование.</p>
           <div class="theme-grid" id="theme-grid">
-            <div class="theme-card active" data-theme="dark" onclick="window.applyTheme &amp;&amp; window.applyTheme('dark')">
+            <div class="theme-card" data-theme="simple" onclick="window.applyTheme &amp;&amp; window.applyTheme('simple')" title="Только самое нужное: карточки, цвета, форма и связи">
+              <span class="theme-icon">🌱</span>
+              Простой
+            </div>
+            <div class="theme-card active" data-theme="dark" onclick="window.applyTheme &amp;&amp; window.applyTheme('dark')" title="Все возможности: шаблоны, банк идей, таблица, рисование">
               <span class="theme-icon">🌙</span>
-              Классика
+              Классическая
             </div>
             <div class="theme-card" data-theme="pc" onclick="window.applyTheme &amp;&amp; window.applyTheme('pc')">
               <span class="theme-icon">💻</span>
@@ -2439,8 +2467,13 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '2.8';
+    const APP_VERSION = '2.9';
     const APP_CHANGES = [
+      { v: '2.9', date: '8 ноября 2026', items: [
+        'Новый стиль «Простой» (Меню → Стиль оформления): только карточки, цвета, форма и связи, большая кнопка «+ Мысль» и подсказка, что делать дальше',
+        'Прежний стиль теперь называется «Классическая» — в нём все возможности',
+        'Таблица теперь всегда раскладывает карточки по типам'
+      ] },
       { v: '2.8', date: '8 ноября 2026', items: [
         'Таблица «По связям»: колонка на каждый ★ главный факт со всем, что с ним связано, по уровням — сначала прямые связи, потом следующие',
         'Связки без ★ — отдельными колонками, карточки без связей — в колонке «Без связей»',
@@ -3952,10 +3985,10 @@
       const can = (n.kind !== 'trash');
       if (isContainer(n)) b.push(['open', 'Открыть', 'Открыть содержимое']);
       else if (can) b.push(['edit', 'Текст', 'Изменить текст (или нажмите на карточку ещё раз)']);
-      if (!isContainer(n)) b.push(['next', 'Ещё факт', 'Добавить следующий факт, сразу связанный с этим']);
+      if (!isContainer(n)) b.push(['next', isSimple() ? 'Ещё мысль' : 'Ещё факт', 'Добавить следующую карточку, сразу связанную с этой']);
       if (n.kind !== 'trash') b.push(['style', 'Вид', 'Цвет и тип карточки']);
-      if (!n.kind || n.kind === 'sticker') b.push(['star', n.key ? 'Главный ✓' : 'Главный', 'Главный факт — опора карты, видна при отдалении']);
-      if (!n.collapsed && !isContainer(n) && membersFor(n.id).length) b.push(['fold', 'Свернуть', 'Свернуть связанные карточки в одну']);
+      if ((!n.kind || n.kind === 'sticker') && !isSimple()) b.push(['star', n.key ? 'Главный ✓' : 'Главный', 'Главный факт — опора карты, видна при отдалении']);
+      if (!n.collapsed && !isContainer(n) && !isSimple() && membersFor(n.id).length) b.push(['fold', 'Свернуть', 'Свернуть связанные карточки в одну']);
       b.push(['del', 'Удалить', isContainer(n) ? 'Удалить вместе с содержимым' : 'Удалить карточку (можно отменить)']);
       return b;
     }
@@ -4213,7 +4246,7 @@
       if (node.isMain) {
         const displayText = (node.text && node.text.trim()) ? escapeHtml(node.text) : '';
         el.innerHTML = `
-          <div class="node-text main-text" contenteditable="false" data-placeholder="${escapeHtml(node.hint || 'Твой вопрос или проблема…')}">${displayText}</div>
+          <div class="node-text main-text" contenteditable="false" data-placeholder="${escapeHtml(node.hint || (isSimple() ? 'О чём ты думаешь? Нажми и напиши' : 'Твой вопрос или проблема…'))}">${displayText}</div>
         `;
       } else {
         el.innerHTML = `
@@ -5362,9 +5395,15 @@
     updateEdgeTypeBar();
 
     // ==================== Themes ====================
+    // «Простой» looks exactly like the classic theme, it just hides everything a beginner doesn't need
     let currentTheme = 'dark';
-    try { currentTheme = localStorage.getItem('factmap-theme') || 'dark'; } catch (e) { /* storage may be blocked for local files */ }
-    if (!['dark','pc','paper'].includes(currentTheme)) currentTheme = 'dark';
+    try {
+      const saved = localStorage.getItem('factmap-theme');
+      const brandNew = !saved && !localStorage.getItem('factmap-maps-v1') && !localStorage.getItem('factmap-proto');
+      currentTheme = saved || (brandNew ? 'simple' : 'dark');
+    } catch (e) { /* storage may be blocked for local files */ }
+    if (!['dark','simple','pc','paper'].includes(currentTheme)) currentTheme = 'dark';
+    const isSimple = () => currentTheme === 'simple';
     const THEME_VARS = {
       dark: {
         bg: '#0f1117', surface: '#1a1d27', surface2: '#242836', border: '#2e3345',
@@ -5388,6 +5427,7 @@
         boardBg: '#f4ecd8'
       }
     };
+    THEME_VARS.simple = Object.assign({}, THEME_VARS.dark);   // «Простой»: the classic look, fewer buttons
 
     // Apply one of the four supported themes. This handler was accidentally
     // removed in the previous revision, leaving the theme buttons inert.
@@ -5423,13 +5463,18 @@
       // PC and paper draw their own board (desktop / squared sheet) from the stylesheet
       const themeMeta = document.querySelector('meta[name="theme-color"]');
       if (themeMeta) themeMeta.setAttribute('content', t.bg);
-      if (boardArea) boardArea.style.background = currentTheme === 'dark' ? (t.boardBg || t.bg) : '';
+      if (boardArea) boardArea.style.background = (currentTheme === 'dark' || currentTheme === 'simple') ? (t.boardBg || t.bg) : '';
       document.querySelectorAll('.theme-card').forEach(card => {
         card.classList.toggle('active', card.dataset.theme === currentTheme);
       });
+      document.body.classList.toggle('simple-mode', currentTheme === 'simple');
+      if (currentTheme === 'simple') {
+        try { if (window.__fmTable && window.__fmTable.on()) window.__fmTable.setOn(false); } catch (e) {}
+        document.querySelectorAll('.ib-offer').forEach(x => x.remove());
+      }
       renderNodes();
       renderEdges();
-
+      try { if (window.__fmSimple) window.__fmSimple.update(); } catch (e) {}
     }
     window.applyTheme = applyTheme;
 
@@ -6683,8 +6728,8 @@
       load();
       if (state.nodes.length === 0) {
         addMainQuestion();
-        // Add a couple of example facts
-        setTimeout(() => {
+        // Add a couple of example facts (not in the simple mode: it starts from a clean sheet)
+        if (!isSimple()) setTimeout(() => {
           addFact('Пример факта — то, что реально произошло');
           setTimeout(() => {
             const facts = state.nodes.filter(n => !n.isMain);
@@ -6874,6 +6919,7 @@
       let done = false;
       try { done = localStorage.getItem(TOUR_KEY) === '1' || !!document.getElementById('factmap-incoming'); } catch (e) { done = true; }   // no storage (preview, thumbnail) or a map someone sent → don't cover the page
       if (!done) setTimeout(() => {
+        if (isSimple()) return;   // the simple mode explains itself with the hint at the bottom
         if (document.querySelector('.ask-overlay, .lightbox, .ob-ov')) return;
         save(); const fresh = mapsCollection.length <= 1 && (isBlankMap() || isStarterMap(mapsCollection[0]));
         if (fresh && window.__fmOnboard) window.__fmOnboard('first', true); else start();
@@ -7201,6 +7247,7 @@
       }
       // on a new visit: a small card offering to flip through the ideas
       function offer() {
+        if (isSimple()) return false;
         let fresh = false;
         try { fresh = !sessionStorage.getItem('fm-sess'); sessionStorage.setItem('fm-sess', '1'); } catch (e) { fresh = false; }
         const k = all().length;
@@ -7247,6 +7294,7 @@
         store();
       }
       function check() {
+        if (isSimple()) return false;
         if (shownThisSession || document.querySelector('.ob-ov, .ib-ov, .fb-ov, .sh-ov, .tour, .ask-overlay, .modal-overlay.open')) return false;
         const now = Date.now();
         const id = Object.keys(data).find(k => data[k].next && !data[k].off && data[k].next <= now && mapsCollection.some(m => m.id === k));
@@ -7394,6 +7442,7 @@
       // after a full day since the first visit; «Позже» asks again in two days, at most 3 times
       function due() { const now = Date.now(); return !d.sent && (d.shown || 0) < 3 && now - d.first >= DAY && (!d.next || now >= d.next); }
       function check() {
+        if (isSimple()) return false;
         if (!due() || document.querySelector('.ob-ov, .ib-ov, .fb-ov, .sh-ov, .tour, .ask-overlay, .modal-overlay.open')) return false;
         open(); return true;
       }
@@ -7408,99 +7457,27 @@
     // ==================== Table mode («режим для перфекциониста») ====================
     // The same map shown as even columns and rows. Nothing is converted: switch back and the board is as it was.
     const TableView = (function () {
-      const VIEW_KEY = 'factmap-view', GROUP_KEY = 'factmap-table-group';
-      let on = false, wrap = null, group = 'auto', pending = false, editing = null, openMenu = null, extraTypes = [];
-      try { on = localStorage.getItem(VIEW_KEY) === 'table'; group = localStorage.getItem(GROUP_KEY) || 'auto'; } catch (e) {}
+      const VIEW_KEY = 'factmap-view';
+      let on = false, wrap = null, pending = false, editing = null, openMenu = null, extraTypes = [];
+      try { on = localStorage.getItem(VIEW_KEY) === 'table'; } catch (e) {}
       const hexOf = c => COLOR_HEX[c] || '#5b8def';
       const FILE_KINDS = n => n.kind && n.kind !== 'sticker' && n.kind !== 'box' && n.kind !== 'trash';
       const cards = () => state.nodes.filter(n => !n.isMain && n.kind !== 'box' && n.kind !== 'trash' && !n.hiddenBy);
       const byPlace = (a, b) => (a.y - b.y) || (a.x - b.x);
 
-      // «По связям»: every ★ main fact is a column with everything linked to it (nearest ★ wins),
-      // then the other linked bunches, then cards without links. Rows go level by level from the head.
-      function linkColumns() {
-        const all = cards(), ids = new Set(all.map(n => n.id)), adj = new Map(all.map(n => [n.id, []]));
-        state.edges.forEach(e => { if (ids.has(e.from) && ids.has(e.to) && e.from !== e.to) { adj.get(e.from).push(e.to); adj.get(e.to).push(e.from); } });
-        const owner = new Map(), depth = new Map();
-        const keys = all.filter(n => n.key).sort(byPlace);
-        let q = keys.map(k => k.id); keys.forEach(k => { owner.set(k.id, k.id); depth.set(k.id, 0); });
-        while (q.length) {   // all ★ grow at the same time, so every card goes to its closest ★
-          const nq = [];
-          q.forEach(id => adj.get(id).forEach(nb => { if (!owner.has(nb) && !getNode(nb).key) { owner.set(nb, owner.get(id)); depth.set(nb, depth.get(id) + 1); nq.push(nb); } }));
-          q = nq;
-        }
-        const ordered = head => all.filter(n => owner.get(n.id) === head).sort((a, b) => (depth.get(a.id) - depth.get(b.id)) || byPlace(a, b));
-        const cols = keys.map(k => {
-          const rows = ordered(k.id);
-          return { id: 'l-' + k.id, title: (k.text || '').trim() || 'Главный факт', sub: '★ главный · связано: ' + (rows.length - 1), color: '#facc15', rows, depth, head: k.id, make: { shape: 'rect', color: 'blue' }, linkTo: k.id, keep: true, isKey: true };
-        });
-        // linked bunches without a ★: the most connected card leads
-        const rest = all.filter(n => !owner.has(n.id));
-        const seen = new Set(), bunches = [], lonely = [];
-        rest.forEach(n => {
-          if (seen.has(n.id)) return;
-          const comp = [], st = [n.id]; seen.add(n.id);
-          while (st.length) { const id = st.pop(); comp.push(id); adj.get(id).forEach(nb => { if (!seen.has(nb) && !owner.has(nb)) { seen.add(nb); st.push(nb); } }); }
-          if (comp.length < 2) { lonely.push(n); return; }
-          const head = comp.slice().sort((a, b) => adj.get(b).length - adj.get(a).length)[0];
-          owner.set(head, head); depth.set(head, 0); let fr = [head];
-          while (fr.length) { const nq = []; fr.forEach(id => adj.get(id).forEach(nb => { if (comp.includes(nb) && !owner.has(nb)) { owner.set(nb, head); depth.set(nb, depth.get(id) + 1); nq.push(nb); } })); fr = nq; }
-          bunches.push(head);
-        });
-        bunches.sort((a, b) => ordered(b).length - ordered(a).length).forEach(h => {
-          const hn = getNode(h), rows = ordered(h);
-          cols.push({ id: 'l-' + h, title: (hn.text || '').trim() || 'Связка', sub: 'связка · ' + rows.length + ' ' + plural(rows.length, 'карточка', 'карточки', 'карточек') + ' · можно отметить ★', color: '#6c8cff', rows, depth, head: h, make: { shape: 'rect', color: 'blue' }, linkTo: h, keep: true });
-        });
-        cols.push({ id: 'l-none', title: 'Без связей', sub: 'свяжите через «⋯» → «Связать с…»', color: '#8a90a6', rows: lonely.sort(byPlace), depth, make: { shape: 'rect', color: 'blue' }, keep: !!lonely.length });
-        return cols;
-      }
-      function columnsFor(mode) {
-        if (mode === 'links') return linkColumns();
-        const all = cards();
-        if (mode === 'steps') {
-          const tpl = tplOf(state.guide), cols = [], seen = [];
-          (tpl ? tpl.steps : []).forEach(st => {
-            if (!st.add || st.key === 'main' || seen.indexOf(st.key) >= 0) return; seen.push(st.key);
-            const shape = st.add.shape || 'rect', color = st.add.color || (KINDS[shape] ? KINDS[shape].colorName : 'blue');
-            cols.push({ id: 's-' + st.key, title: st.t, color: hexOf(st.add.kind === 'sticker' ? 'yellow' : color), filter: n => n.gs === st.key, make: { shape, color, kind: st.add.kind, gs: st.key }, keep: true });
-          });
-          cols.push({ id: 's-other', title: 'Другое', color: '#8a90a6', filter: n => !seen.includes(n.gs), make: { shape: 'rect', color: 'blue' } });
-          return cols;
-        }
-        if (mode === 'groups') {
-          const heads = all.filter(n => n.gs === 'groups').sort(byPlace), used = new Set(heads.map(h => h.id));
-          const cols = heads.map(h => {
-            const mem = new Set(state.edges.filter(e => e.from === h.id || e.to === h.id).map(e => e.from === h.id ? e.to : e.from));
-            mem.forEach(id => used.add(id));
-            return { id: 'g-' + h.id, title: (h.text || '').trim() || 'Группа без названия', head: h.id, color: hexOf(h.color || 'teal'), filter: n => mem.has(n.id) && n.gs !== 'groups', make: { shape: 'rect', color: 'blue' }, linkTo: h.id, keep: true };
-          });
-          cols.push({ id: 'g-none', title: 'Без группы', color: '#8a90a6', filter: n => !used.has(n.id), make: { shape: 'rect', color: 'blue' }, keep: true });
-          return cols;
-        }
+      // the table always goes by card type: Факты, Цель, Проблема, Идея… (empty types can be added as columns)
+      function columnsFor() {
         const cols = [{ id: 't-fact', title: 'Факты', color: '#5b8def', filter: n => !n.kind && !KINDS[n.shape || 'rect'], make: { shape: 'rect', color: 'blue' }, keep: true }];
         Object.keys(KINDS).forEach(k => cols.push({ id: 't-' + k, title: KINDS[k].label, sub: KINDS[k].hint, color: KINDS[k].color, filter: n => !n.kind && n.shape === k, make: { shape: k, color: KINDS[k].colorName }, keep: extraTypes.indexOf(k) >= 0 }));
         cols.push({ id: 't-sticker', title: 'Стикеры', sub: 'мысли и чувства', color: '#facc15', filter: n => n.kind === 'sticker', make: { kind: 'sticker', shape: 'rect', color: 'yellow' } });
         cols.push({ id: 't-files', title: 'Файлы и ссылки', color: '#8a90a6', filter: FILE_KINDS, make: null });
         return cols;
       }
-      function modeNow() {
-        const hasTpl = !!tplOf(state.guide) || state.nodes.some(n => n.gs);
-        const hasGroups = state.nodes.some(n => n.gs === 'groups');
-        const hasLinks = state.edges.length > 0 || cards().some(n => n.key);
-        let m = group;
-        if (m === 'links' && !hasLinks) m = 'types';
-        if (m === 'steps' && !hasTpl) m = 'types';
-        if (m === 'groups' && !hasGroups) m = 'types';
-        if (m === 'auto') m = hasTpl ? 'steps' : hasLinks ? 'links' : 'types';
-        return { m, hasTpl, hasGroups, hasLinks };
-      }
       function layout() {
-        const { m } = modeNow();
         const used = new Set();
-        return columnsFor(m).map(c => {
-          if (c.rows) return c;
+        return columnsFor().map(c => {
           const rows = cards().filter(n => !used.has(n.id) && c.filter(n)).sort(byPlace);
-          if (m !== 'groups') rows.forEach(n => used.add(n.id));
+          rows.forEach(n => used.add(n.id));
           return Object.assign({ rows }, c);
         }).filter(c => c.rows.length || c.keep);
       }
@@ -7517,17 +7494,15 @@
       function typeColor(n) { return n.kind === 'sticker' ? '#facc15' : KINDS[n.shape] ? KINDS[n.shape].color : hexOf(n.color); }
 
       function rowHtml(n, i, col) {
-        const links = linksOf(n).filter(x => !col.head || col.head === n.id || x.other.id !== col.head), ed = editing === n.id;
+        const links = linksOf(n), ed = editing === n.id;
         const meta = [];
-        const colType = col.make ? (col.make.kind === 'sticker' ? 'Стикер' : KINDS[col.make.shape] ? KINDS[col.make.shape].label : 'Факт') : '';
-        if ((col.id.indexOf('t-') !== 0 || col.id === 't-files') && typeName(n) !== colType) meta.push('<span class="tv-type" style="--c:' + typeColor(n) + '">' + typeName(n) + '</span>');
+        if (col.id === 't-files') meta.push('<span class="tv-type" style="--c:' + typeColor(n) + '">' + typeName(n) + '</span>');
         if (n.kind === 'link' && n.url) meta.push('<a class="tv-chip" href="' + escapeHtml(n.url) + '" target="_blank" rel="noopener noreferrer">' + ICON.link + ' ' + escapeHtml(short(domainOf(n.url), 28)) + '</a>');
         links.slice(0, 3).forEach(x => meta.push('<button type="button" class="tv-chip" data-t="goto" data-id="' + x.other.id + '" title="Перейти к связанной карточке">' + ICON.link + ' ' + escapeHtml(short(label(x.other), 26)) + '</button>'));
         if (links.length > 3) meta.push('<span class="tv-chip">+' + (links.length - 3) + '</span>');
         if (n.shape === 'idea' && (n.likes || n.liked)) meta.push('<span class="tv-chip tv-like">♥ ' + (+n.likes || 1) + '</span>');
-        const d = col.depth && col.head ? Math.min(4, col.depth.get(n.id) || 0) : 0;
-        return '<li class="tv-row' + (n.key ? ' key' : '') + (ed ? ' editing' : '') + (col.head === n.id ? ' head' : '') + (d ? ' sub' : '') + '" data-id="' + n.id + '" style="--d:' + d + '">' +
-          '<span class="tv-num">' + (col.head === n.id ? '●' : String(i + 1).padStart(2, '0')) + '</span>' +
+        return '<li class="tv-row' + (n.key ? ' key' : '') + (ed ? ' editing' : '') + '" data-id="' + n.id + '">' +
+          '<span class="tv-num">' + String(i + 1).padStart(2, '0') + '</span>' +
           '<div class="tv-cell">' + (ed
             ? '<textarea class="tv-edit" rows="2" aria-label="Текст карточки" placeholder="' + escapeHtml(n.hint || 'Напишите факт…') + '">' + escapeHtml(n.text || '') + '</textarea><small class="tv-help">Enter — сохранить · Esc — отмена</small>'
             : '<button type="button" class="tv-text' + ((n.text || '').trim() ? '' : ' empty') + '" data-t="edit">' + escapeHtml((n.text || '').trim() || n.hint || 'Нажмите, чтобы написать') + '</button>') +
@@ -7541,17 +7516,15 @@
         const ae = document.activeElement;
         if (!force && ae && wrap.contains(ae) && ae.classList.contains('tv-edit')) { pending = true; return; }   // don't throw away what is being typed
         const main = state.nodes.find(n => n.isMain);
-        const { m, hasTpl, hasGroups, hasLinks } = modeNow();
         const cols = layout();
         const total = cards().length, keys = cards().filter(n => n.key).length;
-        const seg = [['steps', 'По шагам', hasTpl], ['links', 'По связям', hasLinks], ['types', 'По типам', true], ['groups', 'По группам', hasGroups]];
-        const hiddenTypes = m === 'types' ? Object.keys(KINDS).filter(k => !cols.some(c => c.id === 't-' + k)) : [];
+        const hiddenTypes = Object.keys(KINDS).filter(k => !cols.some(c => c.id === 't-' + k));
         const scrollL = wrap.querySelector('.tv-cols') ? wrap.querySelector('.tv-cols').scrollLeft : 0, scrollT = wrap.scrollTop;
         wrap.innerHTML =
           '<header class="tv-head"><div class="tv-titlebox"><small>' + escapeHtml(((mapsCollection.find(x => x.id === activeMapId) || {}).name) || 'Карта') + '</small>' +
           '<h1><button type="button" class="tv-main" data-t="main">' + escapeHtml((main && (main.text || '').trim()) || 'Нажмите, чтобы написать главный вопрос') + '</button></h1>' +
           '<p class="tv-stats">' + total + ' ' + plural(total, 'карточка', 'карточки', 'карточек') + ' · ' + state.edges.length + ' ' + plural(state.edges.length, 'связь', 'связи', 'связей') + ' · ★ ' + keys + '</p></div>' +
-          '<div class="tv-tools"><div class="tv-seg" role="group" aria-label="Как разложить по колонкам">' + seg.filter(s => s[2]).map(s => '<button type="button" data-t="group" data-v="' + s[0] + '" class="' + (m === s[0] ? 'on' : '') + '" aria-pressed="' + (m === s[0]) + '">' + s[1] + '</button>').join('') + '</div>' +
+          '<div class="tv-tools">' +
           '<button type="button" class="btn tv-tidy" data-t="tidy" title="Расставить карточки на доске такими же ровными колонками">Выровнять доску</button></div></header>' +
           '<div class="tv-cols">' + cols.map(c =>
             '<section class="tv-col" style="--c:' + c.color + '"><div class="tv-colhead"><i></i><div><b>' + escapeHtml(c.title) + '</b>' + (c.sub ? '<small>' + escapeHtml(c.sub) + '</small>' : '') + '</div><span class="tv-count">' + c.rows.length + '</span>' +
@@ -7571,12 +7544,11 @@
       function schedule() { if (!on || pending) return; pending = true; requestAnimationFrame(render); }
 
       function addTo(colId) {
-        const c = columnsFor(modeNow().m).find(x => x.id === colId); if (!c || !c.make) return;
+        const c = columnsFor().find(x => x.id === colId); if (!c || !c.make) return;
         const mk = c.make, p = guideZonePlace(mk.gs) || placeInView(200, 80);
         const node = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: mk.shape || 'rect', color: mk.color || 'blue', ca: Date.now() };
         if (mk.kind) node.kind = mk.kind; if (mk.gs) node.gs = mk.gs;
         state.nodes.push(node);
-        if (c.linkTo) state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 5), from: c.linkTo, to: node.id, type: state.currentEdgeType || 'normal' });
         editing = node.id; save(); renderNodes(); renderEdges(); render(true);
       }
       function finishEdit(commit) {
@@ -7611,15 +7583,12 @@
         closeMenu();
         const n = getNode(id); if (!n) return;
         const links = linksOf(n), others = cards().filter(x => x.id !== id && !links.some(l => l.other.id === x.id));
-        const { m } = modeNow(); const tpl = tplOf(state.guide);
-        const steps = m === 'steps' && tpl ? columnsFor('steps').filter(c => c.make && c.id !== 's-other') : [];
         const pop = document.createElement('div'); pop.className = 'tv-menu'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'Действия с карточкой');
         pop.innerHTML = '<p class="tv-mtitle">' + escapeHtml(short(label(n), 60)) + '</p>' +
           (!n.kind || n.kind === 'sticker' ? '<p class="tv-mlab">Тип</p><div class="tv-mtypes">' +
             '<button type="button" class="tv-type" style="--c:#5b8def" data-m="type" data-v="rect">Факт</button>' +
             Object.keys(KINDS).map(k => '<button type="button" class="tv-type' + (!n.kind && n.shape === k ? ' on' : '') + '" style="--c:' + KINDS[k].color + '" data-m="type" data-v="' + k + '">' + KINDS[k].label + '</button>').join('') +
             '<button type="button" class="tv-type' + (n.kind === 'sticker' ? ' on' : '') + '" style="--c:#facc15" data-m="type" data-v="sticker">Стикер</button></div>' : '') +
-          (steps.length ? '<p class="tv-mlab">Перенести в шаг</p><div class="tv-mtypes">' + steps.map(c => '<button type="button" class="tv-type' + (n.gs === c.make.gs ? ' on' : '') + '" style="--c:' + c.color + '" data-m="step" data-v="' + c.make.gs + '">' + escapeHtml(c.title) + '</button>').join('') + '</div>' : '') +
           '<p class="tv-mlab">Связи</p>' + (links.length ? '<div class="tv-mlinks">' + links.map(x => '<span class="tv-chip">' + escapeHtml(short(label(x.other), 30)) + '<button type="button" data-m="unlink" data-v="' + x.e.id + '" aria-label="Убрать связь">×</button></span>').join('') + '</div>' : '<p class="tv-mnote">Пока нет связей</p>') +
           (others.length ? '<label class="vh" for="tv-linkto">Связать с карточкой</label><select id="tv-linkto" class="tv-select"><option value="">+ Связать с…</option>' + others.map(o => '<option value="' + o.id + '">' + escapeHtml(short(label(o), 50)) + '</option>').join('') + '</select>' : '') +
           '<div class="tv-macts"><button type="button" class="btn" data-m="board">Показать на доске</button><button type="button" class="btn tv-del" data-m="del">Удалить</button></div>';
@@ -7641,9 +7610,6 @@
           if (a === 'type') {
             if (v === 'sticker') { n.kind = 'sticker'; n.shape = 'rect'; n.color = 'yellow'; }
             else { delete n.kind; n.shape = v; n.color = KINDS[v] ? KINDS[v].colorName : (n.color && n.color !== 'yellow' ? n.color : 'blue'); }
-          } else if (a === 'step') {
-            const c = steps.find(x => x.make.gs === v); n.gs = v;
-            if (c) { if (c.make.kind) { n.kind = c.make.kind; n.shape = 'rect'; n.color = 'yellow'; } else { delete n.kind; n.shape = c.make.shape; n.color = c.make.color; } }
           } else if (a === 'unlink') { state.edges = state.edges.filter(x => x.id !== v); }
           else if (a === 'board') { closeMenu(); setOn(false); setTimeout(() => { selectNode(id); renderNodes(); centerOnNode(id); }, 60); return; }
           else if (a === 'del') { closeMenu(); askConfirm('Удалить карточку «' + short(label(n), 40) + '»?', () => { removeNode(id); renderNodes(); renderEdges(); render(); }); return; }
@@ -7656,13 +7622,13 @@
         const main = state.nodes.find(n => n.isMain);
         const mc = main ? getNodeCenter(main) : { x: 0, y: 0, h: 80 };
         const sizes = id => { const n = getNode(id), k = n ? getNodeCenter(n) : null; return { w: k && k.w ? k.w : 200, h: k && k.h ? k.h : 80 }; };
-        const widths = cols.map(c => Math.max(200, ...c.rows.map(n => sizes(n.id).w + (c.head ? Math.min(3, (c.depth && c.depth.get(n.id)) || 0) * 26 : 0))));
+        const widths = cols.map(c => Math.max(200, ...c.rows.map(n => sizes(n.id).w)));
         const gap = 48, totalW = widths.reduce((a, b) => a + b, 0) + gap * (cols.length - 1);
         let x = mc.x - totalW / 2; const top = mc.y + (mc.h || 80) / 2 + 110;
         const placed = new Set();
         cols.forEach((c, i) => {
           let y = top;
-          c.rows.forEach(n => { if (placed.has(n.id)) return; placed.add(n.id); const s = sizes(n.id), d = c.depth && c.head ? Math.min(3, c.depth.get(n.id) || 0) : 0; n.x = Math.round(x + (c.head ? d * 26 : (widths[i] - s.w) / 2)); n.y = Math.round(y); y += s.h + 22; });
+          c.rows.forEach(n => { if (placed.has(n.id)) return; placed.add(n.id); const s = sizes(n.id); n.x = Math.round(x + (widths[i] - s.w) / 2); n.y = Math.round(y); y += s.h + 22; });
           x += widths[i] + gap;
         });
         save(); renderNodes(); renderEdges();
@@ -7677,7 +7643,6 @@
         else if (a === 'star' && id) { const n = getNode(id); if (n) { n.key = !n.key; save(); renderNodes(); render(); try { if (window.__coachRefresh) window.__coachRefresh(); } catch (er) {} } }
         else if (a === 'menu' && id) menuFor(id, b);
         else if (a === 'add') { if (editing) finishEdit(true); addTo(b.dataset.col); }
-        else if (a === 'group') { group = b.dataset.v; try { localStorage.setItem(GROUP_KEY, group); } catch (er) {} render(); }
         else if (a === 'addtype') { extraTypes.push(b.dataset.v); addTo('t-' + b.dataset.v); }
         else if (a === 'tidy') tidyBoard();
         else if (a === 'goto') { const t = wrap.querySelector('.tv-row[data-id="' + b.dataset.id + '"]'); if (t) flashRow(t); }
@@ -7727,6 +7692,60 @@
 
     document.getElementById('btn-view').addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); TableView.toggle(); showToast(TableView.on() ? 'Режим таблицы: всё ровно, по колонкам' : 'Вернулись к доске'); });
     if (TableView.on()) TableView.setOn(true);
+    // ==================== Simple mode helpers: one big button + a hint that knows what to do next ====================
+    const SimpleMode = (function () {
+      const fab = document.createElement('button');
+      fab.type = 'button'; fab.id = 'simple-add'; fab.className = 'simple-add';
+      fab.innerHTML = '<span aria-hidden="true">+</span> Мысль'; fab.setAttribute('aria-label', 'Добавить мысль');
+      const tip = document.createElement('div'); tip.id = 'simple-tip'; tip.className = 'simple-tip'; tip.setAttribute('role', 'status');
+      [fab, tip].forEach(el => { el.addEventListener('pointerdown', e => e.stopPropagation()); document.body.appendChild(el); });
+      fab.addEventListener('click', () => {
+        const main = state.nodes.find(n => n.isMain);
+        if (main && !(main.text || '').trim()) { selectNode(main.id); renderNodes(); startEditingNode(main.id); return; }
+        const sel = state.selectedNodeId && getNode(state.selectedNodeId);
+        const from = sel && !isContainer(sel) ? sel : main;
+        if (from) addNextFact(from.id);
+        else { const p = placeInView(200, 80); const n = { id: uid(), text: '', x: p.x, y: p.y, isMain: false, shape: 'rect', color: 'blue' }; state.nodes.push(n); selectNode(n.id); renderNodes(); setTimeout(() => startEditingNode(n.id), 30); }
+      });
+      let last = '';
+      function text() {
+        const main = state.nodes.find(n => n.isMain);
+        const others = state.nodes.filter(n => !n.isMain && !n.hiddenBy);
+        if (document.querySelector('.node-text[contenteditable="true"]')) return '✏️ Пиши. Enter — готово';
+        if (state.connectMode) return '👉 Теперь нажми на карточку, с которой связать';
+        if (main && !(main.text || '').trim()) return '👆 Нажми на карточку в центре и напиши, о чём думаешь';
+        if (!others.length) return 'Отлично! Теперь нажми «+ Мысль» — добавь первую мысль';
+        const sel = state.selectedNodeId && getNode(state.selectedNodeId);
+        if (sel) return state.edges.length ? '«Вид» — цвет и форма · синий кружок сбоку — тяни к другой карточке, будет связь' : 'Тяни синий кружок сбоку к другой карточке — это связь';
+        if (others.length >= 5 && !state.edges.length) return 'Соедини похожие мысли: нажми на карточку и тяни синий кружок к другой';
+        if (others.length >= 8) return 'Хочешь больше возможностей? Меню → Стиль → «Классическая»';
+        return 'Нажми на карточку — изменить, покрасить или удалить. Тяни, чтобы переставить';
+      }
+      function update() {
+        const on = isSimple() && !document.querySelector('.modal-overlay.open, .style-pop');
+        fab.hidden = !isSimple() || !!document.querySelector('.style-pop'); tip.hidden = !on;
+        if (!on) return;
+        const t = text();
+        if (t !== last) { last = t; tip.textContent = t; tip.classList.remove('pop'); void tip.offsetWidth; tip.classList.add('pop'); }
+      }
+      // a brand-new person in the simple mode starts from a clean sheet: only the centre card, right in the middle
+      setTimeout(() => { try {
+        save();
+        if (isSimple() && mapsCollection.length === 1 && isStarterMap(mapsCollection[0])) {
+          state.nodes = state.nodes.filter(n => n.isMain); state.edges = [];
+          if (!state.nodes.length) addMainQuestion();
+          clearSelection(); state.scale = 1;
+          const m = state.nodes.find(n => n.isMain);
+          renderNodes(); renderEdges();
+          if (m) { const v = visibleArea(), c = getNodeCenter(m); state.offsetX = v.w / 2 - c.x; state.offsetY = v.h * 0.42 - c.y; updateTransform(); }
+          save(); persistMaps();
+        }
+      } catch (e) {} }, 250);
+      setInterval(update, 500);
+      update();
+      return { update };
+    })();
+    window.__fmSimple = SimpleMode;
     window.__fmOnboard = Onboard.open;
     window.__fmIdeas = IdeasBank;
     window.__fmReturn = ReturnNudge;
