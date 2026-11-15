@@ -2255,6 +2255,31 @@
     html[data-theme="paper"] .ob-card, html[data-theme="paper"] .ib-card, html[data-theme="paper"] .fb-card { background: #fffef8; color: #1c2b5a; border: 2px solid #27408b; }
     html[data-theme="paper"] .ob-fig { background: #1c2238; }
     html[data-theme="pc"] .ob-card, html[data-theme="pc"] .ib-card, html[data-theme="pc"] .fb-card { border-radius: 0; background: #c0c0c0; color: #000; border: 1px solid #000; }
+    /* Промпт для Claude */
+    .sh-box.ps-box { width: min(720px, 100%); }
+    .ps-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .ps-l { display: flex; flex-direction: column; gap: 5px; font-size: 13px; opacity: .95; }
+    .ps-l select, .ps-l input { width: 100%; text-align: left; }
+    .ps-wrap textarea { width: 100%; box-sizing: border-box; resize: vertical; font: inherit; font-size: 14px; line-height: 1.45; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg, rgba(0,0,0,.15)); color: var(--text); }
+    .ps-out { font-family: ui-monospace, Consolas, monospace !important; font-size: 13px !important; min-height: 220px; }
+    .ps-count { opacity: .6; font-size: 11px; text-align: right; }
+    .ps-chk { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+    .ps-gaps { font-size: 13px; padding: 9px 11px; border-radius: 10px; border: 1px dashed var(--border); display: flex; flex-direction: column; gap: 4px; }
+    .ps-gaps ul { margin: 4px 0 0 18px; padding: 0; }
+    .ps-h { text-align: left; font-size: 12px; min-height: 32px; }
+    .ps-note { font-size: 12px; opacity: .75; margin: 0; }
+    .ps-row { display: flex; gap: 8px; flex-wrap: wrap; } .ps-row .btn { flex: 1 1 200px; }
+    .ps-att { border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+    .ps-att small { opacity: .65; font-size: 11px; }
+    .ps-att-h { display: flex; align-items: center; gap: 6px; } .ps-att-h .btn { margin-left: auto; min-height: 32px; }
+    .ps-att-i { display: flex; align-items: center; gap: 8px; }
+    .ps-att-i img, .ps-att-ic { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex: none; display: flex; align-items: center; justify-content: center; background: rgba(127,127,127,.15); font-size: 18px; }
+    .ps-att-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ps-att-link { max-width: 42%; min-height: 30px; font-size: 12px; }
+    .ps-tour { border: 1px solid var(--accent, #5b8def); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; background: rgba(91,141,239,.08); }
+    .ps-ts { display: flex; flex-direction: column; gap: 2px; } .ps-ts span { opacity: .85; line-height: 1.4; }
+    .ps-replybox { display: flex; flex-direction: column; gap: 8px; }
+    .sh-box.ps-drop { outline: 3px dashed var(--accent, #5b8def); outline-offset: -6px; }
   </style>
 </head>
 <body>
@@ -2484,8 +2509,20 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '3.0';
+    const APP_VERSION = '3.1';
     const APP_CHANGES = [
+      { v: '3.1', date: '15 ноября 2026', items: [
+        'Новая кнопка «Промпт»: карта превращается в готовое задание для Claude — карточки по типам, ★ главное, связи',
+        'Выберите, что нужно: новое приложение, доработка, исправление ошибки или обсуждение идеи',
+        'Подсказки «чего не хватает», кнопка «Поправить текст», история промптов',
+        '«Открыть в Claude» — сразу с вашим промптом; «Сохранить в папку для Claude» — Claude сам прочитает карту',
+        'Вложения: скриншоты, документы, аудио — кнопкой, перетаскиванием или Ctrl+V; у каждого можно указать, к какой карточке он относится',
+        '«Пакет для Claude»: один .zip — задание, вся карта и все файлы. Перетащите его в чат',
+        'Заготовки карт: новое приложение, доработка, ошибка, идея',
+        '«Ответ Claude → на карту»: его вопросы становятся карточками, ответили — собрали промпт заново',
+        'Мини-обучение прямо в окне промпта (кнопка «? Как это работает»)',
+        'В версии-артефакте Claude: «✨ Улучшить с Claude» и «📨 Отправить Claude» — Claude сам читает ваш промпт'
+      ] },
       { v: '3.0', date: '8 ноября 2026', items: [
         '«Поделиться» → «Кто подключён»: видно, кто открыл вашу совместную карту, с какого устройства и когда был в сети',
         'Кнопка «Отключить»: человек теряет доступ, а карта удаляется с его устройства и из его аккаунта',
@@ -8023,6 +8060,453 @@
       });
     }
     ['btn-share', 'btn-share-menu'].forEach(id => { const b = document.getElementById(id); if (b) b.addEventListener('click', openShareDialog); });
+
+    // ==================== Промпт для Claude: карта → понятное ТЗ ====================
+    (function PromptStudio() {
+      const PS_KEY = 'factmap-prompt-v1';
+      const MODES = {
+        newapp: { label: 'Новое приложение', ask: 'Спроектируй и создай приложение по этому описанию. Сначала коротко перескажи, как ты понял задачу, и задай до 5 уточняющих вопросов, если чего-то не хватает. Потом предложи план экранов и функций и сделай первую рабочую версию.' },
+        edit:   { label: 'Доработать приложение', ask: 'Доработай существующее приложение по этому описанию. Не ломай то, что уже работает. Перечисли, что именно изменишь, и затем внеси изменения.' },
+        bug:    { label: 'Исправить ошибку', ask: 'Найди и исправь описанную проблему. Объясни простыми словами, в чём была причина и что ты поменял.' },
+        idea:   { label: 'Обсудить идею', ask: 'Помоги продумать эту идею: что в ней сильное, какие риски, чего не хватает и какой первый маленький шаг сделать.' },
+        free:   { label: 'Свой запрос', ask: '' }
+      };
+      const ORDER = ['goal', 'problem', 'resource', 'process', 'idea', 'solution', 'question', 'result'];
+      const SECTION = { goal: 'Цели', problem: 'Проблемы и что мешает', resource: 'Что уже есть (ресурсы)', process: 'Процессы и как это работает', idea: 'Идеи', solution: 'Принятые решения (обязательно учесть)', question: 'Открытые вопросы (уточни у меня или предложи варианты)', result: 'Ожидаемый результат' };
+
+      function loadPS() { try { return JSON.parse(localStorage.getItem(PS_KEY) || '{}'); } catch (e) { return {}; } }
+      function savePS(d) { try { localStorage.setItem(PS_KEY, JSON.stringify(d)); } catch (e) {} }
+      function mapName() { return ((mapsCollection.find(m => m.id === activeMapId) || {}).name) || 'Карта'; }
+      function mapCfg() { const d = loadPS(); d.maps = d.maps || {}; return d.maps[activeMapId] || { mode: 'newapp', extra: '', format: '', clarify: true }; }
+      function setMapCfg(c) { const d = loadPS(); d.maps = d.maps || {}; d.maps[activeMapId] = c; savePS(d); }
+      const clean = t => String(t || '').replace(/\s+/g, ' ').trim();
+
+      // ---- простая правка текста без интернета ----
+      const W = w => new RegExp('(?<![а-яёa-z])' + w + '(?![а-яёa-z])', 'gi');
+      const TYPOS = [[W('пронт'), 'промпт'], [W('пронты'), 'промпты'], [W('пронта'), 'промпта'], [W('пронтов'), 'промптов'], [W('промт'), 'промпт'], [W('промты'), 'промпты'], [W('промта'), 'промпта'], [W('промтов'), 'промптов'], [W('чтоб'), 'чтобы'], [W('щас'), 'сейчас'], [W('приложуха'), 'приложение'], [W('вообщем'), 'в общем'], [W('тк'), 'так как'], [W('кц'), 'КЦ'], [W('ии'), 'ИИ'], [W('пож'), 'пожалуйста'], [W('плиз'), 'пожалуйста'], [W('инфа'), 'информация']];
+      function fixText(s) {
+        let t = String(s || '');
+        TYPOS.forEach(([re, to]) => { t = t.replace(re, to); });
+        t = t.replace(/[ \t]+/g, ' ')
+             .replace(/ +([,.!?:;)])/g, '$1')
+             .replace(/([,.!?:;])(?=[A-Za-zА-Яа-яЁё])/g, '$1 ')
+             .replace(/\(\s+/g, '(')
+             .replace(/([!?.]){2,}/g, (m, c) => c === '.' && m.length === 3 ? '...' : c)
+             .replace(/(^\s*(?:#+\s*)?|[.!?]\s+|\n\s*(?:[-•]|#+)?\s*)([a-zа-яё])/g, (m, p, ch) => p + ch.toUpperCase())
+             .replace(/\n{3,}/g, '\n\n')
+             .split('\n').map(l => l.replace(/\s+$/, '')).join('\n');
+        return t.trim();
+      }
+
+      // ---- что карта содержит ----
+      function collect() {
+        const nodes = state.nodes.filter(n => n.kind !== 'trash' && n.kind !== 'box');
+        const main = nodes.find(n => n.isMain);
+        const label = n => clean(n.text) || (n.kind && OBJ[n.kind] ? OBJ[n.kind].label : 'Без названия');
+        const groups = {}; const plain = []; const notes = []; const links = [];
+        nodes.forEach(n => {
+          if (n.isMain) return;
+          if (n.kind === 'sticker') { if (clean(n.text)) notes.push(n); return; }
+          if (n.kind === 'link') { links.push(n); return; }
+          if (n.kind) return;
+          if (!clean(n.text)) return;
+          if (KINDS[n.shape]) (groups[n.shape] = groups[n.shape] || []).push(n); else plain.push(n);
+        });
+        const edges = state.edges.map(e => [getNode(e.from), getNode(e.to), e]).filter(x => x[0] && x[1] && !x[0].isMain && !x[1].isMain && clean(x[0].text) && clean(x[1].text));
+        return { main, groups, plain, notes, links, edges, label };
+      }
+
+      // ---- чего не хватает в ТЗ ----
+      function gaps(c, mode) {
+        const g = [];
+        if (!c.main || !clean(c.main.text)) g.push('Нет главного вопроса — напишите в центре, что вы хотите получить.');
+        if (mode === 'newapp' || mode === 'edit') {
+          if (!c.groups.goal && !(c.main && clean(c.main.text))) g.push('Не указана цель: зачем это нужно.');
+          if (!c.groups.result) g.push('Нет карточки «Результат»: как поймём, что готово (например, «сотрудник проходит сцену за 5 минут»).');
+          if (!c.groups.solution) g.push('Нет «Решений»: что уже точно решено (платформа, стиль, для кого).');
+          const txt = JSON.stringify(state.nodes.map(n => n.text || '')).toLowerCase();
+          if (!/(пользоват|сотрудник|клиент|для кого|аудитор|ученик|оператор)/.test(txt)) g.push('Не сказано, для кого приложение.');
+          if (!/(телефон|компьютер|браузер|сайт|android|iphone|windows|веб)/.test(txt)) g.push('Не сказано, где оно будет работать: телефон, компьютер, браузер.');
+        }
+        if (mode === 'bug') {
+          const txt = JSON.stringify(state.nodes.map(n => n.text || '')).toLowerCase();
+          if (!/(ожида|должно|должен)/.test(txt)) g.push('Опишите, как должно работать правильно.');
+          if (!/(нажима|делаю|шаг|когда)/.test(txt)) g.push('Опишите шаги: что вы делаете, когда появляется ошибка.');
+        }
+        const todo = state.nodes.filter(n => /…|\.\.\.\s*$/.test(n.text || '')).length;
+        if (todo) g.push('Карточек с незаполненным «…»: ' + todo + ' — допишите их.');
+        if (c.groups.question && c.groups.question.length) g.push('Открытых вопросов: ' + c.groups.question.length + ' — Claude их увидит и уточнит.');
+        return g;
+      }
+
+      // ---- сборка промпта ----
+      function build(cfg) {
+        const c = collect(); const L = [];
+        const star = n => (n.key ? ' ★ (главное)' : '');
+        L.push('# ' + (clean(c.main && c.main.text) || mapName()));
+        L.push('');
+        L.push('Тип запроса: ' + MODES[cfg.mode].label + '. Карта: «' + mapName() + '» (Факт-карта).');
+        L.push('');
+        ORDER.forEach(k => {
+          const arr = c.groups[k]; if (!arr || !arr.length) return;
+          arr.sort((a, b) => (b.key ? 1 : 0) - (a.key ? 1 : 0));
+          L.push('## ' + SECTION[k]);
+          arr.forEach(n => L.push('- ' + clean(n.text) + star(n)));
+          L.push('');
+        });
+        Object.keys(c.groups).filter(k => ORDER.indexOf(k) < 0).forEach(k => {
+          L.push('## ' + (KINDS[k] ? KINDS[k].label : k));
+          c.groups[k].forEach(n => L.push('- ' + clean(n.text) + star(n))); L.push('');
+        });
+        if (c.plain.length) { L.push('## Факты'); c.plain.forEach(n => L.push('- ' + clean(n.text) + star(n))); L.push(''); }
+        if (c.edges.length) {
+          L.push('## Связи (что от чего зависит)');
+          const word = { dashed: ' ⇢ (возможно связано) ', strong: ' ⇒ (сильно влияет) ' };
+          c.edges.forEach(([a, b, e]) => L.push('- ' + (a.isMain ? '[Главный вопрос]' : clean(a.text)) + (word[e.type] || ' → ') + clean(b.text)));
+          L.push('');
+        }
+        if (c.notes.length) { L.push('## Заметки'); c.notes.forEach(n => L.push('- ' + clean(n.text))); L.push(''); }
+        if (c.links.length) { L.push('## Ссылки'); c.links.forEach(n => L.push('- ' + clean(n.text) + (n.url ? ': ' + n.url : ''))); L.push(''); }
+        const att = attachments();
+        if (att.length) {
+          L.push('## Вложения (' + att.length + ')');
+          L.push('Файлы лежат рядом с этим текстом в папке files/ (в пакете или в папке для Claude). Посмотри каждый.');
+          att.forEach(x => L.push('- files/' + x.fname + ' — ' + x.what + (clean(x.n.text) && clean(x.n.text) !== x.n.file.name.replace(/\.[^.]+$/, '') ? ', подпись: «' + clean(x.n.text) + '»' : '') + (x.rel.length ? '; относится к: ' + x.rel.map(t => '«' + t + '»').join(', ') : '')));
+          L.push('');
+        }
+        if (clean(cfg.extra)) { L.push('## Дополнительно от меня'); L.push(cfg.extra.trim()); L.push(''); }
+        L.push('## Что нужно от тебя');
+        L.push(cfg.mode === 'free' ? (clean(cfg.extra) ? 'См. «Дополнительно от меня».' : 'Помоги мне с этим.') : MODES[cfg.mode].ask);
+        if (clean(cfg.format)) L.push('Формат ответа: ' + clean(cfg.format) + '.');
+        if (cfg.clarify) L.push('Если что-то неясно или противоречит друг другу — сначала спроси, а не угадывай.');
+        L.push('Я не программист: объясняй простыми словами.');
+        return L.join('\n');
+      }
+
+      // ---- вложения: фото, скриншоты, документы, аудио на карте ----
+      function attachments() {
+        const used = {};
+        return state.nodes.filter(n => n.file && n.file.ref && (n.kind === 'photo' || n.kind === 'file' || n.kind === 'audio')).map((n, i) => {
+          let fname = String(i + 1).padStart(2, '0') + '-' + safeFileName(n.file.name || n.text || 'file').replace(/\s+/g, '_');
+          if (!/\.[a-z0-9]{1,6}$/i.test(fname)) fname += ({ photo: '.jpg', audio: '.mp3' })[n.kind] || '.bin';
+          while (used[fname]) fname = fname.replace(/(\.[^.]+)$/, '_$1'); used[fname] = 1;
+          const rel = state.edges.filter(e => e.from === n.id || e.to === n.id).map(e => getNode(e.from === n.id ? e.to : e.from)).filter(x => x && clean(x.text)).map(x => clean(x.text).slice(0, 60));
+          const what = n.kind === 'photo' ? 'картинка/скриншот' : n.kind === 'audio' ? 'аудио' : 'документ';
+          return { n, fname, rel, what };
+        });
+      }
+      async function attachmentBlobs() {
+        const out = [];
+        for (const x of attachments()) { try { const b = await FileStore.getBlob(x.n.file); if (b) out.push({ name: 'files/' + x.fname, blob: b }); } catch (e) {} }
+        return out;
+      }
+      // ---- ZIP без библиотек (без сжатия — скриншоты и так сжаты) ----
+      const CRC = (() => { const t = new Uint32Array(256); for (let i = 0; i < 256; i++) { let c = i; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[i] = c >>> 0; } return t; })();
+      function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+      async function makeZip(entries) {
+        const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+        const d = new Date(), dt = ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)), dd = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate());
+        for (const e of entries) {
+          const data = e.text != null ? enc.encode(e.text) : new Uint8Array(await e.blob.arrayBuffer());
+          const nm = enc.encode(e.name), crc = crc32(data);
+          const h = new DataView(new ArrayBuffer(30));
+          h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+          h.setUint16(10, dt, true); h.setUint16(12, dd, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true);
+          h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+          parts.push(h, nm, data);
+          const c = new DataView(new ArrayBuffer(46));
+          c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+          c.setUint16(12, dt, true); c.setUint16(14, dd, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+          c.setUint16(28, nm.length, true); c.setUint32(42, offset, true);
+          central.push(c, nm);
+          offset += 30 + nm.length + data.length;
+        }
+        const csize = central.reduce((a, x) => a + x.byteLength, 0);
+        const end = new DataView(new ArrayBuffer(22));
+        end.setUint32(0, 0x06054b50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true); end.setUint32(12, csize, true); end.setUint32(16, offset, true);
+        return new Blob(parts.concat(central, [end]), { type: 'application/zip' });
+      }
+      const README = 'Пакет из «Факт-карты» для Claude.\n\nPROMPT.md — задание (начни с него).\nmap.json — вся карта: карточки, типы, связи.\nfiles/ — вложения: скриншоты, документы, аудио.\n';
+      async function buildPackage(text) {
+        const files = await attachmentBlobs();
+        return makeZip([{ name: 'PROMPT.md', text }, { name: 'map.json', text: toJSON() }, { name: 'README.txt', text: README }].concat(files));
+      }
+
+      function toJSON() {
+        const c = collect();
+        return JSON.stringify({ app: 'Факт-карта', purpose: 'prompt-for-claude', map: mapName(), exportedAt: new Date().toISOString(),
+          main: c.main ? clean(c.main.text) : '',
+          cards: state.nodes.filter(n => !n.isMain && n.kind !== 'trash' && n.kind !== 'box' && clean(n.text)).map(n => ({ id: n.id, type: KINDS[n.shape] ? KINDS[n.shape].label : (n.kind ? OBJ[n.kind].label : 'Факт'), text: clean(n.text), main: !!n.key, url: n.url || undefined })),
+          links: state.edges.map(e => ({ from: e.from, to: e.to, type: e.type || 'normal' })) }, null, 2);
+      }
+
+      // ---- папка для Claude: файлы, которые Claude читает с вашего компьютера ----
+      function idb() { return new Promise((res, rej) => { const r = indexedDB.open('factmap-claude', 1); r.onupgradeneeded = () => r.result.createObjectStore('h'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+      async function getDir() { try { const db = await idb(); return await new Promise(res => { const q = db.transaction('h').objectStore('h').get('dir'); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); } catch (e) { return null; } }
+      async function setDir(h) { const db = await idb(); return new Promise(res => { const t = db.transaction('h', 'readwrite'); t.objectStore('h').put(h, 'dir'); t.oncomplete = () => res(); }); }
+      async function writeFile(dir, name, text) { const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(text); await w.close(); }
+      async function saveToFolder(text, pick) {
+        if (!window.showDirectoryPicker) return false;
+        let dir = pick ? null : await getDir();
+        try {
+          if (dir && (await dir.queryPermission({ mode: 'readwrite' })) !== 'granted' && (await dir.requestPermission({ mode: 'readwrite' })) !== 'granted') dir = null;
+          if (!dir) { dir = await window.showDirectoryPicker({ id: 'factmap-claude', mode: 'readwrite' }); await setDir(dir); }
+          const base = safeFileName(mapName());
+          await writeFile(dir, base + '.prompt.md', text);
+          await writeFile(dir, base + '.map.json', toJSON());
+          await writeFile(dir, 'ПОСЛЕДНИЙ-ПРОМПТ.md', text);
+          const files = await attachmentBlobs();
+          if (files.length) {
+            const fdir = await dir.getDirectoryHandle('files', { create: true });
+            for (const f of files) { const fh = await fdir.getFileHandle(f.name.slice(6), { create: true }); const w = await fh.createWritable(); await w.write(f.blob); await w.close(); }
+          }
+          return dir.name;
+        } catch (e) { if (e && e.name === 'AbortError') return null; throw e; }
+      }
+      // возможности, которые есть только когда приложение открыто как артефакт Claude
+      const cap = name => (window.claude && typeof window.claude.use === 'function') ? window.claude.use(name).catch(() => null) : Promise.resolve(null);
+      async function download(name, text) {
+        const dl = await cap('downloads');
+        if (dl) { try { await dl.save({ filename: name, data: text instanceof Blob ? text : new Blob([text], { type: 'text/markdown;charset=utf-8' }) }); return; } catch (e) { showToast('Сохранение файла отменено'); return; } }
+        return download0(name, text);
+      }
+      function download0(name, text) { const a = document.createElement('a'); a.href = URL.createObjectURL(text instanceof Blob ? text : new Blob([text], { type: 'text/markdown;charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+
+      function pushHistory(text) { const d = loadPS(); d.hist = [{ at: Date.now(), map: mapName(), text }].concat((d.hist || []).filter(h => h.text !== text)).slice(0, 15); savePS(d); }
+
+      // ---- заготовки карт ----
+      const STARTERS = {
+        newapp: { main: 'Какое приложение я хочу сделать?', cards: [
+          ['goal', 'Зачем нужно приложение: …'], ['resource', 'Для кого: …'], ['process', 'Главный сценарий: человек открывает и …'],
+          ['solution', 'Где работает: телефон / компьютер / браузер'], ['idea', 'Экраны: …'], ['problem', 'Что сейчас мешает без приложения: …'],
+          ['question', 'Что пока не решено: …'], ['result', 'Готово, когда: …']] },
+        edit: { main: 'Что изменить в приложении?', cards: [
+          ['resource', 'Какое приложение: ссылка или файл …'], ['problem', 'Что сейчас не так: …'], ['goal', 'Что хочу получить: …'],
+          ['solution', 'Что трогать нельзя: …'], ['idea', 'Как это может выглядеть: … (прикрепите скриншот или набросок)'], ['result', 'Готово, когда: …']] },
+        bug: { main: 'Какая ошибка?', cards: [
+          ['process', 'Шаги: 1) открываю … 2) нажимаю …'], ['result', 'Ожидалось: …'], ['problem', 'Что происходит на самом деле: …'],
+          ['resource', 'Скриншот ошибки — прикрепите кнопкой «Прикрепить»'], ['solution', 'Где: телефон / компьютер, браузер …'], ['question', 'Всегда или иногда: …']] },
+        idea: { main: 'Какая у меня идея?', cards: [
+          ['idea', 'Суть в одном предложении: …'], ['resource', 'Для кого: …'], ['problem', 'Какую боль решает: …'],
+          ['goal', 'Как на этом заработать: …'], ['question', 'Главное сомнение: …'], ['result', 'Первый маленький шаг: …']] }
+      };
+      function addStarter(kind) {
+        const tpl = STARTERS[kind] || STARTERS.newapp;
+        let main = state.nodes.find(n => n.isMain);
+        if (!main) { addMainQuestion(); main = state.nodes.find(n => n.isMain); }
+        if (main && !clean(main.text)) main.text = tpl.main;
+        const cx = main ? main.x + 110 : 0, cy = main ? main.y + 50 : 0, R = 330;
+        tpl.cards.forEach(([k, t], i) => {
+          const a = (i / tpl.cards.length) * Math.PI * 2 - Math.PI / 2;
+          const node = { id: uid(), text: t, x: Math.round(cx + Math.cos(a) * R - 100), y: Math.round(cy + Math.sin(a) * R * 0.72 - 40), isMain: false, shape: k, color: KINDS[k] ? KINDS[k].colorName : 'blue' };
+          state.nodes.push(node);
+          if (main) state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6), from: main.id, to: node.id, type: 'normal' });
+        });
+        renderNodes(); renderEdges(); save(); try { recordHistory(); } catch (e) {}
+        showToast('Добавлено карточек-подсказок: ' + tpl.cards.length + '. Замените «…» своими словами, потом снова «Промпт»');
+      }
+
+      // ---- ответ Claude → обратно на карту ----
+      function importReply(text) {
+        let main = state.nodes.find(n => n.isMain); if (!main) { addMainQuestion(); main = state.nodes.find(n => n.isMain); }
+        const lines = String(text || '').split(/\n+/).map(l => l.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').replace(/\*\*/g, '').trim()).filter(Boolean);
+        const qs = lines.filter(l => /\?\s*$/.test(l) && l.length > 8 && l.length < 300);
+        const spot = main ? { x: main.x + 480, y: main.y - 120 } : { x: 0, y: 0 };
+        qs.forEach((q, i) => {
+          const node = { id: uid(), text: q + '\nОтвет: …', x: spot.x + (i % 2) * 250, y: spot.y + Math.floor(i / 2) * 130, isMain: false, shape: 'question', color: 'purple' };
+          state.nodes.push(node);
+          if (main) state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6), from: main.id, to: node.id, type: 'dashed' });
+        });
+        const sticker = { id: uid(), kind: 'sticker', text: 'Ответ Claude (' + new Date().toLocaleDateString('ru-RU') + '):\n' + String(text).trim().slice(0, 4000), x: spot.x - 20, y: spot.y + Math.ceil(qs.length / 2) * 130 + 20, color: 'yellow', shape: 'rect', isMain: false };
+        state.nodes.push(sticker);
+        renderNodes(); renderEdges(); save(); try { recordHistory(); } catch (e) {}
+        return qs.length;
+      }
+
+      // ---- мини-обучение ----
+      const TOUR = [
+        ['1. Разложите идею на карте', 'Нажмите «Заготовка» — появятся карточки: цель, для кого, экраны, что мешает, когда готово. Замените «…» своими словами. Главное отметьте ★.'],
+        ['2. Прикрепите материалы', 'Скриншоты, документы, примеры — кнопка «Прикрепить», перетаскивание в это окно или Ctrl+V (вставить скриншот). Свяжите файл с карточкой, к которой он относится, — Claude это увидит.'],
+        ['3. Проверьте и поправьте', 'Блок «Чего не хватает» подскажет пробелы. «Поправить текст» уберёт опечатки. Сам текст можно редактировать прямо здесь.'],
+        ['4. Отправьте Claude', 'Без файлов — «Открыть в Claude». С файлами — «Пакет для Claude (.zip)»: один файл, в нём задание, карта и все вложения. Перетащите его в чат. Или «Сохранить в папку» — и Claude прочитает всё сам.'],
+        ['5. Верните ответ на карту', 'Скопируйте ответ Claude и нажмите «Ответ Claude → на карту»: его вопросы станут карточками, ответьте на них и соберите промпт заново. Так шаг за шагом проект доводится до конца.']
+      ];
+      function tourHtml() { return '<div class="ps-tour"><b>Как работать с Claude через карту</b>' + TOUR.map(t => '<div class="ps-ts"><b></b><span></span></div>').join('') + '<button type="button" class="btn primary" data-p="tourok">Понятно</button></div>'; }
+      function fillTour(root) { root.querySelectorAll('.ps-ts').forEach((el, i) => { el.querySelector('b').textContent = TOUR[i][0]; el.querySelector('span').textContent = TOUR[i][1]; }); }
+
+      // ---- окно ----
+      function open() {
+        try { save(); } catch (e) {}
+        const cfg = mapCfg();
+        const opts = Object.keys(MODES).map(k => '<option value="' + k + '"' + (k === cfg.mode ? ' selected' : '') + '>' + MODES[k].label + '</option>').join('');
+        const html =
+          '<div class="ps-wrap">' +
+          '<div class="ps-tourslot"></div>' +
+          '<label class="ps-l">Что нужно от Claude<select class="btn ps-mode">' + opts + '</select></label>' +
+          '<div class="ps-row"><button class="btn" data-p="starter">＋ Заготовка карты под этот запрос</button><button class="btn" data-p="tour">? Как это работает</button></div>' +
+          '<label class="ps-l">Добавить своими словами (необязательно)<textarea class="ps-extra" rows="3" placeholder="Например: сделай в стиле визуальной новеллы, тёмная тема"></textarea></label>' +
+          '<label class="ps-l">Каким должен быть ответ (необязательно)<input class="btn ps-format" list="ps-formats" placeholder="Например: готовый файл index.html"><datalist id="ps-formats"><option value="готовый файл index.html, который открывается в браузере"><option value="сначала план по шагам, код потом"><option value="только список вопросов ко мне"><option value="коротко, без кода"><option value="таблица: что есть / чего не хватает"></datalist></label>' +
+          '<label class="ps-chk"><input type="checkbox" class="ps-clarify"> Пусть Claude сначала задаст уточняющие вопросы</label>' +
+          '<div class="ps-att"><div class="ps-att-h"><b>Вложения</b><span class="ps-att-n"></span><button class="btn" data-p="attach">＋ Прикрепить</button></div><div class="ps-att-list"></div><small>Скриншоты, документы, аудио. Можно перетащить в это окно или вставить скриншот (Ctrl+V).</small><input type="file" class="vh-file ps-file" multiple></div>' +
+          '<div class="ps-gaps"></div>' +
+          '<div class="ps-l">Готовый промпт — можно править<textarea class="ps-out" rows="14" spellcheck="true" lang="ru"></textarea><small class="ps-count"></small></div>' +
+          '<div class="sh-acts">' +
+            '<button class="btn primary" data-p="zip">📦 Пакет для Claude (.zip)</button>' +
+            '<button class="btn primary" data-p="claude">Открыть в Claude</button>' +
+            '<button class="btn" data-p="copy">Копировать текст</button>' +
+            '<button class="btn primary ps-cap" data-p="send" hidden>📨 Отправить Claude</button>' +
+            '<button class="btn ps-cap" data-p="ai" hidden>✨ Улучшить с Claude</button>' +
+            '<button class="btn" data-p="fix">Поправить текст</button>' +
+            '<button class="btn" data-p="rebuild">Собрать заново из карты</button>' +
+            '<button class="btn" data-p="folder">Сохранить в папку для Claude</button>' +
+            '<button class="btn" data-p="reply">↩ Ответ Claude → на карту</button>' +
+            '<button class="btn" data-p="hist">История промптов</button>' +
+          '</div>' +
+          '<div class="ps-replybox" hidden><textarea class="ps-reply" rows="6" placeholder="Вставьте сюда ответ Claude"></textarea><button class="btn primary" data-p="replyok">Перенести на карту</button></div>' +
+          '</div>';
+        openSheet('Промпт для Claude', 'Карта, файлы и пожелания — в одно понятное задание.', html, (ov, close) => {
+          ov.querySelector('.sh-box').classList.add('ps-box');
+          const $ = s => ov.querySelector(s);
+          const out = $('.ps-out'), mode = $('.ps-mode'), extra = $('.ps-extra'), format = $('.ps-format'), clarify = $('.ps-clarify');
+          extra.value = cfg.extra || ''; format.value = cfg.format || ''; clarify.checked = cfg.clarify !== false;
+          let edited = false;
+          const read = () => ({ mode: mode.value, extra: extra.value, format: format.value, clarify: clarify.checked });
+          const count = () => { $('.ps-count').textContent = out.value.length + ' знаков'; };
+          const showTour = () => { const slot = $('.ps-tourslot'); slot.innerHTML = tourHtml(); fillTour(slot); };
+          const d0 = loadPS(); if (!d0.tourSeen) showTour();
+          const renderAtt = () => {
+            const list = $('.ps-att-list'), att = attachments();
+            $('.ps-att-n').textContent = att.length ? ' · ' + att.length : '';
+            list.textContent = '';
+            att.forEach(x => {
+              const row = document.createElement('div'); row.className = 'ps-att-i';
+              if (x.n.kind === 'photo') { const im = document.createElement('img'); FileStore.url(x.n.file).then(u => { im.src = u; }); row.appendChild(im); }
+              else { const ic = document.createElement('span'); ic.className = 'ps-att-ic'; ic.textContent = x.n.kind === 'audio' ? '♪' : '📄'; row.appendChild(ic); }
+              const t = document.createElement('span'); t.className = 'ps-att-t'; t.textContent = (x.n.file.name || x.n.text) + (x.rel.length ? ' → ' + x.rel[0] : ''); row.appendChild(t);
+              const sel = document.createElement('select'); sel.className = 'btn ps-att-link'; sel.title = 'К какой карточке относится';
+              sel.innerHTML = '<option value="">к чему относится…</option>';
+              state.nodes.filter(n => !n.kind && clean(n.text)).forEach(n => { const o = document.createElement('option'); o.value = n.id; o.textContent = (n.isMain ? '★ ' : '') + clean(n.text).slice(0, 50); sel.appendChild(o); });
+              sel.onchange = () => { if (!sel.value) return; state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6), from: sel.value, to: x.n.id, type: 'normal' }); renderEdges(); save(); try { recordHistory(); } catch (e) {} renderAtt(); refresh(false); };
+              row.appendChild(sel);
+              list.appendChild(row);
+            });
+          };
+          const refresh = force => {
+            const c = read(); setMapCfg(c);
+            if (!edited || force) { out.value = build(c); edited = false; }
+            const g = gaps(collect(), c.mode);
+            $('.ps-gaps').innerHTML = g.length ? '<b>Чего не хватает, чтобы Claude понял точнее:</b><ul>' + g.map(x => '<li></li>').join('') + '</ul>' : '<b>✓ Описание выглядит полным</b>';
+            $('.ps-gaps').querySelectorAll('li').forEach((li, i) => { li.textContent = g[i]; });
+            count();
+          };
+          const addAtt = async files => {
+            files = [...(files || [])].filter(f => f && f.size); if (!files.length) return;
+            const main = state.nodes.find(n => n.isMain);
+            const at = main ? { x: main.x - 380, y: main.y + 260 + attachments().length * 20 } : null;
+            await addFiles(files, at);
+            renderAtt(); refresh(false);
+          };
+          [mode, clarify].forEach(el => el.addEventListener('change', () => refresh(false)));
+          [extra, format].forEach(el => el.addEventListener('input', () => refresh(false)));
+          out.addEventListener('input', () => { edited = true; count(); });
+          $('.ps-file').addEventListener('change', e => { addAtt(e.target.files); e.target.value = ''; });
+          const box = ov.querySelector('.sh-box');
+          box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('ps-drop'); });
+          box.addEventListener('dragleave', e => { if (e.target === box) box.classList.remove('ps-drop'); });
+          box.addEventListener('drop', e => { e.preventDefault(); e.stopPropagation(); box.classList.remove('ps-drop'); addAtt(e.dataTransfer && e.dataTransfer.files); });
+          const onPaste = e => {
+            if (!document.body.contains(ov)) { document.removeEventListener('paste', onPaste, true); return; }
+            const fs = [...((e.clipboardData && e.clipboardData.items) || [])].filter(i => i.kind === 'file').map(i => i.getAsFile()).filter(Boolean)
+              .map((f, i) => f.name && f.name !== 'image.png' ? f : new File([f], 'скриншот-' + new Date().toLocaleTimeString('ru-RU').replace(/:/g, '-') + (i ? '-' + i : '') + '.png', { type: f.type || 'image/png' }));
+            if (fs.length) { e.preventDefault(); e.stopPropagation(); addAtt(fs); }
+          };
+          document.addEventListener('paste', onPaste, true);
+          renderAtt(); refresh(true);
+          cap('sample').then(x => { if (x && document.body.contains(ov)) $('[data-p=ai]').hidden = false; });
+          cap('db').then(x => { if (x && document.body.contains(ov)) $('[data-p=send]').hidden = false; });
+          ov.addEventListener('click', async ev => {
+            const b = ev.target.closest('[data-p]'); if (!b || !ov.contains(b)) return;
+            const a = b.dataset.p, text = out.value;
+            if (a === 'copy') { const ok = await copyText(text); pushHistory(text); showToast(ok ? 'Промпт скопирован — вставьте его в чат с Claude' : 'Не удалось скопировать — выделите текст вручную'); }
+            else if (a === 'claude') {
+              pushHistory(text); await copyText(text);
+              const n = attachments().length;
+              const url = text.length < 6000 ? 'https://claude.ai/new?q=' + encodeURIComponent(text) : 'https://claude.ai/new';
+              const ln = document.createElement('a'); ln.href = url; ln.target = '_blank'; ln.rel = 'noopener'; document.body.appendChild(ln); ln.click(); ln.remove();
+              showToast(n ? 'Открываю Claude. Вложения (' + n + ') так не передаются — лучше «Пакет для Claude»' : text.length < 6000 ? 'Открываю Claude с вашим промптом' : 'Промпт длинный: он скопирован, вставьте его в новый чат');
+            }
+            else if (a === 'zip') {
+              b.disabled = true; const old = b.textContent; b.textContent = 'Собираю…';
+              try { const z = await buildPackage(text); download(safeFileName(mapName()) + ' — для Claude.zip', z); pushHistory(text); showToast('Готово: один файл с заданием, картой и вложениями (' + attachments().length + '). Перетащите его в чат с Claude'); }
+              catch (e) { showToast('Не удалось собрать пакет: ' + (e && e.message || e)); }
+              b.disabled = false; b.textContent = old;
+            }
+            else if (a === 'ai') {
+              const sample = await cap('sample'); if (!sample) return;
+              b.disabled = true; const old = b.textContent; b.textContent = 'Claude думает…';
+              try {
+                const r = await sample('Ты помогаешь человеку, который не программист, составить задание (промпт) для Claude. Улучши промпт ниже: исправь ошибки и опечатки, сделай формулировки ясными и конкретными, убери повторы, сохрани структуру с заголовками ## и все факты, ничего не выдумывай. Если чего-то важного не хватает — добавь в конец раздел «## Что стоит уточнить» со списком вопросов. Верни только готовый текст промпта, без пояснений.\n\n---\n' + text, { modelTier: 'default', cache: false });
+                if (r && r.text) { out.value = r.text.trim(); edited = true; count(); showToast('Claude улучшил промпт — проверьте и при желании поправьте'); }
+              } catch (e) { showToast(e && e.code === 'rate_limited' ? 'Claude сейчас занят — попробуйте через минуту' : 'Не получилось: ' + ((e && e.message) || e)); }
+              b.disabled = false; b.textContent = old;
+            }
+            else if (a === 'send') {
+              const db = await cap('db'); if (!db) return;
+              try {
+                const at = new Date().toISOString(), att = attachments().map(x => ({ name: x.fname, kind: x.what, rel: x.rel }));
+                const rec = { at, map: mapName(), mode: mode.value, prompt: text, mapJson: toJSON(), attachments: att };
+                await db.doc('inbox/latest').set(rec);
+                await db.doc('inbox/p' + Date.now()).set(rec);
+                pushHistory(text);
+                showToast('Отправлено. Напишите Claude в чате: «прочитай последний промпт из Факт-карты»' + (att.length ? ' (файлы так не передаются — для них пакет .zip)' : ''));
+              } catch (e) { showToast('Не удалось отправить: ' + ((e && e.message) || e)); }
+            }
+            else if (a === 'fix') { const f = fixText(text); if (f === text) showToast('Ошибок не нашлось'); else { out.value = f; edited = true; count(); showToast('Текст поправлен: пробелы, заглавные буквы, частые опечатки'); } }
+            else if (a === 'rebuild') { refresh(true); showToast('Собрано заново из карты'); }
+            else if (a === 'attach') $('.ps-file').click();
+            else if (a === 'folder') {
+              if (!window.showDirectoryPicker) { download(safeFileName(mapName()) + ' — для Claude.zip', await buildPackage(text)); showToast('Этот браузер не умеет писать в папку — скачал пакет. На компьютере в Chrome работает папка.'); return; }
+              try { const name = await saveToFolder(text, false); if (name) { pushHistory(text); showToast('Сохранено в папку «' + name + '»: промпт, карта и вложения', { label: 'Другая папка', fn: () => saveToFolder(text, true).then(n => n && showToast('Сохранено в «' + n + '»')) }); } }
+              catch (e) { showToast('Не удалось сохранить в папку: ' + (e && e.message || e)); }
+            }
+            else if (a === 'starter') { close(); addStarter(mode.value); }
+            else if (a === 'tour') showTour();
+            else if (a === 'tourok') { const d = loadPS(); d.tourSeen = 1; savePS(d); $('.ps-tourslot').innerHTML = ''; }
+            else if (a === 'reply') { const rb = $('.ps-replybox'); rb.hidden = !rb.hidden; if (!rb.hidden) $('.ps-reply').focus(); }
+            else if (a === 'replyok') {
+              const t = $('.ps-reply').value; if (!clean(t)) { showToast('Сначала вставьте ответ Claude'); return; }
+              const q = importReply(t); $('.ps-reply').value = ''; $('.ps-replybox').hidden = true; refresh(false);
+              showToast(q ? 'На карте: ответ Claude (стикер) и его вопросы (' + q + ') — ответьте на них и соберите промпт заново' : 'Ответ Claude добавлен на карту стикером');
+            }
+            else if (a === 'hist') {
+              const h = loadPS().hist || [];
+              if (!h.length) { showToast('История пока пустая — она появится после отправки промпта'); return; }
+              const gbox = $('.ps-gaps');
+              gbox.innerHTML = '<b>Последние промпты — нажмите, чтобы вернуть:</b>';
+              h.forEach(it => { const r = document.createElement('button'); r.type = 'button'; r.className = 'btn ps-h'; r.textContent = new Date(it.at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + it.map + ' · ' + it.text.split('\n')[0].replace(/^#\s*/, '').slice(0, 50); r.onclick = () => { out.value = it.text; edited = true; count(); }; gbox.appendChild(r); });
+            }
+          });
+        });
+      }
+      window.openPromptStudio = open;
+      window.__fmPrompt = { build: () => build(mapCfg()), fixText, gaps: () => gaps(collect(), mapCfg().mode), buildPackage, importReply, addStarter, attachments };
+
+      // кнопка в верхней панели — рядом с «Поделиться»
+      const share = document.getElementById('btn-share');
+      if (share && !document.getElementById('btn-prompt')) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'btn'; b.id = 'btn-prompt'; b.title = 'Промпт для Claude: карта → готовое задание'; b.setAttribute('aria-label', 'Промпт для Claude');
+        b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.4l-1.8-4.9L5 9.7l5.2-1.8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="currentColor"/></svg><span class="tb-label"> Промпт</span>';
+        share.parentNode.insertBefore(b, share);
+        b.addEventListener('click', open);
+      }
+      const sm = document.getElementById('btn-share-menu');
+      if (sm && !document.getElementById('btn-prompt-menu')) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'btn primary'; b.id = 'btn-prompt-menu'; b.style.gridColumn = '1 / -1'; b.textContent = '✦ Промпт для Claude';
+        sm.parentNode.insertBefore(b, sm.nextSibling);
+        b.addEventListener('click', () => { const m = document.getElementById('settings-modal'); if (m) m.classList.remove('visible', 'open', 'active'); const x = document.getElementById('btn-close-settings'); if (x) x.click(); open(); });
+      }
+    })();
 
     // a map that arrived inside the file someone sent
     function extractSharedPayload(text) {
