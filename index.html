@@ -2308,6 +2308,39 @@
     .ps-ts { display: flex; flex-direction: column; gap: 2px; } .ps-ts span { opacity: .85; line-height: 1.4; }
     .ps-replybox { display: flex; flex-direction: column; gap: 8px; }
     .sh-box.ps-drop { outline: 3px dashed var(--accent, #5b8def); outline-offset: -6px; }
+
+    /* v3.3: mini cards, image resize, link search, tree view, edge ends */
+    .node.mini { width: auto !important; min-width: 0 !important; max-width: 150px !important; min-height: 0 !important; padding: 6px 10px !important; }
+    .node.mini .node-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; max-width: 130px; }
+    .node.mini .node-kind, .node.mini .media-frame, .node.mini .obj-row, .node.mini .doc-ico { display: none; }
+    .node.mini .node-shape { display: none; }
+    .node.mini.themed { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+    .mini-tip { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%) translateY(-4px); width: max-content; max-width: 280px; padding: 10px 12px; border-radius: 10px; background: var(--surface, #1e1f26); color: var(--text, #eee); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,.35); font-size: 14px; line-height: 1.35; white-space: pre-wrap; text-align: left; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 60; }
+    .node.mini:hover, .node.mini.selected { z-index: 55; }
+    .node.mini:hover .mini-tip, .node.mini.selected .mini-tip { opacity: 1; transform: translateX(-50%); }
+    .img-resize { position: absolute; right: -7px; bottom: -7px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent, #5b8def); border: 2px solid #fff; cursor: nwse-resize; opacity: 0; transition: opacity .15s; touch-action: none; z-index: 3; }
+    .node.k-photo:hover .img-resize, .node.k-photo.selected .img-resize { opacity: 1; }
+    .node.k-photo[style*="width"] .media-frame { aspect-ratio: auto; }
+    .node.k-photo[style*="width"] img { height: auto; object-fit: contain; }
+    .edge-path { transition: stroke .15s; stroke-linecap: round; }
+    .edge-end { stroke: none !important; fill: currentColor; opacity: .85; pointer-events: none; }
+    .link-banner.link-banner { display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: min(420px, 92vw); border-radius: 16px; padding: 12px; z-index: 80; pointer-events: auto; height: auto; white-space: normal; }
+    .link-banner .lb-search, .link-banner .lb-list, .link-banner .lb-list * { pointer-events: auto; }
+    .link-banner .lb-list { background: var(--surface, #1e1f26); color: var(--text, #eee); border-radius: 10px; }
+    .link-banner .lb-list:empty { display: none; }
+    .link-banner .lb-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+    .lb-search { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2, #2a2b33); color: inherit; font: inherit; }
+    .lb-list { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow: auto; }
+    .lb-list button { width: 100%; text-align: left; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+    .lb-list button:hover, .lb-list button:focus { background: var(--surface-2, rgba(255,255,255,.08)); }
+    .lb-list button.linked { opacity: .55; } .lb-list small { opacity: .7; } .lb-none { padding: 6px 10px; opacity: .6; }
+    .tv-tree { display: block; }
+    .tt-col { max-width: 900px; width: 100%; }
+    .tt-level { list-style: none; margin: 0; padding: 0; }
+    .tt-kids { list-style: none; margin: 0 0 0 22px; padding-left: 12px; border-left: 2px solid var(--border); }
+    .tt-row { border-left: 3px solid var(--c, #5b8def); }
+    .tt-sep { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; opacity: .6; }
+    .tv-tools .btn.active { background: var(--accent, #5b8def); color: #fff; }
   </style>
 </head>
 <body>
@@ -2537,8 +2570,16 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '3.2';
+    const APP_VERSION = '3.3';
     const APP_CHANGES = [
+      { v: '3.3', date: '15 ноября 2026', items: [
+        'Связи расходятся ровно по краю карточки и идут плавными линиями',
+        'Кнопка «Связать»: можно найти нужную карточку по тексту, даже если она далеко',
+        'Кнопка «Мини»: карточка уменьшается, весь текст виден при наведении',
+        'Ctrl+V вставляет скриншот, файл, текст или ссылку прямо на доску',
+        'Фото можно увеличивать и уменьшать, потянув за уголок',
+        'В таблице режим «Что от чего идёт» — карточки столбиком под своей'
+      ] },
       { v: '3.2', date: '15 ноября 2026', items: [
         'Кнопка «Claude»: чат с Claude прямо в приложении — карта, скриншоты и файлы уходят одним нажатием, ответы видно сразу',
         'Быстрые команды: план экранов, слабые места, вопросы ко мне, минимальная версия, ТЗ, «сделай версию», «что дальше?»',
@@ -3628,6 +3669,29 @@
       addFiles(e.dataTransfer.files, screenToBoard(e.clientX, e.clientY), boxEl ? boxEl.dataset.id : null);
     });
 
+    // Ctrl+V on the wall: screenshots / copied files become cards, plain text becomes a fact
+    document.addEventListener('paste', e => {
+      if (isTyping(e.target) || e.defaultPrevented) return;
+      const cd = e.clipboardData; if (!cd) return;
+      const files = [...(cd.files || [])];
+      if (!files.length) [...(cd.items || [])].forEach(it => { if (it.kind === 'file') { const f = it.getAsFile(); if (f) files.push(f); } });
+      const r = boardContainer.getBoundingClientRect();
+      const at = screenToBoard(r.left + r.width / 2, r.top + r.height / 2);
+      if (files.length) {
+        e.preventDefault();
+        const named = files.map((f, i) => (f.name && f.name !== 'image.png') ? f : new File([f], 'Скриншот ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + (i ? ' (' + (i + 1) + ')' : '') + '.png', { type: f.type || 'image/png' }));
+        const boxId = state.selectedNodeId && getNode(state.selectedNodeId) && getNode(state.selectedNodeId).kind === 'box' ? state.selectedNodeId : null;
+        addFiles(named, at, boxId);
+        return;
+      }
+      const txt = (cd.getData('text/plain') || '').trim();
+      if (txt) {
+        e.preventDefault();
+        if (/^https?:\/\/\S+$/.test(txt)) { try { addObject('link'); const n = state.nodes[state.nodes.length - 1]; if (n && n.kind === 'link') { n.url = txt; n.text = n.text || domainOf(txt); renderNodes(); renderEdges(); save(); } return; } catch (_) {} }
+        addFact(txt.slice(0, 2000));
+      }
+    });
+
     // forget stored files nobody points to any more (this browser only)
     async function collectFileGarbage() {
       if (window.FACTMAP_SHARED) return;
@@ -4081,6 +4145,7 @@
     // Everything you do with a card lives in one place: write, add the next fact (already linked),
     // link to another card, colour and type, mark as main, delete.
     const BAR_ICONS = {
+      mini:  '<svg viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l6-6M4 20l6-6"/></svg>',
       edit:  '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
       next:  '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
       link:  '<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1-1"/></svg>',
@@ -4113,6 +4178,8 @@
       if (isContainer(n)) b.push(['open', 'Открыть', 'Открыть содержимое']);
       else if (can) b.push(['edit', 'Текст', 'Изменить текст (или нажмите на карточку ещё раз)']);
       if (!isContainer(n)) b.push(['next', isSimple() ? 'Ещё мысль' : 'Ещё факт', 'Добавить следующую карточку, сразу связанную с этой']);
+      if (n.kind !== 'trash' && !isContainer(n)) b.push(['link', 'Связать', 'Связать с другой карточкой — нажмите на неё или найдите по названию']);
+      if (!n.isMain && !isContainer(n) && n.kind !== 'audio') b.push(['mini', n.mini ? 'Обычный' : 'Мини', n.mini ? 'Вернуть обычный размер' : 'Уменьшить карточку: видно начало, весь текст — при наведении']);
       if (n.kind !== 'trash') b.push(['style', 'Вид', 'Цвет и тип карточки']);
       if ((!n.kind || n.kind === 'sticker') && !isSimple()) b.push(['star', n.key ? 'Главный ✓' : 'Главный', 'Главный факт — опора карты, видна при отдалении']);
       if (!n.collapsed && !isContainer(n) && !isSimple() && membersFor(n.id).length) b.push(['fold', 'Свернуть', 'Свернуть связанные карточки в одну']);
@@ -4171,6 +4238,7 @@
       else if (a === 'style') { if (stylePop) closeStylePop(); else openStylePop(n); }
       else if (a === 'star') toggleKeyFact(n.id);
       else if (a === 'fold') collapseBranch(n.id);
+      else if (a === 'mini') { n.mini = !n.mini; if (!n.mini) delete n.mini; renderNodes(); renderEdges(); save(); try { recordHistory(); } catch (_) {} selectNode(n.id); }
       else if (a === 'unfold') expandGroup(n.id);
       else if (a === 'del') deleteNode(n.id);
     }
@@ -4198,12 +4266,36 @@
       if (!linkBanner) {
         linkBanner = document.createElement('div');
         linkBanner.className = 'link-banner';
-        linkBanner.innerHTML = '<span>Нажмите на карточку, с которой связать</span><button type="button" class="btn">Отмена</button>';
+        linkBanner.innerHTML = '<div class="lb-row"><span>Нажмите на карточку — или найдите её:</span><button type="button" class="btn lb-cancel">Отмена</button></div><input class="lb-search" type="search" placeholder="Поиск по тексту карточки…" aria-label="Найти карточку для связи"><ul class="lb-list"></ul>';
         linkBanner.addEventListener('pointerdown', e => e.stopPropagation());
-        linkBanner.querySelector('button').addEventListener('click', stopLinkPick);
+        linkBanner.querySelector('.lb-cancel').addEventListener('click', stopLinkPick);
+        const inp = linkBanner.querySelector('.lb-search'), ul = linkBanner.querySelector('.lb-list');
+        const list = () => {
+          const q = inp.value.trim().toLowerCase(), from = state.connectFromId;
+          const items = state.nodes.filter(n => n.id !== from && !n.hiddenBy && n.kind !== 'trash' && n.kind !== 'box')
+            .map(n => ({ n, t: ((n.text || '').trim() || (n.isMain ? 'Главный вопрос' : n.kind === 'photo' ? 'Фото' : n.url || 'Без текста')) }))
+            .filter(x => !q || x.t.toLowerCase().includes(q)).slice(0, 8);
+          ul.innerHTML = items.map(x => {
+            const linked = state.edges.some(e => (e.from === from && e.to === x.n.id) || (e.to === from && e.from === x.n.id));
+            return '<li><button type="button" data-id="' + x.n.id + '"' + (linked ? ' class="linked"' : '') + '>' + escapeHtml(x.t.length > 60 ? x.t.slice(0, 59) + '…' : x.t) + (linked ? ' <small>уже связана</small>' : '') + '</button></li>';
+          }).join('') || '<li class="lb-none">Ничего не найдено</li>';
+        };
+        inp.addEventListener('input', list);
+        inp.addEventListener('focus', list);
+        inp.addEventListener('keydown', e => { if (e.key === 'Escape') stopLinkPick(); if (e.key === 'Enter') { const b = ul.querySelector('button'); if (b) b.click(); } });
+        ul.addEventListener('click', e => {
+          const b = e.target.closest('button[data-id]'); if (!b) return;
+          const from = state.connectFromId, id = b.dataset.id;
+          const dup = state.edges.some(x => (x.from === from && x.to === id) || (x.from === id && x.to === from));
+          if (!dup) state.edges.push({ id: 'e' + Date.now(), from, to: id, type: state.currentEdgeType || 'normal' });
+          stopLinkPick(); renderEdges(); save(); try { recordHistory(); } catch (_) {}
+          showToast(dup ? 'Эти карточки уже связаны' : 'Связь создана');
+          try { bringIntoView(id); } catch (_) {}
+        });
         boardContainer.appendChild(linkBanner);
       }
       linkBanner.hidden = false;
+      { const inp = linkBanner.querySelector('.lb-search'); inp.value = ''; linkBanner.querySelector('.lb-list').innerHTML = ''; if (!IS_TOUCH) setTimeout(() => inp.focus(), 30); }
       if (cardBar) cardBar.hidden = true;
     }
     function stopLinkPick() {
@@ -4367,6 +4459,7 @@
       const shape = node.kind ? 'rect' : (node.shape || 'rect');
       el.className = `node shape-${shape} ${node.color ? 'color-' + node.color : ''} ${node.isMain ? 'main' : ''}${node.collapsed ? ' collapsed' : ''}${KINDS[shape] ? ' themed' : ''}${node.key ? ' key' : ''}`;
       el.dataset.id = node.id;
+      if (node.mini && !node.isMain) el.classList.add('mini');
       el.style.left = node.x + 'px';
       el.style.top = node.y + 'px';
 
@@ -4420,6 +4513,23 @@
         el.appendChild(close);
       }
 
+      if (node.mini && !node.isMain) {
+        const full = (node.text || '').trim() || (node.kind === 'link' ? (node.url || '') : '');
+        if (full) { const tip = document.createElement('div'); tip.className = 'mini-tip'; tip.textContent = full; el.appendChild(tip); }
+      }
+      if (node.kind === 'photo' && !node.mini) {
+        if (node.w) { el.style.width = el.style.minWidth = el.style.maxWidth = node.w + 'px'; }
+        const h = document.createElement('div'); h.className = 'img-resize'; h.title = 'Потяните, чтобы изменить размер';
+        h.addEventListener('pointerdown', e => {
+          e.preventDefault(); e.stopPropagation();
+          const x0 = e.clientX, w0 = el.offsetWidth;
+          h.setPointerCapture(e.pointerId);
+          const mv = ev => { const w = Math.max(120, Math.min(900, Math.round(w0 + (ev.clientX - x0) / state.scale))); node.w = w; el.style.width = el.style.minWidth = el.style.maxWidth = w + 'px'; renderEdges(); };
+          const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); save(); try { recordHistory(); } catch (_) {} };
+          h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up);
+        });
+        el.appendChild(h);
+      }
       // Events
       el.addEventListener('pointerdown', onNodePointerDown);
       el.addEventListener('dblclick', onNodeDblClick);
@@ -4577,26 +4687,46 @@
       // Clear existing edge paths (keep defs and temp)
       edgesSvg.querySelectorAll('.edge-path, .edge-hit').forEach(p => p.remove());
 
+      // pass 1: pick sides, then spread every edge that leaves the same side evenly along it
+      const plan = [];
+      const slots = new Map();
       state.edges.forEach(edge => {
         const fromId = repOf(edge.from), toId = repOf(edge.to);
-        if (fromId === toId) return;                  // inside one collapsed group
-        const from = getNode(fromId);
-        const to   = getNode(toId);
+        if (fromId === toId) return;
+        const from = getNode(fromId), to = getNode(toId);
         if (!from || !to) return;
-
         const sides = (edge.fromSide && edge.toSide && fromId === edge.from && toId === edge.to)
-          ? { fromSide: edge.fromSide, toSide: edge.toSide }
-          : bestSides(from, to);
+          ? { fromSide: edge.fromSide, toSide: edge.toSide } : bestSides(from, to);
+        const item = { edge, from, to, sides };
+        plan.push(item);
+        const add = (node, side, other, end) => {
+          const k = node.id + '|' + side; if (!slots.has(k)) slots.set(k, []);
+          const oc = getNodeCenter(other);
+          slots.get(k).push({ item, end, key: (side === 'top' || side === 'bottom') ? oc.x : oc.y });
+        };
+        add(from, sides.fromSide, to, 'p1'); add(to, sides.toSide, from, 'p2');
+      });
+      slots.forEach((list, k) => {
+        const [nid, side] = [k.slice(0, k.lastIndexOf('|')), k.slice(k.lastIndexOf('|') + 1)];
+        const node = getNode(nid); const c = getNodeCenter(node);
+        list.sort((a, b) => a.key - b.key);
+        const horiz = side === 'top' || side === 'bottom';
+        const span = (horiz ? c.w : c.h) * 0.7;
+        list.forEach((s, i) => {
+          const t = list.length === 1 ? 0 : (i / (list.length - 1) - 0.5) * span;
+          const base = getSidePoint(node, side);
+          s.item[s.end] = horiz ? { x: base.x + t, y: base.y } : { x: base.x, y: base.y + t };
+        });
+      });
 
-        const p1 = getSidePoint(from, sides.fromSide);
-        const p2 = getSidePoint(to, sides.toSide);
+      plan.forEach(({ edge, from, to, sides, p1, p2 }) => {
 
         const etype = ['normal','dashed','strong'].includes(edge.type) ? edge.type : (edge.type === 'weak' || edge.type === 'conflict' ? 'dashed' : (edge.type === 'strong' ? 'strong' : 'normal'));
         edge.type = etype;
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         const pathD = currentTheme === 'paper'
           ? createSketchLine(p1.x, p1.y, p2.x, p2.y, edge.id)
-          : `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`;
+          : createBezier(p1.x, p1.y, p2.x, p2.y, sides.fromSide, sides.toSide);
         path.setAttribute('d', pathD);
         path.setAttribute('class', 'edge-path type-' + etype + (edge.id === state.selectedEdgeId ? ' selected' : ''));
         path.dataset.id = edge.id;
@@ -4620,6 +4750,11 @@
 
         edgesSvg.appendChild(path);
         edgesSvg.appendChild(hit);
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', p2.x); dot.setAttribute('cy', p2.y); dot.setAttribute('r', 4);
+        dot.setAttribute('class', 'edge-path edge-end');
+        if (customColor) dot.style.fill = customColor;
+        edgesSvg.appendChild(dot);
       });
     }
 
@@ -7585,7 +7720,8 @@
     // The same map shown as even columns and rows. Nothing is converted: switch back and the board is as it was.
     const TableView = (function () {
       const VIEW_KEY = 'factmap-view';
-      let on = false, wrap = null, pending = false, editing = null, openMenu = null, extraTypes = [];
+      let on = false, wrap = null, pending = false, editing = null, openMenu = null, extraTypes = [], tree = false;
+      try { tree = localStorage.getItem('factmap-view-tree') === '1'; } catch (e) {}
       try { on = localStorage.getItem(VIEW_KEY) === 'table'; } catch (e) {}
       const hexOf = c => COLOR_HEX[c] || '#5b8def';
       const FILE_KINDS = n => n.kind && n.kind !== 'sticker' && n.kind !== 'box' && n.kind !== 'trash';
@@ -7652,6 +7788,7 @@
           '<h1><button type="button" class="tv-main" data-t="main">' + escapeHtml((main && (main.text || '').trim()) || 'Нажмите, чтобы написать главный вопрос') + '</button></h1>' +
           '<p class="tv-stats">' + total + ' ' + plural(total, 'карточка', 'карточки', 'карточек') + ' · ' + state.edges.length + ' ' + plural(state.edges.length, 'связь', 'связи', 'связей') + ' · ★ ' + keys + '</p></div>' +
           '<div class="tv-tools">' +
+          '<button type="button" class="btn' + (tree ? ' active' : '') + '" data-t="tree" title="Показать, что от чего идёт: карточки столбиком под своей карточкой">' + (tree ? 'По типам' : 'Что от чего идёт') + '</button>' +
           '<button type="button" class="btn tv-tidy" data-t="tidy" title="Расставить карточки на доске такими же ровными колонками">Выровнять доску</button></div></header>' +
           '<div class="tv-cols">' + cols.map(c =>
             '<section class="tv-col" style="--c:' + c.color + '"><div class="tv-colhead"><i></i><div><b>' + escapeHtml(c.title) + '</b>' + (c.sub ? '<small>' + escapeHtml(c.sub) + '</small>' : '') + '</div><span class="tv-count">' + c.rows.length + '</span>' +
@@ -7660,11 +7797,34 @@
             (c.make && c.rows.length ? '<button type="button" class="tv-addrow" data-t="add" data-col="' + c.id + '">+ Добавить</button>' : '') + '</section>').join('') +
           (hiddenTypes.length ? '<section class="tv-col tv-ghost"><div class="tv-colhead"><div><b>Ещё колонка</b><small>по типу карточки</small></div></div><div class="tv-ghostlist">' + hiddenTypes.map(k => '<button type="button" class="tv-type" style="--c:' + KINDS[k].color + '" data-t="addtype" data-v="' + k + '">+ ' + KINDS[k].label + '</button>').join('') + '</div></section>' : '') +
           '</div>';
+        if (tree) { const cw0 = wrap.querySelector('.tv-cols'); if (cw0) cw0.outerHTML = treeHtml(main); }
         const cw = wrap.querySelector('.tv-cols'); if (cw) cw.scrollLeft = scrollL; wrap.scrollTop = scrollT;
         if (editing) {
           const ta = wrap.querySelector('.tv-row.editing .tv-edit');
           if (ta) { ta.focus(); const L = ta.value.length; try { ta.setSelectionRange(L, L); } catch (e) {} autosize(ta); const r = ta.closest('.tv-row'); if (r && r.scrollIntoView) r.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
         }
+      }
+      function treeHtml(main) {
+        const all = cards(), ids = new Set(all.map(n => n.id)), seen = new Set();
+        const kids = id => state.edges.filter(e => e.from === id && ids.has(e.to)).map(e => getNode(e.to)).filter(Boolean).sort(byPlace);
+        const col = { id: 't-tree' };
+        const level = (list, depth) => {
+          const items = list.filter(n => !seen.has(n.id));
+          items.forEach(n => seen.add(n.id));
+          if (!items.length) return '';
+          return '<ol class="tv-rows tt-level" style="--d:' + depth + '">' + items.map((n, i) => {
+            const sub = depth < 12 ? level(kids(n.id), depth + 1) : '';
+            return rowHtml(n, i, col).replace('class="tv-row', 'class="tv-row tt-row" style="--c:' + typeColor(n)) + (sub ? '<li class="tt-kids">' + sub + '</li>' : '');
+          }).join('') + '</ol>';
+        };
+        let html = main ? level(kids(main.id), 0) : '';
+        const incoming = new Set(state.edges.map(e => e.to));
+        const roots = all.filter(n => !seen.has(n.id) && !incoming.has(n.id)).sort(byPlace);
+        let rest = level(roots, 0);
+        rest += level(all.filter(n => !seen.has(n.id)).sort(byPlace), 0);
+        return '<div class="tv-cols tv-tree"><section class="tv-col tt-col"><div class="tv-colhead"><i></i><div><b>' + escapeHtml((main && (main.text || '').trim()) || 'Главный вопрос') + '</b><small>и всё, что от него идёт</small></div></div>' +
+          (html || '<p class="tv-empty">От главной карточки пока нет связей.</p>') +
+          (rest ? '<div class="tt-sep">Не связаны с главной</div>' + rest : '') + '</section></div>';
       }
       function plural(n, a, b, c) { const k = n % 10, h = n % 100; return k === 1 && h !== 11 ? a : k >= 2 && k <= 4 && (h < 12 || h > 14) ? b : c; }
       function autosize(ta) { ta.style.height = 'auto'; ta.style.height = Math.min(220, ta.scrollHeight + 2) + 'px'; }
@@ -7772,6 +7932,7 @@
         else if (a === 'add') { if (editing) finishEdit(true); addTo(b.dataset.col); }
         else if (a === 'addtype') { extraTypes.push(b.dataset.v); addTo('t-' + b.dataset.v); }
         else if (a === 'tidy') tidyBoard();
+        else if (a === 'tree') { tree = !tree; try { localStorage.setItem('factmap-view-tree', tree ? '1' : '0'); } catch (er) {} render(true); }
         else if (a === 'goto') { const t = wrap.querySelector('.tv-row[data-id="' + b.dataset.id + '"]'); if (t) flashRow(t); }
       }
       function flashRow(el) { el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
