@@ -2295,6 +2295,18 @@
     .cl-task { border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
     .cl-task-h { display: flex; gap: 8px; justify-content: space-between; align-items: center; } .cl-task small { opacity: .65; font-size: 11px; }
     .cl-st { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(127,127,127,.2); white-space: nowrap; } .st-done { background: rgba(61,214,140,.25); } .st-work { background: rgba(91,141,239,.3); } .st-q { background: rgba(255,159,67,.3); }
+    .gp-cfg { border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; font-size: 13px; flex: none; }
+    .gp-cfg summary { cursor: pointer; font-weight: 600; }
+    .gp-cfg .gp-f { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .gp-cfg input { font: inherit; font-size: 13px; padding: 7px 9px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: inherit; }
+    .gp-mode { font-size: 12px; padding: 6px 9px; border-radius: 9px; background: rgba(16,163,127,.16); line-height: 1.4; }
+    .gp-bridge { border: 1px dashed #10a37f; border-radius: 12px; padding: 9px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; flex: none; }
+    .gp-bridge[hidden] { display: none; }
+    .gp-bridge textarea { font: inherit; font-size: 13px; min-height: 70px; resize: vertical; padding: 8px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: inherit; }
+    a.btn.gp-open { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; background: #10a37f; color: #fff; border-color: #10a37f; min-height: 36px; }
+    .cl-panel.gpt .cl-m.me .cl-bubble { background: #10a37f; }
+    .cl-who { font-size: 11px; opacity: .6; }
+    #btn-auto[aria-pressed="true"] { outline: 2px solid #3dd68c; outline-offset: -2px; color: #3dd68c; }
     .c-claude { flex-wrap: wrap; } .c-claude .btn { flex: 1 1 45%; font-size: 12px; }
     .ps-row { display: flex; gap: 8px; flex-wrap: wrap; } .ps-row .btn { flex: 1 1 200px; }
     .ps-att { border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
@@ -2394,6 +2406,7 @@
 
       <button type="button" class="btn coach-btn" id="btn-coach" hidden title="Показать шаги шаблона" aria-label="Шаги шаблона"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="18" r="1.4" fill="currentColor"/></svg><span class="tb-label">Шаги</span></button>
       <button type="button" class="btn" id="btn-view" aria-pressed="false" title="Режим таблицы — всё ровно, колонками" aria-label="Таблица или доска"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3.5 9.5h17M9.3 9.5v10M14.8 9.5v10" stroke="currentColor" stroke-width="1.9"/></svg><span class="tb-label"> Таблица</span></button>
+      <button type="button" class="btn" id="btn-auto" aria-pressed="false" title="Авто-раскладка: карточки сами расступаются, связи не прячутся под карточками" aria-label="Авто-раскладка"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="4.5" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="19.5" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="4.5" cy="19" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="19.5" cy="19" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 6.4l4 3.8M18 6.4l-4 3.8M6 17.6l4-3.8M18 17.6l-4-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tb-label"> Авто</span></button>
       <div class="toolbar-spacer"></div>
       <button class="btn" id="btn-zoom-out" title="Отдалить">−</button>
       <button class="btn" id="btn-zoom-in" title="Приблизить">+</button>
@@ -2523,6 +2536,8 @@
           <h3>Связи</h3>
           <p class="modal-note">Чтобы провести связь, выделите карточку и тяните синий кружок сбоку к другой карточке. Вид линии — в «Вид» на панели карточки.</p>
           <label class="check-row"><input type="checkbox" id="auto-card" checked=""><span>Если отпустить связь в пустом месте, сразу создавать новую карточку</span></label>
+          <label class="check-row"><input type="checkbox" id="auto-layout-cb"><span>Авто-раскладка: карточки сами расступаются, чтобы новой было место, а связи не проходили под карточками</span></label>
+          <button class="btn" id="btn-layout-all" type="button" style="width:100%;margin-top:6px">Разложить всю карту ровно (можно отменить)</button>
 
         </div>
       </div>
@@ -2570,8 +2585,15 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '3.3';
+    const APP_VERSION = '3.4';
     const APP_CHANGES = [
+      { v: '3.4', date: '18 ноября 2026', items: [
+        'Окно «ИИ»: Claude и ChatGPT прямо в приложении — отправка всей карты одним нажатием',
+        'ChatGPT: ответ вставляется в приложение и отправляется на карту; с ключом OpenAI (на сайте) — отвечает прямо здесь',
+        'Кнопки «Спросить Claude» / «Спросить ChatGPT» — второе мнение по ответу в один клик',
+        'Кнопка «Авто»: карточки сами расступаются, когда места мало, а связи не прячутся под карточками',
+        '«Разложить всю карту ровно» — в Меню → Связи (можно отменить)'
+      ] },
       { v: '3.3', date: '15 ноября 2026', items: [
         'Связи расходятся ровно по краю карточки и идут плавными линиями',
         'Кнопка «Связать»: можно найти нужную карточку по тексту, даже если она далеко',
@@ -5775,6 +5797,7 @@
 
     function save() {
       if (window.__fmTable) window.__fmTable.schedule();
+      try { if (window.__fmAuto) window.__fmAuto.onSave(typeof histRestoring !== 'undefined' && histRestoring); } catch (e) {}
       const payload = {
         version: 2,
         savedAt: new Date().toISOString(),
@@ -7980,6 +8003,154 @@
 
     document.getElementById('btn-view').addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); TableView.toggle(); showToast(TableView.on() ? 'Режим таблицы: всё ровно, по колонкам' : 'Вернулись к доске'); });
     if (TableView.on()) TableView.setOn(true);
+
+    // ==================== Авто-раскладка: карточки расступаются, связи не прячутся под карточками ====================
+    const AutoLayout = (function () {
+      const KEY = 'factmap-autolayout';
+      let on = false; try { on = localStorage.getItem(KEY) === '1'; } catch (e) {}
+      let sig = '', mapId = null, timer = null, busy = false, skip = false, raf = 0;
+      const GAP = 34;
+      const vis = () => state.nodes.filter(n => !n.hiddenBy);
+      function sizeOf(n) { const el = board.querySelector('.node[data-id="' + n.id + '"]'); if (el && el.offsetWidth) return { w: el.offsetWidth, h: el.offsetHeight }; const c = getNodeCenter(n); return { w: c.w, h: c.h }; }
+      function signature() { return vis().map(n => { const z = sizeOf(n); return n.id + ':' + Math.round(n.x) + ',' + Math.round(n.y) + ',' + z.w + ',' + z.h; }).join(';') + '|' + state.edges.map(e => repOf(e.from) + '>' + repOf(e.to)).join(';'); }
+      function editingId() { const a = document.activeElement; const el = a && a.closest && a.closest('.node'); return el ? el.dataset.id : null; }
+      function items(full) {
+        const ed = editingId();
+        const P = vis().map(n => { const z = sizeOf(n); return { n, id: n.id, w: z.w, h: z.h, x: n.x + z.w / 2, y: n.y + z.h / 2, r: Math.hypot(z.w, z.h) / 2, pin: false }; });
+        const byId = new Map(P.map(p => [p.id, p]));
+        P.forEach(p => { p.pin = !!p.n.isMain || (!full && (p.id === state.selectedNodeId || p.id === state.dragNodeId || p.id === ed)); });
+        if (full && !P.some(p => p.pin) && P.length) P[0].pin = true;
+        const seen = new Set(), E = [];
+        state.edges.forEach(e => { const a = byId.get(repOf(e.from)), b = byId.get(repOf(e.to)); if (!a || !b || a === b) return; const k = a.id < b.id ? a.id + b.id : b.id + a.id; if (seen.has(k)) return; seen.add(k); E.push([a, b]); });
+        return { P, E };
+      }
+      function share(a, b) { if (a.pin && b.pin) return null; if (a.pin) return [0, 1]; if (b.pin) return [1, 0]; return [0.5, 0.5]; }
+      function collide(P) {
+        let moved = 0;
+        for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
+          const a = P[i], b = P[j];
+          let dx = b.x - a.x, dy = b.y - a.y;
+          const ox = (a.w + b.w) / 2 + GAP - Math.abs(dx), oy = (a.h + b.h) / 2 + GAP - Math.abs(dy);
+          if (ox <= 0 || oy <= 0) continue;
+          const s = share(a, b); if (!s) continue;
+          if (!dx && !dy) { dx = (j - i) % 2 ? 1 : -1; dy = 0.5; }
+          if (ox < oy) { const d = ox * Math.sign(dx || 1); a.x -= d * s[0]; b.x += d * s[1]; moved += ox; }
+          else { const d = oy * Math.sign(dy || 1); a.y -= d * s[0]; b.y += d * s[1]; moved += oy; }
+        }
+        return moved;
+      }
+      // a card that sits on someone else's link is pushed sideways off the line
+      function clearLines(P, E, k) {
+        let moved = 0;
+        E.forEach(([a, b]) => {
+          const vx = b.x - a.x, vy = b.y - a.y, L2 = vx * vx + vy * vy; if (L2 < 1) return;
+          const L = Math.sqrt(L2), nx = -vy / L, ny = vx / L;
+          const minX = Math.min(a.x, b.x) - 300, maxX = Math.max(a.x, b.x) + 300, minY = Math.min(a.y, b.y) - 300, maxY = Math.max(a.y, b.y) + 300;
+          P.forEach(c => {
+            if (c === a || c === b || c.pin || c.x < minX || c.x > maxX || c.y < minY || c.y > maxY) return;
+            const t = ((c.x - a.x) * vx + (c.y - a.y) * vy) / L2; if (t < 0.04 || t > 0.96) return;
+            const qx = a.x + vx * t, qy = a.y + vy * t;
+            const dist = (c.x - qx) * nx + (c.y - qy) * ny;
+            const need = Math.abs(nx) * c.w / 2 + Math.abs(ny) * c.h / 2 + 18;
+            if (Math.abs(dist) >= need) return;
+            const sgn = dist >= 0 ? 1 : -1, push = (need - Math.abs(dist)) * k;
+            c.x += nx * sgn * push; c.y += ny * sgn * push; moved += push;
+          });
+        });
+        return moved;
+      }
+      function forces(P, E, temp) {
+        P.forEach(p => { p.fx = 0; p.fy = 0; });
+        for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
+          const a = P[i], b = P[j]; const dx = b.x - a.x, dy = b.y - a.y; const d2 = Math.max(dx * dx + dy * dy, 400);
+          if (d2 > 900 * 900) continue;
+          const d = Math.sqrt(d2), f = 14000 * (1 + (a.r + b.r) / 220) / d2;
+          a.fx -= dx / d * f; a.fy -= dy / d * f; b.fx += dx / d * f; b.fy += dy / d * f;
+        }
+        E.forEach(([a, b]) => {
+          const dx = b.x - a.x, dy = b.y - a.y, d = Math.max(Math.hypot(dx, dy), 1), L = 120 + a.r + b.r, f = (d - L) * 0.035;
+          a.fx += dx / d * f; a.fy += dy / d * f; b.fx -= dx / d * f; b.fy -= dy / d * f;
+        });
+        let cx = 0, cy = 0; P.forEach(p => { cx += p.x; cy += p.y; }); cx /= P.length || 1; cy /= P.length || 1;
+        P.forEach(p => { if (p.pin) return; p.fx += (cx - p.x) * 0.002; p.fy += (cy - p.y) * 0.002;
+          const m = Math.hypot(p.fx, p.fy), cap = 40 * temp; const k = m > cap ? cap / m : 1; p.x += p.fx * k; p.y += p.fy * k; });
+      }
+      function apply(P) {
+        P.forEach(p => { const nx = Math.round(p.x - p.w / 2), ny = Math.round(p.y - p.h / 2); if (nx === p.n.x && ny === p.n.y) return; p.n.x = nx; p.n.y = ny; const el = board.querySelector('.node[data-id="' + p.id + '"]'); if (el) { el.style.left = nx + 'px'; el.style.top = ny + 'px'; } });
+        renderEdges();
+      }
+      function finish(label) {
+        save(); sig = signature(); busy = false;
+        try { recordHistory(); } catch (e) {}
+        try { if (typeof updateCardBar === 'function') updateCardBar(); } catch (e) {}
+        if (label) showToast(label, { label: 'Отменить', fn: () => { try { undoAction(); } catch (e) {} } });
+      }
+      // small, live: only what is needed so cards don't overlap and links stay visible
+      function relax() {
+        if (busy) return; const { P, E } = items(false); if (P.length < 2) { sig = signature(); return; }
+        const start = P.map(p => [p.x, p.y]);
+        busy = true; let frame = 0;
+        const tick = () => {
+          let m = 0; for (let k = 0; k < 3; k++) { m += collide(P); m += clearLines(P, E, 0.35); }
+          apply(P);
+          if (m > 0.6 && ++frame < 80) { raf = requestAnimationFrame(tick); return; }
+          const changed = P.some((p, i) => Math.abs(p.x - start[i][0]) > 1 || Math.abs(p.y - start[i][1]) > 1);
+          if (changed) finish(); else { busy = false; sig = signature(); }
+        };
+        raf = requestAnimationFrame(tick);
+      }
+      // the whole map, evenly: computed first, then cards glide to their places
+      function layoutAll() {
+        if (busy) return;
+        if (window.__fmTable && window.__fmTable.on()) { showToast('Раскладка работает на доске — вернитесь из таблицы'); return; }
+        const { P, E } = items(true); if (P.length < 2) { showToast('Пока нечего раскладывать'); return; }
+        busy = true;
+        const from = P.map(p => [p.x, p.y]);
+        const N = P.length > 250 ? 160 : 320;
+        for (let it = 0; it < N; it++) { const temp = 1 - it / N * 0.95; forces(P, E, temp); if (it > N * 0.5) { collide(P); clearLines(P, E, 0.5); } }
+        for (let it = 0; it < 40; it++) { if (collide(P) + clearLines(P, E, 0.5) < 0.5) break; }
+        const to = P.map(p => [p.x, p.y]); const t0 = performance.now(), D = 520;
+        const step = now => {
+          const t = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - t, 3);
+          P.forEach((p, i) => { p.x = from[i][0] + (to[i][0] - from[i][0]) * e; p.y = from[i][1] + (to[i][1] - from[i][1]) * e; });
+          apply(P);
+          if (t < 1) { raf = requestAnimationFrame(step); return; }
+          finish('Карта разложена ровно');
+          try { setTimeout(() => { fitView(); updateTransform(); }, 60); } catch (e) {}
+        };
+        raf = requestAnimationFrame(step);
+      }
+      function check() {
+        timer = null;
+        if (!on || busy) return;
+        if (window.__fmTable && window.__fmTable.on()) return;
+        if (state.mode === 'drag' || state.mode === 'pinch' || state.mode === 'connect' || state.penOn) { timer = setTimeout(check, 500); return; }
+        const s = signature(); if (s === sig) return;
+        relax();
+      }
+      function onSave(restoring) {
+        if (busy) return;
+        if (mapId !== activeMapId || restoring) { mapId = activeMapId; skip = true; }
+        clearTimeout(timer);
+        timer = setTimeout(() => { if (skip) { skip = false; timer = null; sig = signature(); return; } check(); }, 380);
+      }
+      function ui() {
+        const b = document.getElementById('btn-auto'); if (b) b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        const cb = document.getElementById('auto-layout-cb'); if (cb) cb.checked = on;
+      }
+      function setOn(v, quiet) {
+        on = !!v; try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+        ui(); mapId = activeMapId;
+        if (on) { sig = ''; relax(); if (!quiet) showToast('Авто-раскладка включена: карточки сами расступаются, связи не уходят под карточки', { label: 'Разложить всю карту', fn: layoutAll }); }
+        else if (!quiet) showToast('Авто-раскладка выключена — карточки стоят, где вы их поставили');
+      }
+      document.getElementById('btn-auto').addEventListener('click', () => setOn(!on));
+      const cb = document.getElementById('auto-layout-cb'); if (cb) cb.addEventListener('change', () => setOn(cb.checked));
+      const la = document.getElementById('btn-layout-all'); if (la) la.addEventListener('click', () => { if (window.closeFactSettings) window.closeFactSettings(); setTimeout(layoutAll, 120); });
+      ui(); mapId = activeMapId; setTimeout(() => { sig = signature(); }, 800);
+      return { onSave, layoutAll, relax, setOn, on: () => on };
+    })();
+    window.__fmAuto = AutoLayout;
     // ==================== Simple mode helpers: one big button + a hint that knows what to do next ====================
     const SimpleMode = (function () {
       const fab = document.createElement('button');
@@ -8536,7 +8707,7 @@
       }
 
       // ---- ответ Claude → обратно на карту ----
-      function importReply(text) {
+      function importReply(text, who) {
         let main = state.nodes.find(n => n.isMain); if (!main) { addMainQuestion(); main = state.nodes.find(n => n.isMain); }
         const lines = String(text || '').split(/\n+/).map(l => l.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').replace(/\*\*/g, '').trim()).filter(Boolean);
         const qs = lines.filter(l => /\?\s*$/.test(l) && l.length > 8 && l.length < 300);
@@ -8546,7 +8717,7 @@
           state.nodes.push(node);
           if (main) state.edges.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6), from: main.id, to: node.id, type: 'dashed' });
         });
-        const sticker = { id: uid(), kind: 'sticker', text: 'Ответ Claude (' + new Date().toLocaleDateString('ru-RU') + '):\n' + String(text).trim().slice(0, 4000), x: spot.x - 20, y: spot.y + Math.ceil(qs.length / 2) * 130 + 20, color: 'yellow', shape: 'rect', isMain: false };
+        const sticker = { id: uid(), kind: 'sticker', text: 'Ответ ' + (who || 'Claude') + ' (' + new Date().toLocaleDateString('ru-RU') + '):\n' + String(text).trim().slice(0, 4000), x: spot.x - 20, y: spot.y + Math.ceil(qs.length / 2) * 130 + 20, color: 'yellow', shape: 'rect', isMain: false };
         state.nodes.push(sticker);
         renderNodes(); renderEdges(); save(); try { recordHistory(); } catch (e) {}
         return qs.length;
@@ -8780,7 +8951,7 @@
         panel = document.createElement('div');
         panel.className = 'cl-panel';
         panel.innerHTML =
-          '<div class="cl-head"><b>Claude</b><div class="cl-tabs"><button type="button" class="btn" data-t="chat">💬 Чат</button><button type="button" class="btn" data-t="code">🖥 Claude Code</button></div><button type="button" class="btn cl-x" aria-label="Закрыть">✕</button></div>' +
+          '<div class="cl-head"><b>ИИ</b><div class="cl-tabs"><button type="button" class="btn" data-t="chat">💬 Claude</button><button type="button" class="btn" data-t="gpt">🟢 ChatGPT</button><button type="button" class="btn" data-t="code">🖥 Code</button></div><button type="button" class="btn cl-x" aria-label="Закрыть">✕</button></div>' +
           '<div class="cl-prog"></div>' +
           '<div class="cl-body cl-chat">' +
             '<div class="cl-msgs"></div>' +
@@ -8790,6 +8961,21 @@
               '<div class="cl-row"><textarea rows="2" class="cl-text" placeholder="Напишите Claude… (Enter — отправить, Shift+Enter — новая строка)"></textarea><button type="button" class="btn primary cl-send">➤</button></div>' +
               '<div class="cl-row2"><button type="button" class="btn" data-c="sendmap">Отправить всю карту одним нажатием</button><button type="button" class="btn" data-c="clear">Новый диалог</button></div>' +
               '<div class="cl-row2"><button type="button" class="btn" data-c="import">📂 Разобрать проект на детали</button><button type="button" class="btn" data-c="prompt">✦ Промпт и пакет .zip</button></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="cl-body cl-gpt" hidden>' +
+            '<details class="gp-cfg"><summary>Подключение ChatGPT</summary><div class="gp-mode"></div><div class="gp-f">' +
+              '<label>Ключ OpenAI API (необязательно) <input type="password" class="gp-key" placeholder="sk-…" autocomplete="off"></label>' +
+              '<label>Модель <input type="text" class="gp-model" list="gp-models" placeholder="gpt-5"></label><datalist id="gp-models"><option value="gpt-5"><option value="gpt-5-mini"><option value="gpt-4.1"><option value="gpt-4o"></datalist>' +
+              '<small style="opacity:.7">Ключ хранится только в этом браузере. Без ключа всё равно работает — через окно ChatGPT.</small></div></details>' +
+            '<div class="cl-msgs gp-msgs"></div>' +
+            '<div class="gp-bridge" hidden><div class="gp-btxt"></div><a class="btn gp-open" target="_blank" rel="noopener" href="https://chatgpt.com/">Открыть ChatGPT ↗</a><textarea class="gp-paste" placeholder="Когда ChatGPT ответит — скопируйте ответ и вставьте сюда"></textarea><div class="cl-row2"><button type="button" class="btn primary" data-g="pasteok">Добавить ответ ChatGPT</button><button type="button" class="btn" data-g="pastex">Скрыть</button></div></div>' +
+            '<div class="cl-quick gp-quick"></div>' +
+            '<div class="cl-input">' +
+              '<label class="cl-ctx"><input type="checkbox" class="gp-withmap" checked> приложить карту и файлы</label>' +
+              '<div class="cl-row"><textarea rows="2" class="gp-text" placeholder="Напишите ChatGPT… (Enter — отправить)"></textarea><button type="button" class="btn primary gp-send">➤</button></div>' +
+              '<div class="cl-row2"><button type="button" class="btn" data-g="sendmap">Отправить всю карту в ChatGPT</button><button type="button" class="btn" data-g="clear">Новый диалог</button></div>' +
+              '<div class="cl-row2"><button type="button" class="btn" data-g="both">⚖️ Тот же вопрос — Claude</button></div>' +
             '</div>' +
           '</div>' +
           '<div class="cl-body cl-code" hidden>' +
@@ -8802,7 +8988,7 @@
         panel.addEventListener('keydown', e => e.stopPropagation());
         panel.querySelector('.cl-x').onclick = () => panel.classList.remove('on');
         panel.querySelectorAll('[data-t]').forEach(b => b.onclick = () => show(b.dataset.t));
-        initChat(); initCode();
+        initChat(); initCode(); initGpt();
         requestAnimationFrame(() => show(tab || 'chat'));
       }
       function show(tab) {
@@ -8810,6 +8996,9 @@
         panel.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('active', b.dataset.t === tab));
         panel.querySelector('.cl-chat').hidden = tab !== 'chat';
         panel.querySelector('.cl-code').hidden = tab !== 'code';
+        panel.querySelector('.cl-gpt').hidden = tab !== 'gpt';
+        panel.classList.toggle('gpt', tab === 'gpt');
+        if (tab === 'gpt') { renderGpt(); gptMode(); setTimeout(() => panel.querySelector('.gp-text').focus(), 50); }
         panel.querySelector('.cl-prog').innerHTML = progress();
         const n = P().attachments().length; panel.querySelector('.cl-ctxn').textContent = n ? '(вложений: ' + n + ')' : '';
         if (tab === 'chat') { renderChat(); setTimeout(() => panel.querySelector('.cl-text').focus(), 50); }
@@ -8857,9 +9046,10 @@
           const el = document.createElement('div'); el.className = 'cl-m ' + (m.role === 'user' ? 'me' : 'ai');
           el.innerHTML = '<div class="cl-bubble">' + (m.role === 'user' ? esc(m.show || m.content).replace(/\n/g, '<br>') : md(m.content)) + '</div>' +
             (m.att ? '<div class="cl-att">📎 ' + esc(m.att) + '</div>' : '') +
-            (m.role === 'assistant' && m.content && !m.pending ? '<div class="cl-acts"><button type="button" class="btn" data-a="copy">Копировать</button><button type="button" class="btn" data-a="map">→ на карту</button></div>' : '');
+            (m.role === 'assistant' && m.content && !m.pending ? '<div class="cl-acts"><button type="button" class="btn" data-a="copy">Копировать</button><button type="button" class="btn" data-a="map">→ на карту</button><button type="button" class="btn" data-a="gpt">Спросить ChatGPT</button></div>' : '');
           el.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
             if (b.dataset.a === 'copy') { const ok = await copyText(m.content); showToast(ok ? 'Ответ скопирован' : 'Не удалось скопировать'); }
+            else if (b.dataset.a === 'gpt') { show('gpt'); gsend('Вот ответ Claude по моей карте. Согласен? Что бы ты сделал иначе, что упущено?\n\n' + m.content, false); }
             else { const q = P().importReply(m.content); showToast(q ? 'На карте: ответ и вопросы Claude (' + q + ')' : 'Ответ добавлен на карту стикером'); }
           });
           box.appendChild(el);
@@ -8904,6 +9094,137 @@
       function noAI() {
         const box = panel.querySelector('.cl-msgs');
         box.innerHTML = '<div class="cl-empty"><b>Чат с Claude работает в версии-артефакте.</b><br>Здесь (на сайте) приложение не может обратиться к Claude напрямую. Откройте ту же «Факт-карту» в Claude — там чат, отправка в Claude Code и «Улучшить с Claude» работают одним нажатием.<br><br><a class="btn primary" target="_blank" rel="noopener" href="' + ARTIFACT_URL + '">Открыть Факт-карту в Claude</a><br><br>Ваши карты переносятся так: Меню → Экспорт здесь и Меню → Импорт там.</div>';
+      }
+
+      // ---------- ChatGPT ----------
+      const GPT_CHAT = 'factmap-gpt-chat-v1', GPT_CFG = 'factmap-gpt-cfg-v1';
+      const IN_CLAUDE = !!(window.claude && typeof window.claude.use === 'function');
+      const gcfg = () => { try { return JSON.parse(localStorage.getItem(GPT_CFG) || '{}'); } catch (e) { return {}; } };
+      const gsave = c => { try { localStorage.setItem(GPT_CFG, JSON.stringify(c)); } catch (e) {} };
+      const gload = () => { try { return JSON.parse(localStorage.getItem(GPT_CHAT) || '{}'); } catch (e) { return {}; } };
+      const gstore = m => { try { const a = gload(); a[activeMapId] = m.slice(-60); localStorage.setItem(GPT_CHAT, JSON.stringify(a)); } catch (e) {} };
+      let gmsgs = [], gMap = null, gbusy = false, gctrl = null, apiBroken = false;
+      const SYS_GPT = 'Ты — ChatGPT, помогаешь владельцу «Факт-карты» проектировать и делать приложения. Он не программист: отвечай по-русски, просто и по делу. Если нужно уточнить — задай вопросы списком, каждый с «?» в конце.';
+      // direct = the page talks to OpenAI itself (needs a key; inside Claude the browser blocks outside servers)
+      const direct = () => !!(gcfg().key) && !IN_CLAUDE && !apiBroken;
+      function gptMode() {
+        const el = panel.querySelector('.gp-mode'); if (!el) return;
+        el.innerHTML = direct()
+          ? '✅ Прямое подключение: ChatGPT отвечает прямо здесь, по вашему ключу.'
+          : IN_CLAUDE
+            ? 'Внутри Claude браузер не пускает приложение к чужим серверам, поэтому ChatGPT работает «через окно»: нажимаете «Отправить» — вся карта копируется, открывается ChatGPT, вы вставляете (Ctrl+V), а ответ вставляете сюда. Диалог и «→ на карту» живут здесь.<br>Прямое подключение по ключу работает в версии-сайте Факт-карты.'
+            : 'Без ключа ChatGPT работает «через окно»: карта копируется, открывается ChatGPT, ответ вставляете сюда. С ключом OpenAI API ответ будет приходить прямо сюда.';
+      }
+      function initGpt() {
+        const c = gcfg(), key = panel.querySelector('.gp-key'), model = panel.querySelector('.gp-model');
+        key.value = c.key || ''; model.value = c.model || '';
+        key.onchange = () => { const x = gcfg(); x.key = key.value.trim(); gsave(x); apiBroken = false; gptMode(); };
+        model.onchange = () => { const x = gcfg(); x.model = model.value.trim(); gsave(x); };
+        const ta = panel.querySelector('.gp-text');
+        ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); gsend(); } });
+        panel.querySelector('.gp-send').onclick = () => gsend();
+        panel.querySelector('[data-g=sendmap]').onclick = () => gsend('Вот моя карта и все материалы. Посмотри и ответь по разделу «Что нужно от тебя».', true);
+        panel.querySelector('[data-g=clear]').onclick = () => { if (gctrl) gctrl.abort(); gmsgs = []; gstore(gmsgs); panel.querySelector('.gp-bridge').hidden = true; renderGpt(); };
+        panel.querySelector('[data-g=both]').onclick = () => {
+          const last = [...gmsgs].reverse().find(m => m.role === 'user');
+          const t = panel.querySelector('.gp-text').value.trim() || (last && last.show);
+          if (!t) { showToast('Сначала задайте вопрос ChatGPT — или напишите его в поле'); return; }
+          show('chat'); send(t, !msgs.length);
+        };
+        panel.querySelector('[data-g=pasteok]').onclick = () => {
+          const v = panel.querySelector('.gp-paste').value.trim(); if (!v) { showToast('Вставьте ответ ChatGPT в поле'); return; }
+          const p = gmsgs.find(m => m.pending); if (p) { p.content = v; delete p.pending; } else gmsgs.push({ role: 'assistant', content: v });
+          panel.querySelector('.gp-paste').value = ''; panel.querySelector('.gp-bridge').hidden = true; gbusy = false; panel.querySelector('.gp-send').disabled = false;
+          gstore(gmsgs); renderGpt();
+        };
+        panel.querySelector('[data-g=pastex]').onclick = () => { panel.querySelector('.gp-bridge').hidden = true; gmsgs = gmsgs.filter(m => !m.pending); gbusy = false; panel.querySelector('.gp-send').disabled = false; gstore(gmsgs); renderGpt(); };
+        const qb = panel.querySelector('.gp-quick');
+        QUICK.forEach(([label, text]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'cl-chip'; b.textContent = label; b.onclick = () => gsend(text, !gmsgs.length); qb.appendChild(b); });
+      }
+      function renderGpt() {
+        if (gMap !== activeMapId) { gMap = activeMapId; gmsgs = gload()[activeMapId] || []; panel.querySelector('.gp-bridge').hidden = true; gbusy = false; panel.querySelector('.gp-send').disabled = false;
+          if (gmsgs.some(m => m.pending)) { panel.querySelector('.gp-bridge').hidden = false; panel.querySelector('.gp-btxt').textContent = 'Ждём ответ ChatGPT — вставьте его сюда (или «Скрыть», чтобы отменить).'; gbusy = true; panel.querySelector('.gp-send').disabled = true; } }
+        const box = panel.querySelector('.gp-msgs');
+        if (!gmsgs.length) { box.innerHTML = '<div class="cl-empty"><b>Диалог с ChatGPT по карте «' + esc(P().mapName()) + '»</b><br>Нажмите «Отправить всю карту в ChatGPT» — уйдёт промпт, все карточки и тексты файлов. Ответ появится здесь: его можно отправить на карту или показать Claude для второго мнения.</div>'; return; }
+        box.innerHTML = '';
+        gmsgs.forEach(m => {
+          const el = document.createElement('div'); el.className = 'cl-m ' + (m.role === 'user' ? 'me' : 'ai');
+          el.innerHTML = (m.role === 'assistant' ? '<span class="cl-who">ChatGPT</span>' : '') +
+            '<div class="cl-bubble">' + (m.role === 'user' ? esc(m.show || m.content).replace(/\n/g, '<br>') : (m.pending ? '<i>Жду ответ ChatGPT…</i>' : md(m.content))) + '</div>' +
+            (m.att ? '<div class="cl-att">📎 ' + esc(m.att) + '</div>' : '') +
+            (m.role === 'assistant' && m.content && !m.pending ? '<div class="cl-acts"><button type="button" class="btn" data-a="copy">Копировать</button><button type="button" class="btn" data-a="map">→ на карту</button><button type="button" class="btn" data-a="claude">Спросить Claude</button></div>' : '');
+          el.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
+            if (b.dataset.a === 'copy') { const ok = await copyText(m.content); showToast(ok ? 'Ответ скопирован' : 'Не удалось скопировать'); }
+            else if (b.dataset.a === 'claude') { show('chat'); send('Вот ответ ChatGPT по моей карте. Проверь его: что верно, что спорно, что упущено? Что лучше сделать?\n\n' + m.content, !msgs.length); }
+            else { const q = P().importReply(m.content, 'ChatGPT'); showToast(q ? 'На карте: ответ и вопросы ChatGPT (' + q + ')' : 'Ответ ChatGPT добавлен на карту стикером'); }
+          });
+          box.appendChild(el);
+        });
+        box.scrollTop = box.scrollHeight;
+      }
+      async function gsend(preset, forceMap) {
+        if (gbusy) return;
+        renderGpt();
+        const ta = panel.querySelector('.gp-text');
+        const text = (preset || ta.value).trim(); if (!text) return;
+        const withMap = forceMap || panel.querySelector('.gp-withmap').checked;
+        gbusy = true; ta.value = ''; panel.querySelector('.gp-send').disabled = true;
+        let content = text, att = '', imgs = [];
+        if (withMap) {
+          const ctx = await gatherContext();
+          content = ctx.full + '\n\n---\nМоё сообщение: ' + text;
+          imgs = ctx.imgs;
+          att = 'карта' + (ctx.imgs.length ? ', картинок: ' + ctx.imgs.length : '') + (ctx.texts.length ? ', файлов: ' + ctx.texts.length : '');
+          panel.querySelector('.gp-withmap').checked = false;
+        }
+        gmsgs.push({ role: 'user', content, show: text, att });
+        const reply = { role: 'assistant', content: '', pending: true }; gmsgs.push(reply);
+        renderGpt();
+        if (direct()) {
+          const ok = await gptApi(reply, imgs);
+          if (ok) { gbusy = false; panel.querySelector('.gp-send').disabled = false; gstore(gmsgs); renderGpt(); return; }
+        }
+        // через окно ChatGPT: первый раз — всё целиком, дальше — только новое сообщение
+        const first = gmsgs.filter(m => m.role === 'user').length === 1;
+        const out = (first ? SYS_GPT + '\n\n' : '') + content;
+        const copied = await copyText(out);
+        const short = out.length <= 6000;
+        const a = panel.querySelector('.gp-open');
+        a.href = 'https://chatgpt.com/' + (short ? '?q=' + encodeURIComponent(out) : '');
+        const br = panel.querySelector('.gp-bridge'); br.hidden = false;
+        panel.querySelector('.gp-btxt').innerHTML = (copied ? '✅ Сообщение' + (withMap ? ' с картой' : '') + ' скопировано. ' : '⚠️ Не удалось скопировать автоматически. ') +
+          (short ? 'Нажмите «Открыть ChatGPT» — текст подставится сам.' : 'Нажмите «Открыть ChatGPT» и вставьте (Ctrl+V / «Вставить»).') +
+          (imgs.length ? '<br>Картинки (' + imgs.length + ') ChatGPT через ссылку не получит — перетащите их в его окно, если нужны.' : '') +
+          (first ? '' : '<br>Продолжайте в том же чате ChatGPT.');
+        gstore(gmsgs); renderGpt();
+        setTimeout(() => panel.querySelector('.gp-paste').focus({ preventScroll: true }), 80);
+      }
+      async function gptApi(reply, imgs) {
+        const c = gcfg(); gctrl = new AbortController();
+        const conv = gmsgs.filter(m => !m.pending).map(m => ({ role: m.role, content: m.content }));
+        if (imgs && imgs.length) {
+          const parts = [{ type: 'text', text: conv[conv.length - 1].content }];
+          for (const im of imgs.slice(0, 6)) { if (im.blob.size > 4e6) continue; const url = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = () => r(null); f.readAsDataURL(im.blob); }); if (url) parts.push({ type: 'image_url', image_url: { url } }); }
+          conv[conv.length - 1] = { role: 'user', content: parts };
+        }
+        const bubble = () => { const l = panel.querySelectorAll('.gp-msgs .cl-m.ai .cl-bubble'); return l[l.length - 1]; };
+        try {
+          const res = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', signal: gctrl.signal,
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + c.key },
+            body: JSON.stringify({ model: c.model || 'gpt-5', stream: true, messages: [{ role: 'system', content: SYS_GPT }].concat(conv) }) });
+          if (!res.ok) { let msg = res.status + ''; try { const j = await res.json(); msg = (j.error && j.error.message) || msg; } catch (e) {} reply.content = '⚠️ ChatGPT ответил ошибкой: ' + msg + (res.status === 401 ? ' — проверьте ключ.' : ''); delete reply.pending; return true; }
+          const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '';
+          for (;;) {
+            const { done, value } = await rd.read(); if (done) break;
+            buf += dec.decode(value, { stream: true }); const lines = buf.split('\n'); buf = lines.pop();
+            for (const l of lines) { const t = l.replace(/^data:\s*/, '').trim(); if (!t || t === '[DONE]') continue; try { const d = JSON.parse(t).choices[0].delta.content; if (d) { reply.content += d; const b = bubble(); if (b) { b.innerHTML = md(reply.content); const box = panel.querySelector('.gp-msgs'); box.scrollTop = box.scrollHeight; } } } catch (e) {} }
+          }
+          delete reply.pending; return true;
+        } catch (e) {
+          if (e && e.name === 'AbortError') { delete reply.pending; reply.content = reply.content || '(остановлено)'; return true; }
+          apiBroken = true; gptMode(); showToast('Прямое подключение недоступно — переключаюсь на «через окно ChatGPT»');
+          return false;
+        } finally { gctrl = null; }
       }
 
       // ---------- Claude Code ----------
@@ -8982,8 +9303,8 @@
       const share = document.getElementById('btn-share');
       if (share && !document.getElementById('btn-claude')) {
         const b = document.createElement('button');
-        b.type = 'button'; b.className = 'btn'; b.id = 'btn-claude'; b.title = 'Claude: чат по карте и задачи для Claude Code'; b.setAttribute('aria-label', 'Claude');
-        b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-4 3.5v-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span class="tb-label"> Claude</span>';
+        b.type = 'button'; b.className = 'btn'; b.id = 'btn-claude'; b.title = 'ИИ прямо в приложении: Claude, ChatGPT и Claude Code'; b.setAttribute('aria-label', 'ИИ: Claude и ChatGPT');
+        b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-4 3.5v-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span class="tb-label"> ИИ</span>';
         share.parentNode.insertBefore(b, share);
         b.addEventListener('click', () => { document.querySelectorAll('.sh-ov').forEach(o => o.remove()); open('chat'); });
       }
