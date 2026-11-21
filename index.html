@@ -2174,6 +2174,155 @@
     .c-crit { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: rgba(255,159,67,.14); border: 1px solid rgba(255,159,67,.45); font-size: 13px; line-height: 1.45; }
     .c-cheer { margin: 8px 0; padding: 9px 12px; border-radius: 10px; background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.35); font-size: 13px; }
 
+    /* =====================================================================
+       Tabs navigation: arrows, wheel, list of all maps
+       ===================================================================== */
+    .tabs-nav, .tabs-all { flex-shrink: 0; align-self: center; display: none; place-items: center; height: 30px; margin: 4px 2px 0; padding: 0 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 18px; line-height: 1; cursor: pointer; }
+    .tabs-nav { width: 30px; padding: 0; }
+    .tabs-nav:disabled { opacity: .3; cursor: default; }
+    .tabs-row.tabs-over .tabs-nav { display: grid; }
+    .tabs-all { display: flex; gap: 5px; align-items: center; font-size: 13px; margin-right: 6px; }
+    .tabs-all svg { width: 16px; height: 16px; }
+    .tabs-all .ta-n { font-weight: 700; font-size: 12px; color: var(--text-muted); }
+    .tabs-all:hover, .tabs-nav:not(:disabled):hover { border-color: var(--accent); }
+    @media (max-width: 600px) { .tabs-row.tabs-over .tabs-nav { display: none; } }
+    .tabs-pop { position: fixed; z-index: 10050; width: min(340px, calc(100vw - 16px)); max-height: min(70vh, 560px); display: flex; flex-direction: column; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.45); overflow: hidden; }
+    .tabs-pop input { margin: 10px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 14px; outline: none; }
+    .tabs-pop input:focus { border-color: var(--accent); }
+    .tabs-pop ul { list-style: none; margin: 0; padding: 0 6px 6px; overflow-y: auto; flex: 1; }
+    .tabs-pop li button { width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+    .tabs-pop li button:hover, .tabs-pop li button.hl { background: var(--surface-2); }
+    .tabs-pop li button.on { color: var(--accent); font-weight: 600; }
+    .tabs-pop li button .tp-i { width: 24px; flex-shrink: 0; color: var(--text-muted); font-size: 12px; text-align: right; }
+    .tabs-pop li button .tp-n { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tabs-pop .tp-add { margin: 0 10px 10px; }
+    .tabs-pop .tp-empty { padding: 10px 14px; color: var(--text-muted); font-size: 13px; }
+    .tabs-pop .tp-hint { padding: 0 14px 8px; color: var(--text-muted); font-size: 11.5px; }
+
+    /* =====================================================================
+       Video studio (separate mode)
+       ===================================================================== */
+    .vs-ov { position: fixed; inset: 0; z-index: 10030; display: flex; flex-direction: column; background: var(--bg); color: var(--text); font-size: 14px; }
+    .vs-ov * { box-sizing: border-box; }
+    .vs-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; padding-top: calc(8px + env(safe-area-inset-top, 0px)); background: var(--surface); border-bottom: 1px solid var(--border); }
+    .vs-brand { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 6px; margin-right: 4px; }
+    .vs-top select, .vs-ov .vs-in, .vs-ov textarea, .vs-ov select.vs-in { font: inherit; font-size: 14px; color: var(--text); background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; outline: none; }
+    .vs-ov .vs-in:focus, .vs-ov textarea:focus, .vs-top select:focus { border-color: var(--accent); }
+    .vs-top select { max-width: 220px; }
+    .vs-modes { display: flex; gap: 4px; margin-left: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 3px; }
+    .vs-modes button { border: 0; background: transparent; color: var(--text-muted); font: inherit; font-size: 13.5px; padding: 6px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+    .vs-modes button.on { background: var(--accent); color: #fff; font-weight: 600; }
+    .vs-ov .btn { min-height: 34px; }
+    .vs-ib { width: 34px; padding: 0; display: inline-grid; place-items: center; }
+    .vs-main { flex: 1; overflow: auto; padding: 14px; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+    .vs-wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .vs-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .vs-card h3 { margin: 0 0 10px; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .vs-card h3 small { font-weight: 400; color: var(--text-muted); font-size: 12.5px; }
+    .vs-muted { color: var(--text-muted); font-size: 12.5px; line-height: 1.45; }
+    .vs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .vs-f { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .vs-f > span { font-size: 12px; color: var(--text-muted); }
+    .vs-f textarea { min-height: 64px; resize: vertical; line-height: 1.4; }
+    .vs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .vs-chip { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; padding: 5px 10px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .vs-chip.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, transparent); font-weight: 600; }
+    .vs-chip i { display: inline-block; border: 1.6px solid currentColor; border-radius: 2px; }
+    .vs-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .vs-sp { flex: 1; }
+
+    /* timeline */
+    .vs-tl-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+    .vs-tl-total { font-weight: 700; }
+    .vs-tl { position: relative; overflow-x: auto; overflow-y: hidden; padding-bottom: 6px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); touch-action: pan-x; }
+    .vs-tl-in { position: relative; min-width: 100%; padding: 0 10px 10px; }
+    .vs-ruler { position: relative; height: 22px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .vs-ruler b { position: absolute; top: 4px; font-size: 10.5px; font-weight: 400; color: var(--text-muted); transform: translateX(-50%); white-space: nowrap; }
+    .vs-ruler b:first-child { transform: none; } .vs-ruler b:first-child::after { left: 0; }
+    .vs-ruler b::after { content: ''; position: absolute; left: 50%; top: 14px; width: 1px; height: 5px; background: var(--border); }
+    .vs-track { display: flex; gap: 0; align-items: stretch; min-height: 108px; }
+    .vs-sc { position: relative; flex-shrink: 0; height: 108px; margin-right: 3px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-x; display: flex; flex-direction: column; }
+    .vs-sc.sel { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+    .vs-sc.drag { opacity: .85; z-index: 5; cursor: grabbing; box-shadow: 0 10px 24px rgba(0,0,0,.45); }
+    .vs-sc .vs-band { height: 6px; flex-shrink: 0; }
+    .vs-sc .vs-th { flex: 1; min-height: 0; background-size: cover; background-position: center; position: relative; }
+    .vs-sc .vs-th::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.65)); }
+    .vs-sc .vs-sct { position: absolute; left: 7px; right: 14px; bottom: 6px; z-index: 1; color: #fff; font-size: 12px; line-height: 1.2; text-shadow: 0 1px 2px #000; }
+    .vs-sc .vs-sct b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12.5px; }
+    .vs-sc .vs-sct small { opacity: .85; }
+    .vs-sc .vs-num { position: absolute; top: 10px; left: 7px; z-index: 1; font-size: 11px; font-weight: 700; color: #fff; background: rgba(0,0,0,.45); border-radius: 6px; padding: 1px 6px; }
+    .vs-sc .vs-rs { touch-action: none; position: absolute; top: 0; right: 0; bottom: 0; width: 12px; cursor: ew-resize; z-index: 2; display: grid; place-items: center; }
+    .vs-sc .vs-rs::before { content: ''; width: 3px; height: 26px; border-radius: 2px; background: rgba(255,255,255,.55); }
+    .vs-add-sc { flex-shrink: 0; width: 64px; height: 108px; border: 1.5px dashed var(--border); border-radius: 10px; background: transparent; color: var(--text-muted); font-size: 26px; cursor: pointer; }
+    .vs-add-sc:hover { color: var(--text); border-color: var(--accent); }
+    .vs-ins { position: absolute; top: 30px; width: 3px; height: 108px; background: var(--accent); border-radius: 2px; z-index: 6; pointer-events: none; }
+    .vs-arc { display: flex; gap: 3px; margin-top: 8px; }
+    .vs-arc span { height: 22px; border-radius: 6px; font-size: 11px; color: #111; font-weight: 600; display: flex; align-items: center; justify-content: center; overflow: hidden; white-space: nowrap; padding: 0 4px; flex-shrink: 0; }
+    .vs-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); }
+    .vs-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+
+    .vs-refs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .vs-ref { position: relative; width: 84px; height: 84px; border-radius: 9px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2) center/cover no-repeat; }
+    .vs-ref button { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; cursor: pointer; line-height: 1; padding: 0; }
+    .vs-ref-add { width: 84px; height: 84px; border-radius: 9px; border: 1.5px dashed var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font: inherit; font-size: 12px; }
+    .vs-pre { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin: 0; max-height: 420px; overflow: auto; }
+
+    /* storyboard (frames of an uploaded video) */
+    .vs-vids { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .vs-drop { border: 1.5px dashed var(--border); border-radius: 12px; padding: 18px; text-align: center; color: var(--text-muted); }
+    .vs-drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .vs-player { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+    .vs-player video { max-width: min(100%, 560px); max-height: 52vh; border-radius: 10px; background: #000; display: block; }
+    .vs-player .vs-info { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+    .vs-kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; }
+    .vs-kv span { color: var(--text-muted); }
+    .vs-prog { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+    .vs-prog i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+    .vs-frames { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--fw, 180px), 1fr)); gap: 10px; }
+    .vs-fr { background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 11px; overflow: hidden; display: flex; flex-direction: column; }
+    .vs-fr.on { border-color: #ff9f43; }
+    .vs-fr .vs-img { position: relative; background: #000; cursor: pointer; }
+    .vs-fr img { width: 100%; display: block; }
+    .vs-fr .vs-tc { position: absolute; left: 6px; bottom: 6px; background: rgba(0,0,0,.7); color: #fff; font-size: 11.5px; padding: 1px 6px; border-radius: 6px; font-variant-numeric: tabular-nums; }
+    .vs-fr .vs-cut { position: absolute; left: 6px; top: 6px; background: #b07cff; color: #111; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 6px; }
+    .vs-fr .vs-x { position: absolute; right: 5px; top: 5px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; cursor: pointer; padding: 0; }
+    .vs-fr .vs-fb { padding: 7px; display: flex; flex-direction: column; gap: 6px; }
+    .vs-fr label.vs-chk { display: flex; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; }
+    .vs-fr textarea { min-height: 44px; font-size: 12.5px; padding: 6px 8px; resize: vertical; }
+    .vs-warn { padding: 10px 12px; border-radius: 10px; background: rgba(255,159,67,.14); border: 1px solid rgba(255,159,67,.45); font-size: 13px; line-height: 1.45; }
+    .vs-ok { padding: 10px 12px; border-radius: 10px; background: rgba(61,214,140,.12); border: 1px solid rgba(61,214,140,.4); font-size: 13px; }
+    .vs-gaps { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+    .vs-tree { font: 12.5px/1.6 ui-monospace, Menlo, Consolas, monospace; color: var(--text-muted); white-space: pre; overflow-x: auto; }
+    .vs-empty { text-align: center; padding: 30px 10px; color: var(--text-muted); }
+    .vs-empty h2 { color: var(--text); margin: 0 0 6px; font-size: 20px; }
+    .vs-tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-top: 14px; text-align: left; }
+    .vs-tpl { border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: var(--surface); cursor: pointer; color: var(--text); font: inherit; text-align: left; }
+    .vs-tpl:hover { border-color: var(--accent); }
+    .vs-tpl b { display: block; margin-bottom: 4px; } .vs-tpl small { color: var(--text-muted); font-size: 12px; line-height: 1.4; display: block; }
+    @media (max-width: 640px) {
+      .vs-modes { margin-left: 0; width: 100%; } .vs-modes button { flex: 1; padding: 6px 4px; font-size: 12.5px; }
+      .vs-top select { max-width: 150px; } .vs-main { padding: 10px; } .vs-card { padding: 11px; }
+      .vs-frames { --fw: 140px; }
+    }
+    @media (pointer: coarse) { .vs-hide-touch { display: none; } .vs-sc .vs-rs { width: 22px; } }
+    @media (max-width: 1000px) { #btn-video .tb-label { display: none; } }
+
+    .vs-help { font-size: 13px; }
+    .vs-seg { display: flex; gap: 12px; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); }
+    .vs-seg-th { position: relative; width: 120px; flex-shrink: 0; align-self: flex-start; border-radius: 8px; overflow: hidden; background: #000; min-height: 68px; }
+    .vs-seg-th img { width: 100%; display: block; }
+    .vs-seg-th .vs-tc { position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,.7); color: #fff; font-size: 11px; padding: 1px 5px; border-radius: 5px; }
+    .vs-seg-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .vs-seg-t label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+    .vs-seg-t input { width: 84px; }
+    .vs-seg .vs-pre { max-height: 140px; }
+    @media (max-width: 640px) { .vs-seg { flex-direction: column; } .vs-seg-th { width: 100%; max-width: 220px; } }
+    .vs-hl { position: relative; z-index: 2; outline: 3px solid #facc15 !important; outline-offset: 3px; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,.45) !important; }
+    .vs-tour { position: fixed; z-index: 10060; width: min(360px, calc(100vw - 16px)); padding: 14px; background: var(--surface); color: var(--text); border: 1px solid #facc15; border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .vs-tour b { font-size: 16px; } .vs-tour p { margin: 0; line-height: 1.5; color: var(--text); }
+    .vs-tour-top { display: flex; align-items: center; justify-content: space-between; color: var(--text-muted); }
+    .vs-tour-top .c-x { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; font-size: 18px; line-height: 1; padding: 0; }
+    .vs-tour-bar { height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; } .vs-tour-bar i { display: block; height: 100%; background: #facc15; }
     /* ideas tab next to the map tabs */
     .tabs-row { display: flex; align-items: stretch; flex-shrink: 0; position: relative; z-index: 400; background: var(--surface); border-bottom: 1px solid var(--border); }
     .tabs-row .map-tabs { flex: 1; min-width: 0; border-bottom: 0; }
@@ -2585,8 +2734,19 @@
 
   <script id="factmap-app">
     // ==================== Version (bump on every release) ====================
-    const APP_VERSION = '3.4';
+    const APP_VERSION = '3.6';
     const APP_CHANGES = [
+      { v: '3.6', date: '21 ноября 2026', items: [
+        'Видео-студия: свободный режим — опишите видео своими словами, ИИ сам разложит его на сцены',
+        'Правки по фрагментам готового видео: выберите кусок, что сделать (заменить объект, фон, стиль, продлить, вырезать…) — и получите готовый промпт для ИИ-редактора',
+        'Обучение по видео-студии: кнопка «? Обучение» и подсказки при первом запуске'
+      ] },
+      { v: '3.5', date: '21 ноября 2026', items: [
+        'Видео-студия — отдельный режим (кнопка «Видео»): план видео на таймлайне со сценами, этапами развития, планом и движением камеры',
+        'Раскадровка: загрузите готовое видео, оно само разобьётся на кадры (по сменам сцен или через N секунд); пишите правки прямо к кадрам',
+        'Архив для ИИ: PROMPT.md, промпты сцен, референсы, кадры с таймкодами — одним .zip',
+        'Вкладки карт: стрелки ‹ ›, прокрутка колесом и мышью, список всех карт с поиском'
+      ] },
       { v: '3.4', date: '18 ноября 2026', items: [
         'Окно «ИИ»: Claude и ChatGPT прямо в приложении — отправка всей карты одним нажатием',
         'ChatGPT: ответ вставляется в приложение и отправляется на карту; с ключом OpenAI (на сайте) — отвечает прямо здесь',
@@ -10513,6 +10673,1134 @@
         }, onErr);
       })();
     })();
+
+
+    // ==================== Tabs navigation: arrows, wheel, mouse drag, list of all maps ====================
+    (function TabsNav() {
+      const row = document.querySelector('.tabs-row'); if (!row || !tabsEl) return;
+      const mk = (cls, html, title) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = html; b.title = title; b.setAttribute('aria-label', title); return b; };
+      const prev = mk('tabs-nav', '‹', 'Прокрутить вкладки влево');
+      const next = mk('tabs-nav', '›', 'Прокрутить вкладки вправо');
+      const all = mk('tabs-all', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="ta-n"></span>', 'Все карты: список и поиск');
+      row.insertBefore(prev, tabsEl);
+      row.insertBefore(next, tabsEl.nextSibling);
+      row.insertBefore(all, next.nextSibling);
+      function upd() {
+        const max = tabsEl.scrollWidth - tabsEl.clientWidth;
+        row.classList.toggle('tabs-over', max > 4);
+        prev.disabled = tabsEl.scrollLeft <= 2;
+        next.disabled = tabsEl.scrollLeft >= max - 2;
+        all.querySelector('.ta-n').textContent = String(mapsCollection.length);
+      }
+      const step = dir => tabsEl.scrollBy({ left: dir * Math.max(180, tabsEl.clientWidth * 0.7), behavior: 'smooth' });
+      prev.addEventListener('click', () => step(-1));
+      next.addEventListener('click', () => step(1));
+      tabsEl.addEventListener('scroll', upd, { passive: true });
+      window.addEventListener('resize', upd);
+      new MutationObserver(() => requestAnimationFrame(upd)).observe(tabsEl, { childList: true });
+      // mouse wheel scrolls the tabs sideways
+      tabsEl.addEventListener('wheel', e => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+        tabsEl.scrollLeft += e.deltaY; e.preventDefault();
+      }, { passive: false });
+      // drag with the mouse to scroll; a drag is not a click
+      let drag = null, justDragged = false;
+      tabsEl.addEventListener('pointerdown', e => {
+        if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('input')) return;
+        drag = { x: e.clientX, s: tabsEl.scrollLeft, moved: false };
+      });
+      window.addEventListener('pointermove', e => {
+        if (!drag) return;
+        const dx = e.clientX - drag.x;
+        if (!drag.moved && Math.abs(dx) > 6) drag.moved = true;
+        if (drag.moved) tabsEl.scrollLeft = drag.s - dx;
+      });
+      window.addEventListener('pointerup', () => { if (drag && drag.moved) { justDragged = true; setTimeout(() => { justDragged = false; }, 50); } drag = null; });
+      tabsEl.addEventListener('click', e => { if (justDragged) { e.stopPropagation(); e.preventDefault(); } }, true);
+
+      // list of all maps with search
+      let pop = null, hl = 0;
+      function closePop() { if (!pop) return; pop.remove(); pop = null; document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', onKey, true); }
+      function outside(e) { if (pop && !pop.contains(e.target) && !all.contains(e.target)) closePop(); }
+      function items() {
+        const q = (pop.querySelector('input').value || '').trim().toLowerCase();
+        return mapsCollection.map((m, i) => ({ m, i })).filter(x => !q || (x.m.name || 'Без названия').toLowerCase().includes(q));
+      }
+      function draw() {
+        const list = items(); if (hl >= list.length) hl = Math.max(0, list.length - 1);
+        pop.querySelector('ul').innerHTML = list.length ? list.map((x, k) => '<li><button type="button" data-id="' + x.m.id + '" class="' + (x.m.id === activeMapId ? 'on ' : '') + (k === hl ? 'hl' : '') + '"><span class="tp-i">' + (x.i + 1) + '</span><span class="tp-n">' + escapeHtml(x.m.name || 'Без названия') + '</span>' + (x.m.id === activeMapId ? '✓' : '') + '</button></li>').join('')
+          : '<li class="tp-empty">Ничего не нашлось</li>';
+        const h = pop.querySelector('.hl'); if (h) h.scrollIntoView({ block: 'nearest' });
+      }
+      function pick(id) { closePop(); if (id && id !== activeMapId) switchMap(id); }
+      function onKey(e) {
+        if (!pop) return;
+        if (e.key === 'Escape') { e.stopPropagation(); closePop(); }
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); hl = Math.max(0, Math.min(items().length - 1, hl + (e.key === 'ArrowDown' ? 1 : -1))); draw(); }
+        else if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); const l = items(); if (l[hl]) pick(l[hl].m.id); }
+      }
+      function openPop() {
+        if (pop) { closePop(); return; }
+        pop = document.createElement('div'); pop.className = 'tabs-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'Все карты');
+        pop.innerHTML = '<input type="search" placeholder="Найти карту… (' + mapsCollection.length + ')" aria-label="Поиск карты" autocomplete="off"><div class="tp-hint">↑ ↓ и Enter — выбрать · Ctrl+Alt+← → — соседняя карта</div><ul></ul><button type="button" class="btn tp-add">＋ Новая карта</button>';
+        const r = all.getBoundingClientRect();
+        pop.style.top = Math.round(r.bottom + 6) + 'px';
+        pop.style.left = Math.round(Math.max(8, Math.min(window.innerWidth - Math.min(340, window.innerWidth - 16) - 8, r.right - 340))) + 'px';
+        pop.addEventListener('pointerdown', e => e.stopPropagation());
+        pop.addEventListener('click', e => {
+          if (e.target.closest('.tp-add')) { closePop(); addTab(); return; }
+          const b = e.target.closest('button[data-id]'); if (b) pick(b.dataset.id);
+        });
+        pop.querySelector('input').addEventListener('input', () => { hl = 0; draw(); });
+        document.body.appendChild(pop);
+        hl = Math.max(0, mapsCollection.findIndex(m => m.id === activeMapId));
+        draw();
+        setTimeout(() => { if (pop) pop.querySelector('input').focus(); }, 0);
+        document.addEventListener('pointerdown', outside, true);
+        document.addEventListener('keydown', onKey, true);
+      }
+      all.addEventListener('click', openPop);
+      upd();
+    })();
+    // ==================== Video studio: plan on a timeline, storyboard of uploaded videos, prompt package ====================
+    const VideoStudio = (function () {
+      const OPEN_KEY = 'factmap-video-open', LAST_KEY = 'factmap-video-last';
+      const FORMATS = {
+        '9:16': { l: '9:16', d: 'вертикальное · Reels, Shorts, TikTok', w: 1080, h: 1920 },
+        '16:9': { l: '16:9', d: 'горизонтальное · YouTube, ТВ', w: 1920, h: 1080 },
+        '1:1':  { l: '1:1', d: 'квадрат · лента', w: 1080, h: 1080 },
+        '4:5':  { l: '4:5', d: 'портрет · лента Instagram', w: 1080, h: 1350 },
+        '21:9': { l: '21:9', d: 'широкий кинокадр', w: 2560, h: 1080 }
+      };
+      const STAGES = {
+        hook:   { l: 'Зацеп', c: '#f472b6', en: 'hook' },
+        setup:  { l: 'Завязка', c: '#5b8def', en: 'setup' },
+        dev:    { l: 'Развитие', c: '#3dd68c', en: 'development' },
+        climax: { l: 'Кульминация', c: '#ff9f43', en: 'climax' },
+        final:  { l: 'Финал / призыв', c: '#facc15', en: 'ending / call to action' }
+      };
+      const SHOTS = [['Сверхобщий', 'extreme wide shot'], ['Общий', 'wide shot'], ['Средний', 'medium shot'], ['Крупный', 'close-up'], ['Деталь', 'extreme close-up'], ['Сверху', 'top-down shot'], ['От первого лица', 'POV shot']];
+      const CAMS = [['Статичная', 'static camera'], ['Наезд', 'slow push-in'], ['Отъезд', 'slow pull-out'], ['Панорама', 'pan'], ['Слежение', 'tracking shot'], ['Ручная', 'handheld camera'], ['Дрон', 'drone fly-over'], ['Слоу-мо', 'slow motion']];
+      const TRANS = [['Склейка', 'hard cut'], ['Затемнение', 'fade to black'], ['Наплыв', 'cross-dissolve'], ['Движение в движение', 'match cut'], ['Свайп', 'whip pan']];
+      const TOOLS = ['Sora', 'Veo', 'Kling', 'Runway', 'Pika', 'Luma', 'Hailuo', 'Другой'];
+      const en = (list, ru) => { const x = list.find(p => p[0] === ru); return x ? x[1] : ru; };
+      const TEMPLATES = {
+        reels: { name: 'Reels / Shorts 15 с', format: '9:16', d: 'Зацеп → проблема → решение → результат → призыв', sc: [
+          ['hook', 'Зацеп', 2, 'Крупный', 'Наезд', 'Неожиданный кадр, который останавливает пролистывание: …'],
+          ['setup', 'Проблема', 3, 'Средний', 'Ручная', 'Герой сталкивается с проблемой: …'],
+          ['dev', 'Решение', 5, 'Средний', 'Слежение', 'Появляется решение / продукт: …'],
+          ['climax', 'Результат', 3, 'Крупный', 'Статичная', 'Видно результат и эмоцию героя: …'],
+          ['final', 'Призыв', 2, 'Средний', 'Статичная', 'Текст на экране и действие: …']] },
+        ad30: { name: 'Реклама 30 с', format: '16:9', d: 'Герой, его боль, продукт, как работает, результат, логотип', sc: [
+          ['hook', 'Зацеп', 3, 'Крупный', 'Наезд', '…'], ['setup', 'Герой и его боль', 6, 'Средний', 'Ручная', '…'],
+          ['dev', 'Появляется продукт', 6, 'Деталь', 'Панорама', '…'], ['dev', 'Как это работает', 7, 'Средний', 'Слежение', '…'],
+          ['climax', 'Результат', 5, 'Общий', 'Отъезд', '…'], ['final', 'Логотип и призыв', 3, 'Средний', 'Статичная', '…']] },
+        clip: { name: 'Музыкальный клип', format: '16:9', d: 'Интро, куплет, припев, бридж, финал', sc: [
+          ['hook', 'Интро', 8, 'Сверхобщий', 'Дрон', '…'], ['setup', 'Куплет', 20, 'Средний', 'Слежение', '…'],
+          ['dev', 'Припев', 15, 'Крупный', 'Ручная', '…'], ['dev', 'Бридж', 10, 'Общий', 'Слоу-мо', '…'],
+          ['climax', 'Финальный припев', 15, 'Средний', 'Панорама', '…'], ['final', 'Аутро', 6, 'Сверхобщий', 'Отъезд', '…']] },
+        edu: { name: 'Обучающее видео', format: '16:9', d: 'Вступление, шаги, итог — для курсов и инструкций', sc: [
+          ['hook', 'Вступление: зачем это', 5, 'Средний', 'Статичная', '…'], ['dev', 'Шаг 1', 10, 'Средний', 'Статичная', '…'],
+          ['dev', 'Шаг 2', 10, 'Деталь', 'Статичная', '…'], ['dev', 'Шаг 3', 10, 'Средний', 'Статичная', '…'], ['final', 'Итог и что делать дальше', 5, 'Средний', 'Наезд', '…']] },
+        story: { name: 'Мини-история 60 с', format: '9:16', d: 'Мир героя → событие → попытки → кульминация → развязка', sc: [
+          ['setup', 'Мир героя', 8, 'Общий', 'Статичная', '…'], ['setup', 'Событие', 8, 'Средний', 'Ручная', '…'],
+          ['dev', 'Попытки', 16, 'Средний', 'Слежение', '…'], ['climax', 'Кульминация', 14, 'Крупный', 'Слоу-мо', '…'],
+          ['final', 'Развязка', 10, 'Общий', 'Отъезд', '…'], ['final', 'Финальный кадр', 4, 'Сверхобщий', 'Дрон', '…']] },
+        free: { name: 'Свободный режим', format: '9:16', d: 'Опишите видео своими словами — ИИ сам разложит его на сцены', sc: [], free: true },
+        empty: { name: 'С чистого листа', format: '9:16', d: 'Одна пустая сцена — дальше сами', sc: [['hook', 'Сцена 1', 4, 'Средний', 'Статичная', '']] }
+      };
+      const QUICK_EDITS = ['Сделать динамичнее', 'Убрать лишний текст', 'Поменять стиль на …', 'Улучшить качество и резкость', 'Заменить фон на …', 'Сделать вертикальную версию 9:16', 'Добавить субтитры', 'Сократить до … секунд'];
+      const ZOOMS = [10, 16, 24, 36, 54, 80];
+      // edits of an uploaded video: [label, field A, field B, prompt template for video-to-video tools]
+      const EDIT_TYPES = {
+        replace: ['Заменить объект', 'Что заменить', 'На что', 'Replace the {a} with {b}. Keep everything else identical: framing, camera motion, lighting and timing.'],
+        remove:  ['Убрать объект', 'Что убрать', '', 'Remove the {a} from the shot and fill the area naturally with matching background. Keep everything else unchanged.'],
+        bg:      ['Поменять фон', 'Новый фон', '', 'Change the background to {a}. Keep the subject, their motion and the camera movement unchanged; match the lighting to the new background.'],
+        style:   ['Сменить стиль', 'Новый стиль', '', 'Restyle the clip as {a}. Preserve composition, motion and timing.'],
+        light:   ['Свет и цвет', 'Какой свет и цвет', '', 'Relight and color-grade the scene: {a}. Keep content and motion unchanged.'],
+        action:  ['Изменить действие', 'Что должен делать герой', '', 'Change the action: {a}. Keep the same character appearance, setting and style.'],
+        camera:  ['Движение камеры', 'Как двигается камера', '', 'Re-render this shot with camera movement: {a}. Keep the same subject, setting and style.'],
+        regen:   ['Перегенерировать фрагмент', 'Как должно быть', '', 'Regenerate this segment from its first frame (image-to-video): {a}. Keep the character and style consistent with the rest of the video.'],
+        extend:  ['Продлить сцену', 'Что происходит дальше', 'На сколько секунд', 'Extend the clip by {b} seconds, continuing seamlessly from the last frame: {a}.'],
+        speed:   ['Темп / скорость', 'Как изменить темп', '', 'Change the pacing of this segment: {a}.'],
+        text:    ['Текст / субтитры', 'Какой текст', 'Где на экране', 'Add on-screen text "{a}" {b}. (Best done in a video editor, not by the generator.)'],
+        cut:     ['Вырезать фрагмент', 'Почему (необязательно)', '', 'Cut this segment out of the final edit and join the neighbouring shots smoothly.'],
+        custom:  ['Свой вариант', 'Что сделать', '', '{a}']
+      };
+
+      // ---------- storage: own IndexedDB (frames and videos must not be swept by the map file cleaner) ----------
+      let dbp = null;
+      function db() {
+        if (!dbp) dbp = new Promise((res, rej) => {
+          if (!window.indexedDB) { rej(new Error('no indexedDB')); return; }
+          const r = indexedDB.open('factmap-video', 1);
+          r.onupgradeneeded = () => { r.result.createObjectStore('proj'); r.result.createObjectStore('blob'); };
+          r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+        });
+        return dbp;
+      }
+      async function op(store, mode, fn) {
+        const d = await db();
+        return new Promise((res, rej) => {
+          const tx = d.transaction(store, mode), st = tx.objectStore(store);
+          let out; const q = fn(st); if (q) q.onsuccess = () => { out = q.result; };
+          tx.oncomplete = () => res(out); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error);
+        });
+      }
+      const nid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      async function putBlob(b) { const id = nid('b'); await op('blob', 'readwrite', st => st.put(b, id)); return id; }
+      const getBlob = id => op('blob', 'readonly', st => st.get(id));
+      const urls = new Map();
+      async function blobUrl(id) {
+        if (!id) return '';
+        if (urls.has(id)) return urls.get(id);
+        let b = null; try { b = await getBlob(id); } catch (e) {}
+        if (!b) return '';
+        const u = URL.createObjectURL(b); urls.set(id, u); return u;
+      }
+      function usedIds(p) {
+        const s = new Set();
+        (p.scenes || []).forEach(sc => (sc.refs || []).forEach(r => s.add(r)));
+        (p.refs || []).forEach(r => s.add(r));
+        (p.videos || []).forEach(v => { if (v.blobId) s.add(v.blobId); (v.frames || []).forEach(f => s.add(f.blobId)); (v.edits || []).forEach(x => { if (x.blobId) s.add(x.blobId); }); });
+        return s;
+      }
+      async function dropBlobs(ids) {
+        const keep = usedIds(cur || {});
+        for (const id of ids) {
+          if (!id || keep.has(id)) continue;
+          try { await op('blob', 'readwrite', st => st.delete(id)); } catch (e) {}
+          if (urls.has(id)) { URL.revokeObjectURL(urls.get(id)); urls.delete(id); }
+        }
+      }
+
+      // ---------- state ----------
+      let ov = null, projects = [], cur = null, tab = 'plan', selScene = null, selVideo = null, zoom = 3;
+      let busy = null;            // running frame extraction
+      const live = new Map();     // video id -> object URL for videos that did not fit into storage
+      let saveT = 0;
+      function save() {
+        if (!cur) return;
+        cur.ua = Date.now();
+        clearTimeout(saveT);
+        const p = cur;
+        saveT = setTimeout(() => { op('proj', 'readwrite', st => st.put(JSON.parse(JSON.stringify(p)), p.id)).catch(() => showToast('Не удалось сохранить видео-проект')); }, 350);
+        try { localStorage.setItem(LAST_KEY, JSON.stringify({ id: p.id, tab })); } catch (e) {}
+      }
+      function newScene(a) {
+        a = a || [];
+        return { id: nid('s'), stage: a[0] || 'dev', title: a[1] || 'Новая сцена', dur: a[2] || 4, shot: a[3] || 'Средний', cam: a[4] || 'Статичная', trans: 'Склейка', action: a[5] || '', look: '', sound: '', text: '', refs: [], prompt: '' };
+      }
+      function newProject(tplKey) {
+        const t = TEMPLATES[tplKey] || TEMPLATES.empty;
+        const name = tplKey === 'empty' ? 'Видео ' + (projects.length + 1) : t.name;
+        return { id: nid('v'), name, ca: Date.now(), ua: Date.now(), format: t.format, tool: 'Kling', style: '', goal: '', audience: '', voice: '', music: '', hero: '',
+          free: !!t.free, idea: '', must: '', avoid: '', want: 30, refs: [],
+          scenes: t.sc.map(newScene), videos: [], pack: { mode: 'plan', refs: true, frames: 'marked', video: false, lang: 'en', extra: '' } };
+      }
+      const scene = () => cur && cur.scenes.find(s => s.id === selScene);
+      const video = () => cur && cur.videos.find(v => v.id === selVideo);
+      const total = p => (p || cur).scenes.reduce((a, s) => a + (+s.dur || 0), 0);
+      function fmtT(s, frac) {
+        s = Math.max(0, +s || 0);
+        const m = Math.floor(s / 60), r = s - m * 60;
+        const sec = frac ? r.toFixed(1).padStart(4, '0') : String(Math.floor(r + 1e-6)).padStart(2, '0');
+        return m + ':' + sec;
+      }
+      const fmtDur = s => { s = Math.round((+s || 0) * 10) / 10; return s >= 60 ? Math.floor(s / 60) + ' мин ' + (Math.round(s % 60) ? Math.round(s % 60) + ' с' : '') : String(s).replace('.', ',') + ' с'; };
+      const fmtMB = b => b ? (b / 1048576 >= 1 ? (b / 1048576).toFixed(1).replace('.', ',') + ' МБ' : Math.max(1, Math.round(b / 1024)) + ' КБ') : '';
+      function aspectOf(w, h) {
+        if (!w || !h) return { key: '', l: '—' };
+        const r = w / h; let best = '16:9', bd = 9;
+        Object.keys(FORMATS).forEach(k => { const f = FORMATS[k], d = Math.abs(Math.log(r / (f.w / f.h))); if (d < bd) { bd = d; best = k; } });
+        const kind = r < 0.9 ? 'вертикальное' : r > 1.1 ? 'горизонтальное' : 'квадрат';
+        return { key: best, l: (bd < 0.04 ? best : (Math.round(r * 100) / 100 + ':1')) + ' · ' + kind };
+      }
+      const esc = s => escapeHtml(String(s == null ? '' : s));
+      const opt = (list, val) => list.map(x => { const v = Array.isArray(x) ? x[0] : x; return '<option' + (v === val ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join('');
+
+      // ---------- open / close ----------
+      async function loadAll() {
+        try { projects = (await op('proj', 'readonly', st => st.getAll())) || []; } catch (e) { projects = []; }
+        projects.sort((a, b) => (b.ua || 0) - (a.ua || 0));
+      }
+      async function open() {
+        if (!ov) {
+          ov = document.createElement('div'); ov.className = 'vs-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Видео-студия');
+          ov.addEventListener('click', onClick);
+          ov.addEventListener('input', onInput);
+          ov.addEventListener('change', onChange);
+          ov.addEventListener('keydown', e => e.stopPropagation());
+          ov.addEventListener('pointerdown', onDown);
+          ov.addEventListener('dragover', e => { e.preventDefault(); const d = ov.querySelector('.vs-drop'); if (d) d.classList.add('over'); });
+          ov.addEventListener('dragleave', e => { if (e.target === ov) { const d = ov.querySelector('.vs-drop'); if (d) d.classList.remove('over'); } });
+          ov.addEventListener('drop', e => { e.preventDefault(); handleFiles([...(e.dataTransfer && e.dataTransfer.files || [])]); });
+          document.body.appendChild(ov);
+        }
+        ov.hidden = false;
+        try { localStorage.setItem(OPEN_KEY, '1'); } catch (e) {}
+        await loadAll();
+        let last = {}; try { last = JSON.parse(localStorage.getItem(LAST_KEY) || '{}'); } catch (e) {}
+        cur = projects.find(p => p.id === last.id) || projects[0] || null;
+        if (last.tab && cur) tab = last.tab;
+        pickDefaults();
+        render();
+      }
+      function close() {
+        if (busy) busy.cancel = true;
+        try { Tour.stop(); } catch (e) {}
+        if (ov) { ov.querySelectorAll('video').forEach(v => { try { v.pause(); } catch (e) {} }); ov.remove(); ov = null; }
+        try { localStorage.setItem(OPEN_KEY, '0'); } catch (e) {}
+      }
+      function pickDefaults() {
+        if (!cur) return;
+        cur.refs = cur.refs || []; cur.videos.forEach(v => { v.edits = v.edits || []; });
+        cur.pack = Object.assign({ mode: 'plan', refs: true, frames: 'marked', video: false, lang: 'en', extra: '' }, cur.pack || {});
+        if (!scene()) selScene = cur.scenes[0] ? cur.scenes[0].id : null;
+        if (!video()) selVideo = cur.videos[0] ? cur.videos[0].id : null;
+      }
+      function setProject(p) { cur = p; selScene = null; selVideo = null; pickDefaults(); save(); render(); }
+
+      // ---------- rendering ----------
+      function render() {
+        if (!ov) return;
+        const top = '<header class="vs-top"><button type="button" class="btn" data-a="close" title="Вернуться к картам">← Карты</button>' +
+          '<div class="vs-brand">🎬 Видео-студия</div><button type="button" class="btn vs-help" data-a="tour" title="Обучение: как пользоваться видео-студией">? Обучение</button>' +
+          (projects.length ? '<select data-k="proj" aria-label="Видео-проект">' + projects.map(p => '<option value="' + p.id + '"' + (cur && p.id === cur.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select>' +
+            '<button type="button" class="btn vs-ib" data-a="newproj" title="Новый видео-проект">＋</button><button type="button" class="btn vs-ib" data-a="renproj" title="Переименовать">✎</button><button type="button" class="btn vs-ib" data-a="delproj" title="Удалить проект">🗑</button>' : '') +
+          (cur ? '<nav class="vs-modes" role="tablist">' + [['plan', '1 · План'], ['board', '2 · Раскадровка'], ['pack', '3 · Пакет для ИИ']].map(t => '<button type="button" role="tab" data-a="tab" data-t="' + t[0] + '" class="' + (tab === t[0] ? 'on' : '') + '" aria-selected="' + (tab === t[0]) + '">' + t[1] + '</button>').join('') + '</nav>' : '') +
+          '</header>';
+        let body;
+        if (!cur) body = startHtml(true);
+        else if (tab === 'board') body = boardHtml();
+        else if (tab === 'pack') body = packHtml();
+        else body = planHtml();
+        const scroll = ov.querySelector('.vs-main') ? ov.querySelector('.vs-main').scrollTop : 0;
+        const tlScroll = ov.querySelector('.vs-tl') ? ov.querySelector('.vs-tl').scrollLeft : 0;
+        ov.innerHTML = top + '<main class="vs-main"><div class="vs-wrap">' + body + '</div></main>';
+        const m = ov.querySelector('.vs-main'); if (m) m.scrollTop = scroll;
+        const tl = ov.querySelector('.vs-tl'); if (tl) tl.scrollLeft = tlScroll;
+        hydrate(ov);
+        if (tab === 'board') mountPlayer();
+      }
+      function hydrate(root) {
+        root.querySelectorAll('[data-img]').forEach(el => blobUrl(el.dataset.img).then(u => { if (u) el.src = u; }));
+        root.querySelectorAll('[data-bg]').forEach(el => blobUrl(el.dataset.bg).then(u => { if (u) el.style.backgroundImage = 'url("' + u + '")'; }));
+      }
+      function startHtml(first) {
+        return '<div class="vs-card vs-empty"><h2>' + (first ? 'Новый видео-проект' : 'С чего начнём?') + '</h2>' +
+          '<p>Соберите видео по шагам: <b>план сцен на таймлайне</b> → <b>раскадровка</b> готовых роликов с правками по кадрам → <b>архив с промптом</b>, по которому ИИ поймёт, что делать.</p>' +
+          '<div class="vs-tpls">' + Object.keys(TEMPLATES).map(k => '<button type="button" class="vs-tpl" data-a="tpl" data-t="' + k + '"><b>' + esc(TEMPLATES[k].name) + '</b><small>' + esc(FORMATS[TEMPLATES[k].format].l + ' · ' + TEMPLATES[k].d) + '</small></button>').join('') + '</div>' +
+          (!first ? '<div class="vs-row" style="justify-content:center;margin-top:12px"><button type="button" class="btn" data-a="cancelnew">Отмена</button></div>' : '') + '</div>';
+      }
+
+      // ----- plan -----
+      function planHtml() {
+        const p = cur, sc = scene();
+        const fmt = '<div class="vs-chips">' + Object.keys(FORMATS).map(k => { const f = FORMATS[k], s = 18 / Math.max(f.w, f.h); return '<button type="button" class="vs-chip' + (p.format === k ? ' on' : '') + '" data-a="format" data-v="' + k + '" title="' + esc(f.d) + '"><i style="width:' + Math.round(f.w * s) + 'px;height:' + Math.round(f.h * s) + 'px"></i>' + f.l + '</button>'; }).join('') + '</div>';
+        const settings = '<section class="vs-card vs-proj"><h3>Проект <small>' + esc(FORMATS[p.format] ? FORMATS[p.format].d : '') + '</small></h3>' +
+          '<div class="vs-f" style="margin-bottom:10px"><span>Формат кадра</span>' + fmt + '</div>' +
+          '<div class="vs-grid">' +
+          '<label class="vs-f"><span>Чем генерируем видео</span><select class="vs-in" data-k="p:tool">' + opt(TOOLS, p.tool) + '</select></label>' +
+          '<label class="vs-f"><span>Цель ролика</span><input class="vs-in" data-k="p:goal" value="' + esc(p.goal) + '" placeholder="Продать курс, рассказать о…"></label>' +
+          '<label class="vs-f"><span>Для кого</span><input class="vs-in" data-k="p:audience" value="' + esc(p.audience) + '" placeholder="Новые сотрудники, подростки…"></label>' +
+          '<label class="vs-f"><span>Стиль и настроение</span><input class="vs-in" data-k="p:style" value="' + esc(p.style) + '" placeholder="Кинематографично, тёплый свет, 35 мм…"></label>' +
+          '<label class="vs-f"><span>Главный герой (один для всех сцен)</span><input class="vs-in" data-k="p:hero" value="' + esc(p.hero) + '" placeholder="Девушка 25 лет, рыжие волосы, зелёная куртка…"></label>' +
+          '<label class="vs-f"><span>Музыка</span><input class="vs-in" data-k="p:music" value="' + esc(p.music) + '" placeholder="Лёгкий лоу-фай, 90 BPM…"></label>' +
+          '<label class="vs-f"><span>Голос / закадр</span><input class="vs-in" data-k="p:voice" value="' + esc(p.voice) + '" placeholder="Мужской, спокойный; или без голоса"></label>' +
+          '</div></section>';
+        const timeline = '<section class="vs-card"><div class="vs-tl-tools"><h3 style="margin:0">Таймлайн</h3><span class="vs-muted">Всего: <span class="vs-tl-total">' + fmtDur(total()) + '</span> · сцен: ' + p.scenes.length + '</span><span class="vs-sp"></span>' +
+          '<span class="vs-muted vs-hide-touch">Тяните сцену — порядок, правый край — длительность</span>' +
+          '<button type="button" class="btn vs-ib" data-a="zoom" data-v="-1" title="Мельче">−</button><button type="button" class="btn vs-ib" data-a="zoom" data-v="1" title="Крупнее">+</button></div>' +
+          '<div class="vs-tl">' + timelineInner() + '</div>' +
+          '<div class="vs-legend" style="margin-top:8px">' + Object.keys(STAGES).map(k => '<span><i style="background:' + STAGES[k].c + '"></i>' + STAGES[k].l + '</span>').join('') + '</div></section>';
+        const modeSw = '<section class="vs-card vs-modesw"><div class="vs-row"><b>Как создаём:</b><div class="vs-chips">' +
+          '<button type="button" class="vs-chip' + (!p.free ? ' on' : '') + '" data-a="freemode" data-v="0">🎞 По сценам (таймлайн)</button>' +
+          '<button type="button" class="vs-chip' + (p.free ? ' on' : '') + '" data-a="freemode" data-v="1">✍ Свободный режим</button></div>' +
+          '<span class="vs-muted">' + (p.free ? 'Пишете идею своими словами — ИИ сам предложит сцены и промпты.' : 'Вы сами раскладываете видео по сценам и задаёте каждую.') + '</span></div></section>';
+        if (p.free) return modeSw + freeHtml(p) + settings;
+        return modeSw + settings + timeline + (sc ? sceneEditorHtml(sc) : '<div class="vs-card vs-muted">Добавьте сцену кнопкой «+» на таймлайне.</div>');
+      }
+      function freeHtml(p) {
+        return '<section class="vs-card vs-free"><h3>Видео своими словами <small>пишите как другу: что, где, какое настроение, чем закончится</small></h3>' +
+          '<label class="vs-f"><span>Идея видео</span><textarea data-k="p:idea" style="min-height:150px" placeholder="Например: короткое видео для новых операторов колл-центра. Девушка в первый день на работе боится звонка, коллега подсказывает ей приём, и разговор с клиентом проходит отлично. В конце — улыбка и надпись «Ты справишься».">' + esc(p.idea) + '</textarea></label>' +
+          '<div class="vs-grid" style="margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">' +
+          '<label class="vs-f"><span>Что обязательно должно быть</span><textarea data-k="p:must" placeholder="Логотип в конце, героиня в синей форме…">' + esc(p.must) + '</textarea></label>' +
+          '<label class="vs-f"><span>Чего не надо</span><textarea data-k="p:avoid" placeholder="Без мультяшного стиля, без текста на английском…">' + esc(p.avoid) + '</textarea></label>' +
+          '<label class="vs-f"><span>Желаемая длительность, сек</span><input class="vs-in" type="number" min="3" max="600" step="1" data-k="p:want" value="' + esc(p.want || 30) + '"></label>' +
+          '</div><div class="vs-f" style="margin-top:10px"><span>Картинки для настроения (герой, место, стиль)</span><div class="vs-refs">' +
+          (p.refs || []).map((r, k) => '<div class="vs-ref" data-bg="' + r + '"><button type="button" data-a="delpref" data-v="' + k + '" aria-label="Убрать">×</button></div>').join('') +
+          '<button type="button" class="vs-ref-add" data-a="addpref">＋ картинка<br><small>или вставьте Ctrl+V</small></button></div></div>' +
+          '<div class="vs-row" style="margin-top:12px"><button type="button" class="btn primary" data-a="tab" data-t="pack">Дальше → Пакет для ИИ</button><button type="button" class="btn" data-a="freemode" data-v="0">Разложить по сценам самому</button></div></section>';
+      }
+      function timelineInner() {
+        const pps = ZOOMS[zoom], p = cur;
+        const tot = Math.max(total(), 1);
+        const stepT = [0.5, 1, 2, 5, 10, 15, 30, 60, 120].find(s => s * pps >= 56) || 120;
+        let ruler = '', x = 0;
+        // ruler positions follow block widths (each block = dur*pps, plus a 3px gap)
+        const pos = t => { let acc = 0, left = 0; for (const s of p.scenes) { const d = +s.dur || 0; if (t <= acc + d) return left + (t - acc) * pps; acc += d; left += Math.max(56, d * pps) + 3; } return left; };
+        for (let t = 0; t <= tot + 1e-6; t += stepT) ruler += '<b style="left:' + Math.round(pos(t)) + 'px">' + fmtT(t, stepT < 1) + '</b>';
+        let acc = 0;
+        const blocks = p.scenes.map((s, i) => {
+          const w = Math.max(56, (+s.dur || 0) * pps), st = STAGES[s.stage] || STAGES.dev;
+          const html = '<div class="vs-sc' + (s.id === selScene ? ' sel' : '') + '" data-sc="' + s.id + '" style="width:' + w + 'px" title="' + esc(s.title) + ' · ' + fmtT(acc) + '–' + fmtT(acc + (+s.dur || 0)) + '">' +
+            '<div class="vs-band" style="background:' + st.c + '"></div><div class="vs-th"' + (s.refs && s.refs[0] ? ' data-bg="' + s.refs[0] + '"' : ' style="background:linear-gradient(135deg,' + st.c + '33,transparent)"') + '></div>' +
+            '<span class="vs-num">' + (i + 1) + '</span><div class="vs-sct"><b>' + esc(s.title || 'Сцена') + '</b><small class="vs-dl">' + fmtDur(s.dur) + '</small></div><div class="vs-rs" data-rs="1" title="Тяните — длительность"></div></div>';
+          acc += +s.dur || 0; x += w + 3; return html;
+        }).join('');
+        const arc = []; p.scenes.forEach(s => { const w = Math.max(56, (+s.dur || 0) * pps) + 3; const l = arc[arc.length - 1]; if (l && l.k === s.stage) l.w += w; else arc.push({ k: s.stage, w }); });
+        return '<div class="vs-tl-in" style="width:' + (x + 96) + 'px"><div class="vs-ruler">' + ruler + '</div><div class="vs-track">' + blocks + '<button type="button" class="vs-add-sc" data-a="addsc" title="Добавить сцену">+</button></div>' +
+          '<div class="vs-arc">' + arc.map(a => { const st = STAGES[a.k] || STAGES.dev; return '<span style="width:' + (a.w - 3) + 'px;margin-right:3px;background:' + st.c + '" title="' + st.l + '">' + st.l + '</span>'; }).join('') + '</div></div>';
+      }
+      function refreshTimeline() { const tl = ov && ov.querySelector('.vs-tl'); if (!tl) return; const sl = tl.scrollLeft; tl.innerHTML = timelineInner(); tl.scrollLeft = sl; hydrate(tl); const t = ov.querySelector('.vs-tl-total'); if (t) t.textContent = fmtDur(total()); }
+      function sceneEditorHtml(s) {
+        const i = cur.scenes.indexOf(s);
+        let start = 0; for (let k = 0; k < i; k++) start += +cur.scenes[k].dur || 0;
+        return '<section class="vs-card"><h3>Сцена ' + (i + 1) + ' <small>' + fmtT(start, true) + ' – ' + fmtT(start + (+s.dur || 0), true) + '</small><span class="vs-sp"></span>' +
+          '<button type="button" class="btn vs-ib" data-a="mvsc" data-v="-1" title="Раньше"' + (i ? '' : ' disabled') + '>◀</button><button type="button" class="btn vs-ib" data-a="mvsc" data-v="1" title="Позже"' + (i < cur.scenes.length - 1 ? '' : ' disabled') + '>▶</button>' +
+          '<button type="button" class="btn" data-a="dupsc">Дублировать</button><button type="button" class="btn danger" data-a="delsc">Удалить</button></h3>' +
+          '<div class="vs-grid">' +
+          '<label class="vs-f"><span>Название</span><input class="vs-in" data-k="s:title" value="' + esc(s.title) + '"></label>' +
+          '<label class="vs-f"><span>Этап развития</span><select class="vs-in" data-k="s:stage">' + Object.keys(STAGES).map(k => '<option value="' + k + '"' + (s.stage === k ? ' selected' : '') + '>' + STAGES[k].l + '</option>').join('') + '</select></label>' +
+          '<label class="vs-f"><span>Длительность, сек</span><input class="vs-in" type="number" min="0.5" max="600" step="0.5" data-k="s:dur" value="' + esc(s.dur) + '"></label>' +
+          '<label class="vs-f"><span>План</span><select class="vs-in" data-k="s:shot">' + opt(SHOTS, s.shot) + '</select></label>' +
+          '<label class="vs-f"><span>Камера</span><select class="vs-in" data-k="s:cam">' + opt(CAMS, s.cam) + '</select></label>' +
+          '<label class="vs-f"><span>Переход к следующей</span><select class="vs-in" data-k="s:trans">' + opt(TRANS, s.trans) + '</select></label>' +
+          '</div><div class="vs-grid" style="margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">' +
+          '<label class="vs-f"><span>Что происходит в кадре</span><textarea data-k="s:action" placeholder="Кто, что делает, где">' + esc(s.action) + '</textarea></label>' +
+          '<label class="vs-f"><span>Как выглядит: свет, цвет, детали</span><textarea data-k="s:look" placeholder="Закат, неон, крупное зерно…">' + esc(s.look) + '</textarea></label>' +
+          '<label class="vs-f"><span>Звук, реплика, закадр</span><textarea data-k="s:sound" placeholder="Шум города; герой говорит: «…»">' + esc(s.sound) + '</textarea></label>' +
+          '<label class="vs-f"><span>Текст на экране</span><textarea data-k="s:text" placeholder="Титр, субтитр, призыв">' + esc(s.text) + '</textarea></label>' +
+          '</div>' +
+          '<div class="vs-f" style="margin-top:10px"><span>Референсы (картинки: персонаж, место, стиль, первый кадр)</span><div class="vs-refs">' +
+          (s.refs || []).map((r, k) => '<div class="vs-ref" data-bg="' + r + '"><button type="button" data-a="delref" data-v="' + k + '" aria-label="Убрать">×</button></div>').join('') +
+          '<button type="button" class="vs-ref-add" data-a="addref">＋ картинка<br><small>или вставьте Ctrl+V</small></button></div></div>' +
+          '<div class="vs-f" style="margin-top:12px"><span>Промпт сцены для ' + esc(cur.tool) + ' — черновик собирается сам; впишите свой, если хотите заменить</span>' +
+          '<pre class="vs-pre vs-autop">' + esc(scenePrompt(s, cur)) + '</pre>' +
+          '<textarea data-k="s:prompt" placeholder="Свой промпт для этой сцены (необязательно)">' + esc(s.prompt) + '</textarea>' +
+          '<div class="vs-row"><button type="button" class="btn" data-a="copysp">Копировать промпт сцены</button></div></div></section>';
+      }
+      function scenePrompt(s, p) {
+        const f = FORMATS[p.format] || FORMATS['16:9'];
+        const parts = [];
+        parts.push('[' + f.l + (f.w < f.h ? ' vertical' : f.w > f.h ? ' horizontal' : ' square') + ' video, ' + (+s.dur || 0) + 's, ' + en(SHOTS, s.shot) + ', ' + en(CAMS, s.cam) + ']');
+        if (p.hero) parts.push('Character: ' + p.hero.trim());
+        parts.push('Scene: ' + ((s.action || '').trim() || s.title));
+        if ((s.look || '').trim()) parts.push('Look: ' + s.look.trim());
+        if ((p.style || '').trim()) parts.push('Style: ' + p.style.trim());
+        if ((s.sound || '').trim()) parts.push('Sound: ' + s.sound.trim());
+        if ((s.text || '').trim()) parts.push('On-screen text: "' + s.text.trim() + '"');
+        parts.push('Story beat: ' + (STAGES[s.stage] || STAGES.dev).en + '. Transition out: ' + en(TRANS, s.trans) + '.');
+        return parts.join('\n');
+      }
+
+      // ----- storyboard -----
+      function boardHtml() {
+        const v = video();
+        const chips = cur.videos.map(x => '<button type="button" class="vs-chip' + (x.id === selVideo ? ' on' : '') + '" data-a="selvid" data-v="' + x.id + '">🎞 ' + esc(x.name.length > 28 ? x.name.slice(0, 26) + '…' : x.name) + (x.dur ? ' · ' + fmtT(x.dur) : '') + '</button>').join('');
+        const up = '<section class="vs-card"><h3>Готовые видео <small>MP4, MOV, WebM и всё, что открывает ваш браузер</small></h3>' +
+          (cur.videos.length ? '<div class="vs-vids">' + chips + '<button type="button" class="btn" data-a="addvid">＋ Загрузить видео</button></div>'
+            : '<div class="vs-drop"><p style="margin:0 0 10px">Перетащите видео сюда или</p><button type="button" class="btn primary" data-a="addvid">Выбрать видео</button><p class="vs-muted" style="margin:10px 0 0">После загрузки видео разобьётся на кадры: вы отметите, что поправить, и соберёте промпт для ИИ.</p></div>') + '</section>';
+        if (!v) return up;
+        const asp = aspectOf(v.w, v.h);
+        const frames = (v.frames || []).slice().sort((a, b) => a.t - b.t);
+        const marked = frames.filter(f => f.on).length;
+        const fw = v.w && v.h && v.w < v.h ? 150 : 210;
+        const player = '<section class="vs-card"><div class="vs-player"><video controls playsinline preload="metadata" data-player="1"></video><div class="vs-info">' +
+          '<h3 style="margin:0">' + esc(v.name) + '</h3>' +
+          (v.bad ? '<div class="vs-warn">Браузер не смог открыть это видео (часто так с .avi, .mkv и роликами в HEVC/H.265). Перегоните его в MP4 (H.264) любым конвертером и загрузите снова.</div>' : '') +
+          '<div class="vs-kv"><span>Длительность</span><b>' + (v.dur ? fmtT(v.dur, true) : '—') + '</b><span>Кадр</span><b>' + (v.w ? v.w + '×' + v.h : '—') + '</b><span>Формат</span><b>' + esc(asp.l) + '</b><span>Файл</span><b>' + esc((v.type || '').replace('video/', '').toUpperCase() || '—') + ' · ' + fmtMB(v.size) + '</b></div>' +
+          (v.unsaved ? '<div class="vs-warn">Видео слишком большое для памяти браузера — оно доступно до закрытия вкладки. Кадры и правки сохраняются.</div>' : '') +
+          '<div class="vs-f"><span>Разбить на кадры</span><div class="vs-row"><select class="vs-in" data-k="v:split">' +
+          [['scenes', 'По сменам сцен (авто)'], ['every', 'Каждые N секунд'], ['count', 'Ровно N кадров']].map(o => '<option value="' + o[0] + '"' + ((v.split || 'scenes') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') +
+          '</select>' + ((v.split || 'scenes') !== 'scenes' ? '<input class="vs-in" type="number" min="0.2" step="0.5" style="width:80px" data-k="v:n" value="' + esc(v.n || (v.split === 'count' ? 12 : 1)) + '" aria-label="N">' : '') +
+          (busy && busy.vid === v.id ? '<button type="button" class="btn" data-a="stopx">Стоп</button>' : '<button type="button" class="btn primary" data-a="extract"' + (v.bad ? ' disabled' : '') + '>Разбить</button>') + '</div>' +
+          (busy && busy.vid === v.id ? '<div class="vs-prog"><i style="width:' + Math.round(busy.p * 100) + '%"></i></div><span class="vs-muted vs-ptext">' + esc(busy.text || '') + '</span>' : '') +
+          '<span class="vs-muted">Кадры с правками сохраняются при повторной разбивке.</span></div>' +
+          '<div class="vs-row"><button type="button" class="btn" data-a="grabnow"' + (v.bad ? ' disabled' : '') + '>＋ Кадр из текущего момента</button><button type="button" class="btn danger" data-a="delvid">Удалить видео</button></div>' +
+          '</div></div></section>';
+        const edits = '<section class="vs-card"><h3>Что изменить во всём видео</h3>' +
+          '<div class="vs-chips" style="margin-bottom:8px">' + QUICK_EDITS.map(q => '<button type="button" class="vs-chip" data-a="quick" data-v="' + esc(q) + '">' + esc(q) + '</button>').join('') + '</div>' +
+          '<div class="vs-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))"><label class="vs-f"><span>Общая правка</span><textarea data-k="v:note" placeholder="Например: сделать темп быстрее, герой в синей куртке во всех сценах">' + esc(v.note) + '</textarea></label>' +
+          '<label class="vs-f"><span>Итоговый формат</span><select class="vs-in" data-k="v:target"><option value="">Как в исходнике (' + esc(asp.key || '—') + ')</option>' + Object.keys(FORMATS).map(k => '<option value="' + k + '"' + (v.target === k ? ' selected' : '') + '>' + k + ' — ' + esc(FORMATS[k].d) + '</option>').join('') + '</select></label></div></section>';
+        const grid = '<section class="vs-card"><h3>Кадры <small>' + frames.length + ' шт · с правками: ' + marked + '</small><span class="vs-sp"></span>' +
+          (frames.length ? '<button type="button" class="btn" data-a="markall">' + (marked === frames.length ? 'Снять отметки' : 'Отметить все') + '</button><button type="button" class="btn" data-a="toplan" title="Каждый кадр-смена сцены станет сценой на таймлайне с этим кадром как референсом">→ В план</button><button type="button" class="btn danger" data-a="clearfr">Очистить</button>' : '') + '</h3>' +
+          (frames.length ? '<p class="vs-muted" style="margin:0 0 10px">Нажмите на кадр — видео перемотается к нему. Отметьте кадры и напишите, что в них изменить: в промпт попадут таймкоды и сами картинки.</p><div class="vs-frames" style="--fw:' + fw + 'px">' + frames.map(f =>
+            '<div class="vs-fr' + (f.on ? ' on' : '') + '" data-fr="' + f.id + '"><div class="vs-img" data-a="seek" data-v="' + f.t + '"><img alt="Кадр ' + fmtT(f.t, true) + '" data-img="' + f.blobId + '" style="aspect-ratio:' + (v.w && v.h ? v.w + '/' + v.h : '16/9') + '">' +
+            '<span class="vs-tc">' + fmtT(f.t, true) + '</span>' + (f.cut ? '<span class="vs-cut">сцена</span>' : '') + '<button type="button" class="vs-x" data-a="delfr" aria-label="Убрать кадр">×</button></div>' +
+            '<div class="vs-fb"><label class="vs-chk"><input type="checkbox" data-k="f:on"' + (f.on ? ' checked' : '') + '> Править этот кадр</label><textarea data-k="f:note" placeholder="Что изменить здесь…">' + esc(f.note) + '</textarea></div></div>').join('') + '</div>'
+            : '<p class="vs-muted">Кадров пока нет — нажмите «Разбить».</p>') + '</section>';
+        return up + player + segEditsHtml(v) + edits + grid;
+      }
+      function editPrompt(x) {
+        const t = EDIT_TYPES[x.type] || EDIT_TYPES.custom;
+        const a = (x.a || '').trim() || '…', b = (x.b || '').trim() || (x.type === 'extend' ? '3' : '');
+        return '[' + fmtT(x.from, true) + '–' + fmtT(x.to, true) + '] ' + t[3].replace('{a}', a).replace('{b}', b).replace(/\s+\./g, '.');
+      }
+      function segEditsHtml(v) {
+        const list = (v.edits || []).slice().sort((a, b) => a.from - b.from);
+        return '<section class="vs-card vs-segs"><h3>Правки по фрагментам <small>выберите кусок видео и что с ним сделать — получите готовый промпт для ИИ-редактора</small></h3>' +
+          '<div class="vs-row" style="margin-bottom:10px"><button type="button" class="btn primary" data-a="addedit"' + (v.bad ? ' disabled' : '') + '>＋ Правка с текущего момента</button><span class="vs-muted">Поставьте видео на нужное место (пауза) и нажмите. Начало и конец можно поправить.</span></div>' +
+          (list.length ? list.map((x, i) => { const t = EDIT_TYPES[x.type] || EDIT_TYPES.custom; return '<div class="vs-seg" data-ed="' + x.id + '">' +
+            '<div class="vs-seg-th">' + (x.blobId ? '<img alt="" data-img="' + x.blobId + '">' : '') + '<span class="vs-tc">' + fmtT(x.from, true) + '</span></div>' +
+            '<div class="vs-seg-b"><div class="vs-row"><b>Правка ' + (i + 1) + '</b><select class="vs-in" data-k="e:type">' + Object.keys(EDIT_TYPES).map(k => '<option value="' + k + '"' + (x.type === k ? ' selected' : '') + '>' + EDIT_TYPES[k][0] + '</option>').join('') + '</select>' +
+            '<span class="vs-sp"></span><button type="button" class="btn" data-a="playseg" title="Проиграть фрагмент">▶ ' + fmtT(x.from, true) + '–' + fmtT(x.to, true) + '</button><button type="button" class="btn vs-ib danger" data-a="deledit" aria-label="Удалить правку">×</button></div>' +
+            '<div class="vs-row vs-seg-t"><label>С <input class="vs-in" type="number" step="0.1" min="0" data-k="e:from" value="' + x.from + '"></label><button type="button" class="btn" data-a="edfrom">⏱ сейчас</button>' +
+            '<label>до <input class="vs-in" type="number" step="0.1" min="0" data-k="e:to" value="' + x.to + '"></label><button type="button" class="btn" data-a="edto">⏱ сейчас</button><span class="vs-muted">сек</span></div>' +
+            '<div class="vs-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"><label class="vs-f"><span>' + t[1] + '</span><input class="vs-in" data-k="e:a" value="' + esc(x.a) + '"></label>' +
+            (t[2] ? '<label class="vs-f"><span>' + t[2] + '</span><input class="vs-in" data-k="e:b" value="' + esc(x.b) + '"></label>' : '') + '</div>' +
+            '<pre class="vs-pre vs-edp">' + esc(editPrompt(x)) + '</pre><div class="vs-row"><button type="button" class="btn" data-a="copyedit">Копировать промпт</button><span class="vs-muted">Можно писать по-русски: в архиве ИИ переведёт и уточнит.</span></div></div></div>'; }).join('')
+            : '<p class="vs-muted" style="margin:0">Правок пока нет.</p>') + '</section>';
+      }
+      async function videoUrl(v) { return live.get(v.id) || (await blobUrl(v.blobId)); }
+      async function mountPlayer() {
+        const v = video(), el = ov && ov.querySelector('[data-player]'); if (!v || !el) return;
+        const u = await videoUrl(v); if (u && el.isConnected) el.src = u;
+      }
+
+      // ----- package -----
+      function packHtml() {
+        const pk = cur.pack, g = gaps(), files = packFiles(true);
+        const mode = (k, l, d) => '<button type="button" class="vs-chip' + (pk.mode === k ? ' on' : '') + '" data-a="pkmode" data-v="' + k + '" title="' + esc(d) + '">' + l + '</button>';
+        return '<section class="vs-card"><h3>Что просим у ИИ</h3><div class="vs-chips">' +
+          mode('plan', 'Создать видео по плану', 'План, сцены, промпты для генерации') + mode('edit', 'Поправить готовое видео', 'Правки по кадрам и таймкодам') + mode('both', 'План + правки', 'Всё вместе') + '</div>' +
+          '<div class="vs-grid" style="margin-top:12px">' +
+          '<label class="vs-f"><span>Промпты для генератора писать на</span><select class="vs-in" data-k="pk:lang"><option value="en"' + (pk.lang === 'en' ? ' selected' : '') + '>английском (так точнее)</option><option value="ru"' + (pk.lang === 'ru' ? ' selected' : '') + '>русском</option></select></label>' +
+          '<label class="vs-f"><span>Кадры из видео в архив</span><select class="vs-in" data-k="pk:frames"><option value="marked"' + (pk.frames === 'marked' ? ' selected' : '') + '>только отмеченные</option><option value="all"' + (pk.frames === 'all' ? ' selected' : '') + '>все</option><option value="none"' + (pk.frames === 'none' ? ' selected' : '') + '>не добавлять</option></select></label>' +
+          '<label class="vs-f"><span>&nbsp;</span><label class="vs-chk vs-row"><input type="checkbox" data-k="pk:refs"' + (pk.refs ? ' checked' : '') + '> Референсы сцен</label></label>' +
+          '<label class="vs-f"><span>&nbsp;</span><label class="vs-chk vs-row"><input type="checkbox" data-k="pk:video"' + (pk.video ? ' checked' : '') + '> Сами видеофайлы' + (cur.videos.length ? ' (' + fmtMB(cur.videos.reduce((a, v) => a + (v.size || 0), 0)) + ')' : '') + '</label></label>' +
+          '</div><label class="vs-f" style="margin-top:10px"><span>Дополнительно от меня</span><textarea data-k="pk:extra" placeholder="Например: сначала задай вопросы; бюджет — бесплатные инструменты">' + esc(pk.extra) + '</textarea></label></section>' +
+          '<section class="vs-card"><h3>Проверка</h3>' + (g.length ? '<ul class="vs-gaps">' + g.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<div class="vs-ok">Всё на месте — можно собирать архив.</div>') + '</section>' +
+          '<section class="vs-card"><h3>Архив <small>положите его в чат с Claude или ChatGPT и напишите «выполни PROMPT.md»</small></h3>' +
+          '<div class="vs-tree">' + esc(cur.name.replace(/[\\/:*?"<>|]/g, '_')) + '.zip\n' + files.map(f => '  ' + f).join('\n') + '</div>' +
+          '<div class="vs-row" style="margin-top:12px"><button type="button" class="btn primary" data-a="zip">⬇ Скачать архив (.zip)</button><button type="button" class="btn" data-a="copyprompt">Копировать промпт</button><button type="button" class="btn" data-a="mdprompt">Скачать PROMPT.md</button></div></section>' +
+          '<section class="vs-card"><h3>PROMPT.md</h3><pre class="vs-pre">' + esc(buildPrompt()) + '</pre></section>';
+      }
+      function gaps() {
+        const p = cur, pk = p.pack, g = [];
+        const wantPlan = pk.mode !== 'edit', wantEdit = pk.mode !== 'plan';
+        if (wantPlan && p.free) {
+          if (!(p.idea || '').trim()) g.push('Опишите идею видео (вкладка «План», свободный режим).');
+          if (!(p.style || '').trim()) g.push('Не указан стиль — ИИ выберет сам.');
+        } else if (wantPlan) {
+          if (!p.scenes.length) g.push('В плане нет ни одной сцены.');
+          if (!(p.goal || '').trim()) g.push('Не указана цель ролика (вкладка «План»).');
+          if (!(p.style || '').trim()) g.push('Не указан стиль — ИИ выберет сам, и сцены могут выглядеть по-разному.');
+          const emptyA = p.scenes.filter(s => !(s.action || '').trim() || /^…$|\.\.\.$|…$/.test(s.action.trim())).length;
+          if (emptyA) g.push('Сцен без описания «что происходит»: ' + emptyA + '.');
+          if (p.scenes.length > 1 && !(p.hero || '').trim()) g.push('Не описан главный герой — его внешность может меняться от сцены к сцене.');
+        }
+        if (wantEdit) {
+          if (!p.videos.length) g.push('Для правок загрузите готовое видео (вкладка «Раскадровка»).');
+          p.videos.forEach(v => {
+            const on = (v.frames || []).filter(f => f.on);
+            if (!on.length && !(v.note || '').trim() && !(v.edits || []).length) g.push('«' + v.name + '»: нет ни общей правки, ни правок по фрагментам, ни отмеченных кадров.');
+            const emptyE = (v.edits || []).filter(x => x.type !== 'cut' && !(x.a || '').trim()).length;
+            if (emptyE) g.push('«' + v.name + '»: правок по фрагментам без описания: ' + emptyE + '.');
+            const noNote = on.filter(f => !(f.note || '').trim()).length;
+            if (noNote) g.push('«' + v.name + '»: отмечено кадров без текста правки: ' + noNote + '.');
+          });
+        }
+        return g;
+      }
+      const slug = s => String(s || '').toLowerCase().replace(/[^a-zа-яё0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'scene';
+      const vdir = (v, i) => 'edits/' + String(i + 1).padStart(2, '0') + '-' + slug(v.name.replace(/\.[^.]+$/, ''));
+      const frName = f => 'frame-' + fmtT(f.t, true).replace(':', 'm').replace('.', 's') + '.jpg';
+      const extOf = v => { const m = /\.([a-z0-9]{2,5})$/i.exec(v.name || ''); return m ? m[1].toLowerCase() : ((v.type || '').split('/')[1] || 'mp4'); };
+      function framesFor(v) { const mode = cur.pack.frames; const fs = (v.frames || []).slice().sort((a, b) => a.t - b.t); return mode === 'none' ? [] : mode === 'all' ? fs : fs.filter(f => f.on); }
+      function packFiles(names) {
+        const p = cur, pk = p.pack, out = ['PROMPT.md', 'README.txt', 'project.json'];
+        if (pk.mode !== 'edit' && p.free) { if (pk.refs) (p.refs || []).forEach((r, k) => out.push('refs/mood-' + (k + 1) + '.jpg')); }
+        else if (pk.mode !== 'edit') p.scenes.forEach((s, i) => {
+          out.push('scenes/' + String(i + 1).padStart(2, '0') + '-' + slug(s.title) + '.md');
+          if (pk.refs) (s.refs || []).forEach((r, k) => out.push('refs/scene' + String(i + 1).padStart(2, '0') + '-' + (k + 1) + '.jpg'));
+        });
+        if (pk.mode !== 'plan') p.videos.forEach((v, i) => {
+          out.push(vdir(v, i) + '/EDITS.md');
+          (v.edits || []).slice().sort((a, b) => a.from - b.from).forEach((x, k) => { if (x.blobId) out.push(vdir(v, i) + '/segments/' + segName(x, k)); });
+          framesFor(v).forEach(f => out.push(vdir(v, i) + '/frames/' + frName(f)));
+          if (pk.video) out.push(vdir(v, i) + '/source.' + extOf(v));
+        });
+        return out;
+      }
+      const segName = (x, k) => 'edit-' + String(k + 1).padStart(2, '0') + '-' + fmtT(x.from, true).replace(':', 'm').replace('.', 's') + '.jpg';
+      function editsText(v, i) {
+        const asp = aspectOf(v.w, v.h), L = [];
+        L.push('# Правки: ' + v.name);
+        L.push('Длительность ' + fmtT(v.dur, true) + ', кадр ' + (v.w ? v.w + '×' + v.h : '?') + ' (' + asp.l + ').' + (v.target ? ' Итоговый формат: ' + v.target + ' (' + FORMATS[v.target].d + ').' : ''));
+        if ((v.note || '').trim()) { L.push(''); L.push('## Во всём видео'); L.push(v.note.trim()); }
+        const eds = (v.edits || []).slice().sort((a, b) => a.from - b.from);
+        if (eds.length) {
+          L.push(''); L.push('## Правки по фрагментам');
+          eds.forEach((x, k) => {
+            const t = EDIT_TYPES[x.type] || EDIT_TYPES.custom;
+            L.push('### ' + (k + 1) + '. ' + fmtT(x.from, true) + '–' + fmtT(x.to, true) + ' · ' + t[0]);
+            if ((x.a || '').trim()) L.push('- ' + t[1] + ': ' + x.a.trim());
+            if (t[2] && (x.b || '').trim()) L.push('- ' + t[2] + ': ' + x.b.trim());
+            if (x.blobId) L.push('- Первый кадр фрагмента: segments/' + segName(x, k));
+            L.push('- Черновик промпта: ' + editPrompt(x));
+          });
+        }
+        const on = (v.frames || []).filter(f => f.on).sort((a, b) => a.t - b.t);
+        if (on.length) {
+          L.push(''); L.push('## По кадрам (таймкод → что изменить)');
+          on.forEach(f => L.push('- ' + fmtT(f.t, true) + (cur.pack.frames !== 'none' ? ' — frames/' + frName(f) : '') + ': ' + ((f.note || '').trim() || '(без текста — посмотри кадр и предложи улучшение)')));
+        }
+        const cuts = (v.frames || []).filter(f => f.cut).sort((a, b) => a.t - b.t);
+        if (cuts.length > 1) { L.push(''); L.push('## Смены сцен (найдены автоматически)'); L.push(cuts.map(f => fmtT(f.t, true)).join(', ')); }
+        return L.join('\n');
+      }
+      function buildPrompt() {
+        const p = cur, pk = p.pack, f = FORMATS[p.format] || FORMATS['16:9'], L = [];
+        const wantPlan = pk.mode !== 'edit', wantEdit = pk.mode !== 'plan';
+        L.push('# Видео: ' + p.name);
+        L.push('');
+        L.push('Задача: ' + ({ plan: 'создать видео по плану', edit: 'поправить готовое видео', both: 'создать видео по плану и поправить готовые ролики' })[pk.mode] + '. Собрано в «Факт-карте» → Видео-студия.');
+        L.push('');
+        if (wantPlan && p.free) {
+          L.push('## Параметры');
+          L.push('- Формат: ' + f.l + ' (' + f.d + '), ' + f.w + '×' + f.h);
+          L.push('- Желаемая длительность: ' + fmtDur(p.want || 30));
+          L.push('- Инструмент генерации: ' + p.tool);
+          [['Цель', p.goal], ['Для кого', p.audience], ['Стиль и настроение', p.style], ['Главный герой', p.hero], ['Музыка', p.music], ['Голос / закадр', p.voice]].forEach(x => { if ((x[1] || '').trim()) L.push('- ' + x[0] + ': ' + x[1].trim()); });
+          L.push('');
+          L.push('## Идея (своими словами)'); L.push((p.idea || '').trim() || '(не заполнено — спроси меня)'); L.push('');
+          if ((p.must || '').trim()) { L.push('## Обязательно'); L.push(p.must.trim()); L.push(''); }
+          if ((p.avoid || '').trim()) { L.push('## Чего не надо'); L.push(p.avoid.trim()); L.push(''); }
+          if (pk.refs && (p.refs || []).length) { L.push('## Картинки для настроения'); L.push((p.refs || []).map((r, k) => 'refs/mood-' + (k + 1) + '.jpg').join(', ')); L.push(''); }
+        } else if (wantPlan) {
+          L.push('## Параметры');
+          L.push('- Формат: ' + f.l + ' (' + f.d + '), ' + f.w + '×' + f.h);
+          L.push('- Длительность: ' + fmtDur(total()) + ', сцен: ' + p.scenes.length);
+          L.push('- Инструмент генерации: ' + p.tool);
+          [['Цель', p.goal], ['Для кого', p.audience], ['Стиль и настроение', p.style], ['Главный герой', p.hero], ['Музыка', p.music], ['Голос / закадр', p.voice]].forEach(x => { if ((x[1] || '').trim()) L.push('- ' + x[0] + ': ' + x[1].trim()); });
+          L.push('');
+          L.push('## Развитие (драматургия)');
+          let t = 0; const arc = [];
+          p.scenes.forEach(s => { const st = (STAGES[s.stage] || STAGES.dev).l, a = arc[arc.length - 1]; if (a && a.st === st) a.e = t + (+s.dur || 0); else arc.push({ st, b: t, e: t + (+s.dur || 0) }); t += +s.dur || 0; });
+          L.push(arc.map(a => a.st + ' (' + fmtT(a.b) + '–' + fmtT(a.e) + ')').join(' → '));
+          L.push('');
+          L.push('## Таймлайн по сценам');
+          t = 0;
+          p.scenes.forEach((s, i) => {
+            const n = String(i + 1).padStart(2, '0');
+            L.push('### Сцена ' + (i + 1) + ' · ' + s.title + ' · ' + fmtT(t, true) + '–' + fmtT(t + (+s.dur || 0), true) + ' (' + fmtDur(s.dur) + ')');
+            L.push('- Этап: ' + (STAGES[s.stage] || STAGES.dev).l + '; план: ' + s.shot + ' (' + en(SHOTS, s.shot) + '); камера: ' + s.cam + ' (' + en(CAMS, s.cam) + '); переход дальше: ' + s.trans);
+            [['Что происходит', s.action], ['Как выглядит', s.look], ['Звук', s.sound], ['Текст на экране', s.text]].forEach(x => { if ((x[1] || '').trim()) L.push('- ' + x[0] + ': ' + x[1].trim()); });
+            if (pk.refs && s.refs && s.refs.length) L.push('- Референсы: ' + s.refs.map((r, k) => 'refs/scene' + n + '-' + (k + 1) + '.jpg').join(', '));
+            L.push('- Черновик промпта: scenes/' + n + '-' + slug(s.title) + '.md');
+            if ((s.prompt || '').trim()) L.push('- Мой промпт для этой сцены (сохрани смысл): ' + s.prompt.trim().replace(/\n+/g, ' '));
+            L.push('');
+            t += +s.dur || 0;
+          });
+        }
+        if (wantEdit && p.videos.length) {
+          L.push('## Правки готовых видео');
+          p.videos.forEach((v, i) => { L.push('Подробно — в ' + vdir(v, i) + '/EDITS.md' + (pk.video ? ', исходник: ' + vdir(v, i) + '/source.' + extOf(v) : '') + '.'); L.push(''); L.push(editsText(v, i).replace(/\n### /g, '\n##### ').replace(/^# /, '### ').replace(/\n## /g, '\n#### ')); L.push(''); });
+        }
+        if ((pk.extra || '').trim()) { L.push('## Дополнительно от меня'); L.push(pk.extra.trim()); L.push(''); }
+        L.push('## Что нужно от тебя');
+        let k = 1;
+        if (wantPlan && p.free) {
+          L.push(k++ + '. Разложи идею на сцены под ' + fmtDur(p.want || 30) + ': для каждой — таймкод, что происходит, план и движение камеры, звук, текст на экране. Покажи развитие: зацеп → развитие → кульминация → финал.');
+          L.push(k++ + '. Для каждой сцены напиши готовый промпт для ' + p.tool + (pk.lang === 'en' ? ' на английском' : ' на русском') + '.' + (pk.refs && (p.refs || []).length ? ' Посмотри картинки в refs/.' : ''));
+          L.push(k++ + '. Держи единого героя и стиль во всех сценах: опиши героя один раз и повторяй это описание дословно в каждом промпте.');
+          L.push(k++ + '. Если нужны музыка или озвучка — дай отдельный промпт для них.');
+        } else if (wantPlan) {
+          L.push(k++ + '. Проверь план: логика развития, темп, длительность сцен. Коротко скажи, что улучшить.');
+          L.push(k++ + '. Для каждой сцены напиши готовый промпт для ' + p.tool + (pk.lang === 'en' ? ' на английском' : ' на русском') + ': субъект, действие, место, план и движение камеры, свет, стиль, длительность. Посмотри картинки в refs/.');
+          L.push(k++ + '. Держи единого героя и стиль во всех сценах: опиши героя один раз и повторяй это описание дословно в каждом промпте.');
+          L.push(k++ + '. Если сцена длиннее, чем ' + p.tool + ' генерирует за один раз, раздели её на части с одинаковым описанием.');
+          L.push(k++ + '. Если нужны музыка или озвучка — дай отдельный промпт для них.');
+        }
+        if (wantEdit && p.videos.length) {
+          L.push(k++ + '. По каждой «правке по фрагменту» дай готовый промпт для ИИ-редактора видео (video-to-video, например Runway, Kling, Luma) ' + (pk.lang === 'en' ? 'на английском' : 'на русском') + ' — черновики уже есть, улучши их. Посмотри первые кадры фрагментов в segments/.');
+          L.push(k++ + '. По каждой правке с таймкодом предложи, как её сделать: перегенерировать фрагмент из кадра (image-to-video), заменить объект/фон, поправить монтажом или цветом. Дай готовый промпт для каждой.');
+          L.push(k++ + '. Отдельно — порядок действий, чтобы собрать исправленную версию целиком.');
+        }
+        L.push('Ответ оформи по сценам/таймкодам, чтобы промпты можно было копировать по одному. Если что-то неясно — сначала спроси. Объясняй простыми словами.');
+        return L.join('\n');
+      }
+      const README = 'Архив из «Факт-карты» → Видео-студия.\n\nPROMPT.md — главное задание (начни с него).\nproject.json — проект целиком: формат, сцены, правки.\nscenes/ — черновик промпта каждой сцены.\nrefs/ — картинки-референсы сцен.\nedits/ — правки готовых видео: EDITS.md, кадры с таймкодами, исходник.\n';
+      async function buildZip() {
+        const p = cur, pk = p.pack, enc = [];
+        enc.push({ name: 'PROMPT.md', text: buildPrompt() }, { name: 'README.txt', text: README });
+        enc.push({ name: 'project.json', text: JSON.stringify({ app: 'Факт-карта · Видео-студия', exportedAt: new Date().toISOString(), name: p.name, format: p.format, tool: p.tool, goal: p.goal, audience: p.audience, style: p.style, hero: p.hero, music: p.music, voice: p.voice, totalSec: total(), mode: p.free ? 'free' : 'scenes', idea: p.free ? p.idea : undefined, must: p.free ? p.must : undefined, avoid: p.free ? p.avoid : undefined,
+          scenes: p.scenes.map((s, i) => ({ n: i + 1, title: s.title, stage: (STAGES[s.stage] || STAGES.dev).l, sec: +s.dur, shot: s.shot, camera: s.cam, transition: s.trans, action: s.action, look: s.look, sound: s.sound, text: s.text, myPrompt: s.prompt || undefined, draftPrompt: scenePrompt(s, p) })),
+          videos: p.videos.map(v => ({ name: v.name, sec: v.dur, width: v.w, height: v.h, target: v.target || undefined, note: v.note, segmentEdits: (v.edits || []).slice().sort((a, b) => a.from - b.from).map(x => ({ from: Math.round(x.from * 10) / 10, to: Math.round(x.to * 10) / 10, type: (EDIT_TYPES[x.type] || EDIT_TYPES.custom)[0], a: x.a, b: x.b || undefined, draftPrompt: editPrompt(x) })), frameEdits: (v.frames || []).filter(f => f.on).sort((a, b) => a.t - b.t).map(f => ({ time: fmtT(f.t, true), sec: Math.round(f.t * 100) / 100, note: f.note })) })) }, null, 2) });
+        if (pk.mode !== 'edit' && p.free) { if (pk.refs) for (let k = 0; k < (p.refs || []).length; k++) { const b = await getBlob(p.refs[k]).catch(() => null); if (b) enc.push({ name: 'refs/mood-' + (k + 1) + '.jpg', blob: b }); } }
+        else if (pk.mode !== 'edit') for (let i = 0; i < p.scenes.length; i++) {
+          const s = p.scenes[i], n = String(i + 1).padStart(2, '0');
+          enc.push({ name: 'scenes/' + n + '-' + slug(s.title) + '.md', text: '# Сцена ' + (i + 1) + ' · ' + s.title + '\n\n' + ((s.prompt || '').trim() ? s.prompt.trim() + '\n\n---\nЧерновик:\n' : '') + scenePrompt(s, p) + '\n' });
+          if (pk.refs) for (let k = 0; k < (s.refs || []).length; k++) { const b = await getBlob(s.refs[k]).catch(() => null); if (b) enc.push({ name: 'refs/scene' + n + '-' + (k + 1) + '.jpg', blob: b }); }
+        }
+        if (pk.mode !== 'plan') for (let i = 0; i < p.videos.length; i++) {
+          const v = p.videos[i], d = vdir(v, i);
+          enc.push({ name: d + '/EDITS.md', text: editsText(v, i) });
+          const eds = (v.edits || []).slice().sort((a, b) => a.from - b.from);
+          for (let k = 0; k < eds.length; k++) { if (!eds[k].blobId) continue; const b = await getBlob(eds[k].blobId).catch(() => null); if (b) enc.push({ name: d + '/segments/' + segName(eds[k], k), blob: b }); }
+          for (const f of framesFor(v)) { const b = await getBlob(f.blobId).catch(() => null); if (b) enc.push({ name: d + '/frames/' + frName(f), blob: b }); }
+          if (pk.video) {
+            let b = null;
+            if (v.blobId) b = await getBlob(v.blobId).catch(() => null);
+            if (!b && live.get(v.id)) b = await fetch(live.get(v.id)).then(r => r.blob()).catch(() => null);
+            if (b) enc.push({ name: d + '/source.' + extOf(v), blob: b });
+          }
+        }
+        return zip(enc);
+      }
+      const CRC = (() => { const t = new Uint32Array(256); for (let i = 0; i < 256; i++) { let c = i; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[i] = c >>> 0; } return t; })();
+      function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+      async function zip(entries) {
+        const te = new TextEncoder(), parts = [], central = []; let offset = 0;
+        const d = new Date(), dt = ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)), dd = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate());
+        for (const e of entries) {
+          const data = e.text != null ? te.encode(e.text) : new Uint8Array(await e.blob.arrayBuffer());
+          const nm = te.encode(e.name), crc = crc32(data);
+          const h = new DataView(new ArrayBuffer(30));
+          h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+          h.setUint16(10, dt, true); h.setUint16(12, dd, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true);
+          h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+          parts.push(h, nm, data);
+          const c = new DataView(new ArrayBuffer(46));
+          c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+          c.setUint16(12, dt, true); c.setUint16(14, dd, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+          c.setUint16(28, nm.length, true); c.setUint32(42, offset, true);
+          central.push(c, nm);
+          offset += 30 + nm.length + data.length;
+        }
+        const csize = central.reduce((a, x) => a + x.byteLength, 0);
+        const end = new DataView(new ArrayBuffer(22));
+        end.setUint32(0, 0x06054b50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true); end.setUint32(12, csize, true); end.setUint32(16, offset, true);
+        return new Blob(parts.concat(central, [end]), { type: 'application/zip' });
+      }
+      async function download(name, blob) {
+        if (window.claude && typeof window.claude.use === 'function') {
+          const dl = await window.claude.use('downloads').catch(() => null);
+          if (dl) { try { await dl.save({ filename: name, data: blob }); return; } catch (e) { showToast('Сохранение файла отменено'); return; } }
+        }
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      }
+      async function copy(text) {
+        try { await navigator.clipboard.writeText(text); showToast('Скопировано'); }
+        catch (e) { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); showToast('Скопировано'); } catch (er) { showToast('Не удалось скопировать'); } ta.remove(); }
+      }
+
+      // ---------- video: load, frames ----------
+      function probe(url) {
+        return new Promise((res, rej) => {
+          const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true; v.playsInline = true;
+          const t = setTimeout(() => rej(new Error('timeout')), 20000);
+          v.onloadedmetadata = () => { clearTimeout(t); res({ dur: v.duration, w: v.videoWidth, h: v.videoHeight }); };
+          v.onerror = () => { clearTimeout(t); rej(new Error('decode')); };
+          v.src = url;
+        });
+      }
+      const isVideo = f => /^video\//.test(f.type) || /\.(mp4|m4v|mov|webm|mkv|avi|ogv|3gp|wmv|flv|mpeg|mpg|ts)$/i.test(f.name || '');
+      async function addVideos(files) {
+        if (!cur) return;
+        let last = null;
+        for (const f of files) {
+          const v = { id: nid('m'), name: f.name || 'video', size: f.size, type: f.type, dur: 0, w: 0, h: 0, blobId: null, frames: [], edits: [], note: '', target: '', split: 'scenes', ca: Date.now() };
+          const u = URL.createObjectURL(f); live.set(v.id, u);
+          try { const m = await probe(u); v.dur = isFinite(m.dur) ? m.dur : 0; v.w = m.w; v.h = m.h; if (!m.w) v.bad = true; } catch (e) { v.bad = true; }
+          if (!v.bad) { try { v.blobId = await putBlob(f); } catch (e) { v.unsaved = true; } }
+          cur.videos.push(v); last = v;
+        }
+        if (last) { selVideo = last.id; tab = 'board'; save(); render(); if (!last.bad) showToast('Видео загружено. Нажмите «Разбить», чтобы получить кадры'); }
+      }
+      function seek(el, t) {
+        return new Promise(res => {
+          let done = false; const fin = () => { if (done) return; done = true; el.removeEventListener('seeked', fin); res(); };
+          el.addEventListener('seeked', fin); setTimeout(fin, 4000);
+          el.currentTime = Math.max(0, Math.min(t, (el.duration || t) - 0.04));
+        });
+      }
+      function grab(el, maxW) {
+        const w = el.videoWidth, h = el.videoHeight, s = Math.min(1, (maxW || 640) / Math.max(w, h));
+        const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s));
+        c.getContext('2d').drawImage(el, 0, 0, c.width, c.height);
+        return new Promise(res => c.toBlob(b => res(b), 'image/jpeg', 0.85));
+      }
+      function setBusy(p, text) {
+        if (!busy) return; busy.p = p; busy.text = text;
+        const bar = ov && ov.querySelector('.vs-prog i'); if (bar) bar.style.width = Math.round(p * 100) + '%';
+        const tx = ov && ov.querySelector('.vs-ptext'); if (tx) tx.textContent = text;
+      }
+      async function extract(v) {
+        if (busy) return;
+        busy = { vid: v.id, p: 0, text: 'Открываю видео…', cancel: false };
+        render();
+        const el = document.createElement('video'); el.muted = true; el.playsInline = true; el.preload = 'auto';
+        try {
+          el.src = await videoUrl(v);
+          await new Promise((res, rej) => { el.onloadeddata = res; el.onerror = () => rej(new Error('decode')); setTimeout(() => rej(new Error('timeout')), 20000); });
+          const dur = el.duration || v.dur;
+          let times = [], cut = false;
+          const mode = v.split || 'scenes';
+          if (mode === 'every') { const n = Math.max(0.2, +v.n || 1); for (let t = 0; t < dur && times.length < 300; t += n) times.push(t); }
+          else if (mode === 'count') { const n = Math.max(1, Math.min(300, Math.round(+v.n || 12))); for (let i = 0; i < n; i++) times.push((i + 0.5) * dur / n); }
+          else { times = await detectCuts(el, dur); cut = true; }
+          if (busy.cancel) throw new Error('cancel');
+          // keep frames with notes or marks; replace the rest
+          const keep = v.frames.filter(f => f.on || (f.note || '').trim());
+          const gone = v.frames.filter(f => keep.indexOf(f) < 0).map(f => f.blobId);
+          const fresh = [];
+          for (let i = 0; i < times.length; i++) {
+            if (busy.cancel) break;
+            const t = times[i];
+            if (keep.some(f => Math.abs(f.t - t) < 0.15)) continue;
+            await seek(el, t + (cut && t > 0 ? 0.08 : 0));
+            const b = await grab(el, 640); if (!b) continue;
+            fresh.push({ id: nid('f'), t: Math.round(t * 100) / 100, blobId: await putBlob(b), note: '', on: false, cut: cut });
+            setBusy((cut ? 0.6 : 0) + (cut ? 0.4 : 1) * (i + 1) / times.length, 'Кадр ' + (i + 1) + ' из ' + times.length);
+          }
+          v.frames = keep.concat(fresh);
+          await dropBlobs(gone);
+          save();
+          showToast(busy.cancel ? 'Остановлено — сохранено кадров: ' + fresh.length : 'Готово: ' + fresh.length + ' кадров' + (cut ? ' (по сменам сцен)' : ''));
+        } catch (e) {
+          if (e.message !== 'cancel') showToast(e.message === 'decode' ? 'Браузер не смог открыть видео — перегоните в MP4 (H.264)' : 'Не удалось разбить видео');
+        } finally { busy = null; el.removeAttribute('src'); try { el.load(); } catch (e) {} render(); }
+      }
+      async function detectCuts(el, dur) {
+        const W = 64, H = 36, c = document.createElement('canvas'); c.width = W; c.height = H;
+        const ctx = c.getContext('2d', { willReadFrequently: true });
+        const step = Math.min(1, Math.max(0.15, dur / 300));
+        let prev = null; const d = [];
+        for (let t = 0, i = 0; t < dur; t += step, i++) {
+          if (busy.cancel) return [];
+          await seek(el, t);
+          ctx.drawImage(el, 0, 0, W, H);
+          const px = ctx.getImageData(0, 0, W, H).data, g = new Float32Array(W * H);
+          for (let k = 0; k < W * H; k++) g[k] = px[k * 4] * 0.299 + px[k * 4 + 1] * 0.587 + px[k * 4 + 2] * 0.114;
+          if (prev) { let s = 0; for (let k = 0; k < g.length; k++) s += Math.abs(g[k] - prev[k]); d.push({ t, v: s / g.length }); }
+          prev = g;
+          setBusy(0.6 * Math.min(1, t / dur), 'Ищу смены сцен… ' + fmtT(t) + ' из ' + fmtT(dur));
+        }
+        // robust threshold: ordinary motion stays near the median, hard cuts jump far above it
+        const vals = d.map(x => x.v).sort((a, b) => a - b), med = vals.length ? vals[Math.floor(vals.length / 2)] : 0;
+        const mad = vals.length ? vals.map(x => Math.abs(x - med)).sort((a, b) => a - b)[Math.floor(vals.length / 2)] : 0;
+        const thr = Math.max(16, med + 6 * mad + 8);
+        const cuts = [0];
+        d.filter(x => x.v > thr).sort((a, b) => b.v - a.v).slice(0, 80).sort((a, b) => a.t - b.t).forEach(x => { if (x.t - cuts[cuts.length - 1] >= 0.8) cuts.push(x.t); });
+        if (cuts.length < 3) { const n = Math.min(8, Math.max(4, Math.round(dur / 3))); for (let i = 1; i < n; i++) { const t = i * dur / n; if (cuts.every(c0 => Math.abs(c0 - t) > 0.8)) cuts.push(t); } cuts.sort((a, b) => a - b); }
+        return cuts;
+      }
+      async function grabNow() {
+        const v = video(), el = ov && ov.querySelector('[data-player]'); if (!v || !el || !el.videoWidth) { showToast('Сначала включите видео'); return; }
+        el.pause();
+        const b = await grab(el, 640); if (!b) return;
+        v.frames.push({ id: nid('f'), t: Math.round(el.currentTime * 100) / 100, blobId: await putBlob(b), note: '', on: true, cut: false });
+        save(); render(); showToast('Кадр ' + fmtT(el.currentTime, true) + ' добавлен и отмечен для правки');
+      }
+      function player() { return ov && ov.querySelector('[data-player]'); }
+      async function addEdit() {
+        const v = video(), el = player(); if (!v) return;
+        const t = el ? el.currentTime || 0 : 0;
+        if (el) el.pause();
+        const x = { id: nid('e'), from: Math.round(t * 10) / 10, to: Math.round(Math.min(v.dur || t + 3, t + 3) * 10) / 10, type: 'replace', a: '', b: '', blobId: null };
+        if (el && el.videoWidth) { const bl = await grab(el, 480); if (bl) x.blobId = await putBlob(bl); }
+        v.edits = v.edits || []; v.edits.push(x); save(); render();
+        const row = ov.querySelector('[data-ed="' + x.id + '"]'); if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); const inp = row.querySelector('[data-k="e:a"]'); if (inp) inp.focus({ preventScroll: true }); }
+      }
+      async function regrabEdit(x) {
+        const el = player(); if (!el || !el.videoWidth) return;
+        const old = x.blobId; el.pause(); await seek(el, x.from);
+        const bl = await grab(el, 480); if (!bl) return;
+        x.blobId = await putBlob(bl); save(); dropBlobs([old]);
+        const img = ov && ov.querySelector('[data-ed="' + x.id + '"] .vs-seg-th img'); if (img) { const u = await blobUrl(x.blobId); img.src = u; }
+      }
+      let segStop = null;
+      function segAction(a, b) {
+        const v = video(), id = b.closest('[data-ed]').dataset.ed, x = v && (v.edits || []).find(y => y.id === id); if (!x) return;
+        const el = player();
+        if (a === 'deledit') { v.edits = v.edits.filter(y => y !== x); save(); dropBlobs([x.blobId]); render(); return; }
+        if (a === 'copyedit') { copy(editPrompt(x)); return; }
+        if (!el) return;
+        if (a === 'edfrom') { x.from = Math.round(el.currentTime * 10) / 10; if (x.to < x.from) x.to = Math.round(Math.min(v.dur || x.from + 3, x.from + 3) * 10) / 10; save(); regrabEdit(x).then(render); return; }
+        if (a === 'edto') { x.to = Math.round(el.currentTime * 10) / 10; if (x.to < x.from) { const f = x.from; x.from = x.to; x.to = f; } save(); render(); return; }
+        if (a === 'playseg') {
+          if (segStop) el.removeEventListener('timeupdate', segStop);
+          segStop = () => { if (el.currentTime >= x.to) { el.pause(); el.removeEventListener('timeupdate', segStop); segStop = null; } };
+          el.currentTime = x.from; el.addEventListener('timeupdate', segStop);
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          const pr = el.play(); if (pr && pr.catch) pr.catch(() => {});
+        }
+      }
+
+      // ---------- tutorial ----------
+      const TOUR_KEY = 'factmap-video-tour';
+      const tourSeen = () => { try { return localStorage.getItem(TOUR_KEY) === '1'; } catch (e) { return true; } };
+      const Tour = (function () {
+        const STEPS = [
+          { t: 'Видео-студия', b: 'Здесь вы готовите видео для ИИ: планируете ролик, отмечаете правки в готовом видео и собираете архив с заданием. Пройдём за минуту.' },
+          { tab: 'plan', sel: '.vs-modes', t: 'Три шага', b: '1 — План: что снимаем. 2 — Раскадровка: правки готового видео. 3 — Пакет для ИИ: архив, который вы отдаёте Claude или ChatGPT.' },
+          { tab: 'plan', sel: '.vs-modesw', t: 'Два способа создать видео', b: '«По сценам» — вы сами раскладываете ролик на таймлайне. «Свободный режим» — просто пишете идею своими словами, а ИИ сам предложит сцены.' },
+          { tab: 'plan', sel: '.vs-proj', t: 'Проект', b: 'Формат кадра (вертикальное 9:16 для Reels и Shorts), чем генерируете видео, стиль и главный герой. Героя опишите подробно — так он будет одинаковым во всех сценах.' },
+          { tab: 'plan', sel: '.vs-tl', free: false, t: 'Таймлайн', b: 'Каждый блок — сцена. Тяните блок, чтобы поменять порядок, а правый край — чтобы изменить длительность. Цветная полоса снизу — развитие сюжета: зацеп → развитие → кульминация → финал.' },
+          { tab: 'plan', sel: '.vs-autop', free: false, t: 'Промпт сцены', b: 'Заполните, что происходит в кадре, — промпт для генератора соберётся сам. Его можно скопировать сразу или вписать свой.' },
+          { tab: 'plan', sel: '.vs-free', free: true, t: 'Идея своими словами', b: 'Опишите видео как другу: кто, где, что происходит, чем закончится. Добавьте картинки для настроения — ИИ их посмотрит.' },
+          { tab: 'board', sel: '.vs-card', t: 'Готовое видео', b: 'Загрузите ролик (MP4, MOV, WebM). Он покажется в плеере, а приложение определит формат и длительность.' },
+          { tab: 'board', sel: '.vs-segs', t: 'Правки по фрагментам', b: 'Поставьте видео на паузу в нужном месте и нажмите «＋ Правка». Выберите, что сделать: заменить объект, поменять фон, стиль, продлить, вырезать… — получите готовый промпт для ИИ-редактора видео.' },
+          { tab: 'board', sel: '[data-a="extract"]', t: 'Разбить на кадры', b: 'Видео само разобьётся на кадры по сменам сцен. Отметьте кадры и напишите, что в них изменить. «→ В план» превратит кадры в сцены на таймлайне.' },
+          { tab: 'pack', sel: '.vs-card', t: 'Что просим у ИИ', b: 'Создать видео по плану, поправить готовое или всё вместе. Ниже — проверка: приложение подскажет, чего не хватает.' },
+          { tab: 'pack', sel: '[data-a="zip"]', t: 'Архив', b: 'Скачайте .zip, положите его в чат с Claude или ChatGPT и напишите «выполни PROMPT.md». ИИ вернёт готовые промпты по сценам и правкам.' },
+          { t: 'Готово!', b: 'Вернуться к обучению можно кнопкой «? Обучение» вверху. Удачных роликов!' }
+        ];
+        let i = 0, box = null, hl = null, steps = [];
+        function clear() { if (hl) hl.classList.remove('vs-hl'); hl = null; }
+        function stop() { clear(); if (box) box.remove(); box = null; try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {} }
+        function show() {
+          if (!ov) { stop(); return; }
+          clear();
+          const st = steps[i];
+          if (st.tab && tab !== st.tab) { tab = st.tab; render(); }
+          const el = st.sel ? ov.querySelector(st.sel) : null;
+          if (!box) {
+            box = document.createElement('div'); box.className = 'vs-tour'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Обучение');
+            box.addEventListener('click', e => { const b = e.target.closest('[data-tr]'); if (!b) return; const a = b.dataset.tr; if (a === 'x') stop(); else if (a === 'n') { if (i < steps.length - 1) { i++; show(); } else stop(); } else if (a === 'p' && i > 0) { i--; show(); } });
+            box.addEventListener('pointerdown', e => e.stopPropagation());
+            document.body.appendChild(box);
+          }
+          box.innerHTML = '<div class="vs-tour-top"><small>Шаг ' + (i + 1) + ' из ' + steps.length + '</small><button type="button" class="c-x" data-tr="x" aria-label="Закрыть обучение">×</button></div><b>' + esc(st.t) + '</b><p>' + esc(st.b) + '</p>' +
+            '<div class="vs-tour-bar"><i style="width:' + Math.round((i + 1) / steps.length * 100) + '%"></i></div>' +
+            '<div class="vs-row"><button type="button" class="btn" data-tr="p"' + (i ? '' : ' disabled') + '>Назад</button><span class="vs-sp"></span><button type="button" class="btn primary" data-tr="n">' + (i < steps.length - 1 ? 'Далее' : 'Понятно') + '</button></div>';
+          if (el) {
+            hl = el; el.classList.add('vs-hl');
+            el.scrollIntoView({ block: 'center' });
+            const r = el.getBoundingClientRect(), bw = Math.min(360, window.innerWidth - 16), bh = box.offsetHeight;
+            let top = r.bottom + 12; if (top + bh > window.innerHeight - 8) top = r.top - bh - 12; if (top < 8) top = Math.max(8, window.innerHeight - bh - 12);
+            box.style.left = Math.round(Math.max(8, Math.min(window.innerWidth - bw - 8, r.left))) + 'px'; box.style.top = Math.round(top) + 'px'; box.style.transform = 'none';
+          } else { box.style.left = '50%'; box.style.top = '50%'; box.style.transform = 'translate(-50%,-50%)'; }
+          const nb = box.querySelector('[data-tr="n"]'); if (nb) nb.focus({ preventScroll: true });
+        }
+        function start() {
+          if (!ov) return;
+          if (!cur) { showToast('Сначала выберите шаблон или «Свободный режим» — обучение начнётся само'); try { localStorage.removeItem(TOUR_KEY); } catch (e) {} return; }
+          steps = STEPS.filter(s => s.free === undefined || s.free === !!cur.free);
+          i = 0; if (box) { box.remove(); box = null; } show();
+        }
+        return { start, stop };
+      })();
+
+      function framesToPlan() {
+        const v = video(); if (!v) return;
+        let fs = (v.frames || []).filter(f => f.cut); if (fs.length < 2) fs = (v.frames || []).filter(f => f.on); if (fs.length < 1) fs = v.frames || [];
+        fs = fs.slice().sort((a, b) => a.t - b.t);
+        if (!fs.length) return;
+        const go = () => {
+          const fresh = fs.map((f, i) => { const end = i < fs.length - 1 ? fs[i + 1].t : (v.dur || f.t + 3); const s = newScene(['dev', 'Сцена из видео ' + (i + 1), Math.max(0.5, Math.round((end - f.t) * 2) / 2), 'Средний', 'Статичная', (f.note || '').trim()]); s.refs = [f.blobId]; return s; });
+          if (fresh.length) { fresh[0].stage = 'hook'; fresh[fresh.length - 1].stage = 'final'; }
+          const blank = cur.scenes.every(s => !(s.action || '').trim() || /…$/.test(s.action.trim()));
+          if (blank) cur.scenes = fresh; else cur.scenes = cur.scenes.concat(fresh);
+          const a = aspectOf(v.w, v.h); if (a.key && blank) cur.format = a.key;
+          selScene = fresh[0].id; tab = 'plan'; save(); render();
+          showToast('В план добавлено сцен: ' + fresh.length);
+        };
+        go();
+      }
+
+      // ---------- images for references ----------
+      async function shrink(file, max) {
+        try {
+          const bmp = await createImageBitmap(file);
+          const s = Math.min(1, (max || 1600) / Math.max(bmp.width, bmp.height));
+          const c = document.createElement('canvas'); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+          c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+          return await new Promise(res => c.toBlob(b => res(b || file), 'image/jpeg', 0.9));
+        } catch (e) { return file; }
+      }
+      async function addRefs(files) {
+        if (cur && cur.free) { cur.refs = cur.refs || []; for (const f of files) cur.refs.push(await putBlob(await shrink(f))); save(); render(); return; }
+        const s = scene(); if (!s) { showToast('Сначала выберите сцену на таймлайне'); return; }
+        for (const f of files) s.refs.push(await putBlob(await shrink(f)));
+        save(); render();
+      }
+      function handleFiles(files) {
+        const d = ov && ov.querySelector('.vs-drop'); if (d) d.classList.remove('over');
+        if (!cur || !files.length) return;
+        const vids = files.filter(isVideo), imgs = files.filter(f => /^image\//.test(f.type));
+        if (vids.length) addVideos(vids);
+        else if (imgs.length) { if (tab !== 'plan') tab = 'plan'; addRefs(imgs); }
+        else showToast('Это не видео и не картинка');
+      }
+      function pick(accept, multiple, fn) {
+        const i = document.createElement('input'); i.type = 'file'; i.accept = accept; i.multiple = !!multiple; i.style.display = 'none';
+        i.addEventListener('change', () => { const fs = [...(i.files || [])]; i.remove(); if (fs.length) fn(fs); });
+        document.body.appendChild(i); i.click();
+      }
+
+      // ---------- events ----------
+      function onClick(e) {
+        const b = e.target.closest('[data-a]'); if (!b) return;
+        const a = b.dataset.a, v = b.dataset.v;
+        if (a === 'close') close();
+        else if (a === 'tab') { tab = b.dataset.t; save(); render(); }
+        else if (a === 'tpl') { const p = newProject(b.dataset.t); projects.unshift(p); tab = 'plan'; setProject(p); if (!tourSeen()) setTimeout(() => Tour.start(), 300); }
+        else if (a === 'tour') Tour.start();
+        else if (a === 'freemode') { cur.free = v === '1'; if (!cur.free && !cur.scenes.length) { cur.scenes = TEMPLATES.empty.sc.map(newScene); selScene = cur.scenes[0].id; } save(); render(); }
+        else if (a === 'addpref') pick('image/*', true, addRefs);
+        else if (a === 'delpref') { const [id] = cur.refs.splice(+v, 1); save(); dropBlobs([id]); render(); }
+        else if (a === 'addedit') addEdit();
+        else if (a === 'deledit' || a === 'edfrom' || a === 'edto' || a === 'playseg' || a === 'copyedit') segAction(a, b);
+        else if (a === 'newproj') { const was = cur; cur = null; ov.querySelector('.vs-main .vs-wrap').innerHTML = startHtml(false); cur = was; }
+        else if (a === 'cancelnew') render();
+        else if (a === 'renproj') {
+          const sel = ov.querySelector('[data-k="proj"]'); if (!sel) return;
+          const inp = document.createElement('input'); inp.className = 'vs-in'; inp.value = cur.name; inp.maxLength = 60; inp.setAttribute('aria-label', 'Название видео-проекта');
+          sel.replaceWith(inp); inp.focus(); inp.select();
+          let done = false; const fin = ok => { if (done) return; done = true; if (ok && inp.value.trim()) { cur.name = inp.value.trim(); save(); } render(); };
+          inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') fin(true); else if (ev.key === 'Escape') fin(false); });
+          inp.addEventListener('blur', () => fin(true));
+        }
+        else if (a === 'delproj') askConfirm('Удалить видео-проект «' + cur.name + '» со всеми кадрами и видео?', async () => {
+          const ids = [...usedIds(cur)], p = cur;
+          projects = projects.filter(x => x.id !== p.id);
+          try { await op('proj', 'readwrite', st => st.delete(p.id)); } catch (er) {}
+          cur = null; await dropBlobs(ids);
+          cur = projects[0] || null; selScene = selVideo = null; pickDefaults(); render();
+        });
+        else if (a === 'format') { cur.format = v; save(); render(); }
+        else if (a === 'zoom') { zoom = Math.max(0, Math.min(ZOOMS.length - 1, zoom + (+v))); refreshTimeline(); }
+        else if (a === 'addsc') { const s = newScene(['dev', 'Сцена ' + (cur.scenes.length + 1), 4]); const i = cur.scenes.findIndex(x => x.id === selScene); cur.scenes.splice(i >= 0 ? i + 1 : cur.scenes.length, 0, s); selScene = s.id; save(); render(); }
+        else if (a === 'mvsc') { const i = cur.scenes.findIndex(x => x.id === selScene), j = i + (+v); if (i < 0 || j < 0 || j >= cur.scenes.length) return; const [s] = cur.scenes.splice(i, 1); cur.scenes.splice(j, 0, s); save(); render(); }
+        else if (a === 'dupsc') { const s = scene(); if (!s) return; const c = JSON.parse(JSON.stringify(s)); c.id = nid('s'); c.title = s.title + ' (копия)'; cur.scenes.splice(cur.scenes.indexOf(s) + 1, 0, c); selScene = c.id; save(); render(); }
+        else if (a === 'delsc') { const s = scene(); if (!s) return; askConfirm('Удалить сцену «' + s.title + '»?', () => { const i = cur.scenes.indexOf(s); cur.scenes.splice(i, 1); selScene = (cur.scenes[i] || cur.scenes[i - 1] || {}).id || null; save(); dropBlobs(s.refs || []); render(); }); }
+        else if (a === 'addref') pick('image/*', true, addRefs);
+        else if (a === 'delref') { const s = scene(); if (!s) return; const [id] = s.refs.splice(+v, 1); save(); dropBlobs([id]); render(); }
+        else if (a === 'copysp') { const s = scene(); if (s) copy((s.prompt || '').trim() || scenePrompt(s, cur)); }
+        else if (a === 'addvid') pick('video/*,.mkv,.avi,.mov,.m4v,.webm', true, addVideos);
+        else if (a === 'selvid') { selVideo = v; render(); }
+        else if (a === 'delvid') { const x = video(); if (!x) return; askConfirm('Удалить видео «' + x.name + '» и его кадры?', () => { cur.videos = cur.videos.filter(y => y !== x); selVideo = cur.videos[0] ? cur.videos[0].id : null; save(); dropBlobs([x.blobId].concat(x.frames.map(f => f.blobId))); if (live.has(x.id)) { URL.revokeObjectURL(live.get(x.id)); live.delete(x.id); } render(); }); }
+        else if (a === 'extract') { const x = video(); if (x) extract(x); }
+        else if (a === 'stopx') { if (busy) busy.cancel = true; }
+        else if (a === 'grabnow') grabNow();
+        else if (a === 'seek') { if (e.target.closest('.vs-x')) return; const el = ov.querySelector('[data-player]'); if (el) { el.pause(); el.currentTime = +v; el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }
+        else if (a === 'delfr') { e.stopPropagation(); const x = video(), id = b.closest('[data-fr]').dataset.fr; const f = x.frames.find(y => y.id === id); x.frames = x.frames.filter(y => y.id !== id); save(); if (f) dropBlobs([f.blobId]); render(); }
+        else if (a === 'markall') { const x = video(); const all = x.frames.every(f => f.on); x.frames.forEach(f => { f.on = !all; }); save(); render(); }
+        else if (a === 'clearfr') { const x = video(); askConfirm('Убрать все кадры этого видео (вместе с правками)?', () => { const ids = x.frames.map(f => f.blobId); x.frames = []; save(); dropBlobs(ids); render(); }, 'Очистить'); }
+        else if (a === 'toplan') framesToPlan();
+        else if (a === 'quick') { const x = video(); x.note = ((x.note || '').trim() ? x.note.trim() + '\n' : '') + v; save(); const ta = ov.querySelector('[data-k="v:note"]'); if (ta) { ta.value = x.note; ta.focus(); const at = ta.value.indexOf('…'); if (at >= 0) ta.setSelectionRange(at, at + 1); } }
+        else if (a === 'pkmode') { cur.pack.mode = v; save(); render(); }
+        else if (a === 'copyprompt') copy(buildPrompt());
+        else if (a === 'mdprompt') download(slug(cur.name) + '.PROMPT.md', new Blob([buildPrompt()], { type: 'text/markdown;charset=utf-8' }));
+        else if (a === 'zip') {
+          b.disabled = true; const t0 = b.textContent; b.textContent = 'Собираю…';
+          buildZip().then(z => download(cur.name.replace(/[\\/:*?"<>|]/g, '_') + '.zip', z)).catch(() => showToast('Не удалось собрать архив')).finally(() => { b.disabled = false; b.textContent = t0; });
+        }
+      }
+      function setField(k, val, el) {
+        const [scope, name] = k.split(':');
+        if (k === 'proj') { const p = projects.find(x => x.id === val); if (p) setProject(p); return 'full'; }
+        if (scope === 'p') { cur[name] = val; save(); return name === 'tool' ? 'full' : 'none'; }
+        if (scope === 's') { const s = scene(); if (!s) return; s[name] = name === 'dur' ? Math.max(0.5, Math.min(600, Math.round((+val || 0.5) * 2) / 2)) : val; save(); return (name === 'title' || name === 'dur' || name === 'stage') ? 'tl' : 'none'; }
+        if (scope === 'v') { const v = video(); if (!v) return; v[name] = val; save(); return name === 'split' ? 'full' : 'none'; }
+        if (scope === 'f') { const v = video(), id = el.closest('[data-fr]').dataset.fr, f = v.frames.find(x => x.id === id); if (!f) return; f[name] = val; if (name === 'note' && String(val).trim() && !f.on) { f.on = true; const cb = el.closest('.vs-fr').querySelector('[data-k="f:on"]'); if (cb) cb.checked = true; } el.closest('.vs-fr').classList.toggle('on', !!f.on); save(); return 'none'; }
+        if (scope === 'e') {
+          const v = video(), id = el.closest('[data-ed]').dataset.ed, x = v && (v.edits || []).find(y => y.id === id); if (!x) return;
+          if (name === 'from' || name === 'to') { const n = Math.max(0, Math.min(v.dur || 1e6, Math.round((+val || 0) * 10) / 10)); x[name] = n; if (x.to < x.from) { if (name === 'from') x.to = x.from; else x.from = x.to; } }
+          else x[name] = val;
+          save();
+          if (name === 'type') return 'full';
+          const pre = el.closest('[data-ed]').querySelector('.vs-edp'); if (pre) pre.textContent = editPrompt(x);
+          return 'none';
+        }
+        if (scope === 'pk') { cur.pack[name] = val; save(); return name === 'extra' ? 'pre' : 'full'; }
+      }
+      function after(r) {
+        if (r === 'full') render();
+        else if (r === 'tl') { refreshTimeline(); const s = scene(); const pre = ov.querySelector('.vs-autop'); if (pre && s) pre.textContent = scenePrompt(s, cur); }
+        else if (r === 'pre') { const pre = ov.querySelectorAll('.vs-pre'); if (pre.length) pre[pre.length - 1].textContent = buildPrompt(); }
+        else if (tab === 'plan') { const s = scene(); const pre = ov.querySelector('.vs-autop'); if (pre && s) pre.textContent = scenePrompt(s, cur); }
+      }
+      function onInput(e) {
+        const el = e.target, k = el.dataset && el.dataset.k; if (!k || el.type === 'checkbox' || el.tagName === 'SELECT') return;
+        const r = setField(k, el.value, el);
+        after(r === 'full' ? 'none' : r);
+      }
+      function onChange(e) {
+        const el = e.target, k = el.dataset && el.dataset.k; if (!k) return;
+        if (el.type === 'checkbox') after(setField(k, el.checked, el));
+        else if (el.tagName === 'SELECT') after(setField(k, el.value, el));
+        else if (el.type === 'number') { setField(k, el.value, el); if (k === 'e:from') { const x = (video().edits || []).find(y => y.id === el.closest('[data-ed]').dataset.ed); if (x) regrabEdit(x); } render(); }
+        else if (k === 'p:tool' || k.startsWith('pk:')) after('full');
+      }
+      // timeline: select / drag to reorder (mouse) / drag right edge to change duration
+      function onDown(e) {
+        e.stopPropagation();
+        const blk = e.target.closest('.vs-sc'); if (!blk || e.button > 0) return;
+        const id = blk.dataset.sc, s = cur.scenes.find(x => x.id === id); if (!s) return;
+        const pps = ZOOMS[zoom], x0 = e.clientX, y0 = e.clientY;
+        if (e.target.closest('[data-rs]')) {
+          e.preventDefault();
+          const d0 = +s.dur || 0, lab = blk.querySelector('.vs-dl');
+          const mv = ev => { s.dur = Math.max(0.5, Math.min(600, Math.round((d0 + (ev.clientX - x0) / pps) * 2) / 2)); blk.style.width = Math.max(56, s.dur * pps) + 'px'; if (lab) lab.textContent = fmtDur(s.dur); };
+          const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); selScene = id; save(); render(); };
+          window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+          return;
+        }
+        let dragging = false, ins = null, target = -1;
+        const blocks = [...ov.querySelectorAll('.vs-sc')];
+        const mv = ev => {
+          const dx = ev.clientX - x0;
+          if (!dragging) {
+            if (Math.abs(dx) < 7 || e.pointerType !== 'mouse') { if (Math.hypot(dx, ev.clientY - y0) > 10) cancel(); return; }
+            dragging = true; blk.classList.add('drag');
+            ins = document.createElement('div'); ins.className = 'vs-ins'; blk.parentNode.parentNode.appendChild(ins);
+          }
+          blk.style.transform = 'translateX(' + dx + 'px)';
+          const inner = blk.parentNode.parentNode.getBoundingClientRect();
+          target = blocks.length;
+          for (let i = 0; i < blocks.length; i++) { const r = blocks[i].getBoundingClientRect(); if (blocks[i] !== blk && ev.clientX < r.left + r.width / 2) { target = i; break; } }
+          const ref = blocks[target] ? blocks[target].getBoundingClientRect().left : (blocks[blocks.length - 1].getBoundingClientRect().right + 2);
+          ins.style.left = (ref - inner.left - 2) + 'px';
+          const tl = ov.querySelector('.vs-tl'), tr = tl.getBoundingClientRect();
+          if (ev.clientX > tr.right - 30) tl.scrollLeft += 12; else if (ev.clientX < tr.left + 30) tl.scrollLeft -= 12;
+        };
+        const cancel = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const up = () => {
+          cancel();
+          if (dragging) {
+            const from = cur.scenes.indexOf(s); let to = target; if (to > from) to--;
+            if (to >= 0 && to !== from) { cur.scenes.splice(from, 1); cur.scenes.splice(to, 0, s); save(); }
+            selScene = id; render();
+          } else if (selScene !== id) { selScene = id; render(); }
+        };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel);
+      }
+      // paste: images → references of the selected scene; videos → storyboard
+      document.addEventListener('paste', e => {
+        if (!ov) return;
+        e.stopPropagation();
+        if (isTyping(e.target)) return;
+        const cd = e.clipboardData; if (!cd) return;
+        const files = [...(cd.files || [])];
+        if (files.length) { e.preventDefault(); handleFiles(files); }
+      }, true);
+
+      // entry points: toolbar button and menu item
+      (function mountButtons() {
+        const share = document.getElementById('btn-share');
+        if (share && !document.getElementById('btn-video')) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.id = 'btn-video'; b.title = 'Видео-студия: план видео, раскадровка, пакет для ИИ'; b.setAttribute('aria-label', 'Видео-студия');
+          b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:19px;height:19px;display:block"><rect x="3" y="6" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M16 10.5l5-3v9l-5-3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg><span class="tb-label"> Видео</span>';
+          b.addEventListener('click', open);
+          share.parentNode.insertBefore(b, share);
+        }
+        const nm = document.getElementById('btn-new-map');
+        if (nm && !document.getElementById('btn-video-menu')) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'btn primary'; b.id = 'btn-video-menu'; b.style.gridColumn = '1 / -1'; b.textContent = '🎬 Видео-студия';
+          b.addEventListener('click', () => { const m = document.getElementById('settings-modal'); if (m) m.classList.remove('open'); open(); });
+          nm.parentNode.insertBefore(b, nm);
+        }
+      })();
+      try { if (localStorage.getItem(OPEN_KEY) === '1') setTimeout(open, 500); } catch (e) {}
+      return { open, close };
+    })();
+
 
     window.addEventListener('pagehide', save);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(); });
