@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Факт-карта переехала</title>
+<link rel="icon" href="https://fakt-karta.pages.dev/favicon.png">
+<link rel="apple-touch-icon" href="https://fakt-karta.pages.dev/apple-touch-icon.png">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0f1117; color: #e8eaf2; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .box { width: min(460px, calc(100% - 32px)); padding: 28px; background: #181b26; border: 1px solid #2a2f42; border-radius: 18px; }
+  h1 { margin: 0 0 10px; font-size: 22px; }
+  p { margin: 0 0 14px; color: #b8bdd0; }
+  .st { margin: 16px 0; padding: 12px 14px; border-radius: 12px; background: #11141d; }
+  .st:empty { display: none; }
+  .ok { color: #3dd68c; } .err { color: #ff7a7a; }
+  .btn { display: inline-block; margin: 6px 8px 0 0; padding: 11px 18px; border-radius: 12px; border: 1px solid #2a2f42; background: #232845; color: #e8eaf2; font: inherit; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: #6c8cff; border-color: #6c8cff; color: #0f1117; font-weight: 600; }
+  small { display: block; margin-top: 18px; color: #7d8299; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Факт-карта переехала</h1>
+  <p>Новый адрес: <b id="addr"></b></p>
+  <p id="txt">Ваши карты пока хранятся здесь, в этом браузере. Нажмите кнопку — они скопируются на новый адрес вместе с фото и записями. Здесь ничего не удалится.</p>
+  <div id="st" class="st"></div>
+  <button class="btn primary" id="go" type="button">Перенести мои карты</button>
+  <a class="btn" id="open">Открыть новый сайт</a>
+  <button class="btn" id="dl" type="button">Скачать файл переноса</button>
+  <small>Если кнопка «Перенести» не сработала (например, в приложении на телефоне), скачайте файл переноса, откройте новый сайт и на странице переноса выберите этот файл.</small>
+</div>
+<script>
+(function () {
+  'use strict';
+  var NEW = 'https://fakt-karta.pages.dev/';
+  var NEW_ORIGIN = new URL(NEW).origin;
+  var DBS = ['factmap-files', 'factmap-backup', 'factmap-audio', 'factmap-claude', 'factmap-app-file', 'factmap-video'];
+  var st = document.getElementById('st');
+  var target = NEW + location.search + location.hash;   // invite links (#join=…) keep working
+  document.getElementById('addr').textContent = NEW.replace(/^https:\/\//, '').replace(/\/$/, '');
+  document.getElementById('open').href = target;
+  function say(t, c) { st.textContent = t; st.className = 'st' + (c ? ' ' + c : ''); }
+
+  var ls = {};
+  try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^factmap/.test(k)) ls[k] = localStorage.getItem(k); } } catch (e) {}
+  var hasMaps = !!ls['factmap-maps-v1'];
+  var migrated = ls['factmap-migrated-out'];
+  // nothing to carry over: go straight to the new site
+  if (!hasMaps) { location.replace(target); return; }
+  if (migrated) say('Карты уже переносились ' + new Date(migrated).toLocaleString('ru-RU') + '. Можно перенести ещё раз — повторы не создадутся.', 'ok');
+
+  // ---- read this browser's data (read only) ----
+  function dbExists(name) {
+    return new Promise(function (res) {
+      var rq = indexedDB.open(name);
+      rq.onupgradeneeded = function () { rq.transaction.abort(); res(null); };   // did not exist: create nothing
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { res(null); };
+    });
+  }
+  function readStore(db, name) {
+    return new Promise(function (res) {
+      var tx = db.transaction(name, 'readonly'), os = tx.objectStore(name), recs = [];
+      var spec = { name: name, keyPath: os.keyPath, autoIncrement: os.autoIncrement, indexes: [], records: recs };
+      for (var i = 0; i < os.indexNames.length; i++) { var ix = os.index(os.indexNames[i]); spec.indexes.push({ name: ix.name, keyPath: ix.keyPath, unique: ix.unique, multiEntry: ix.multiEntry }); }
+      var c = os.openCursor();
+      c.onsuccess = function () { var cur = c.result; if (!cur) return; recs.push({ k: cur.primaryKey, v: cur.value }); cur.continue(); };
+      tx.oncomplete = function () { res(spec); };
+      tx.onerror = tx.onabort = function () { res(spec); };
+    });
+  }
+  async function collect() {
+    var idb = [];
+    for (var i = 0; i < DBS.length; i++) {
+      var db = await dbExists(DBS[i]); if (!db) continue;
+      var spec = { name: db.name, version: db.version, stores: [] };
+      for (var j = 0; j < db.objectStoreNames.length; j++) spec.stores.push(await readStore(db, db.objectStoreNames[j]));
+      db.close(); idb.push(spec);
+    }
+    return { kind: 'factmap-migrate', v: 1, from: location.origin, at: new Date().toISOString(), ls: ls, idb: idb };
+  }
+  function mark() { try { localStorage.setItem('factmap-migrated-out', new Date().toISOString()); } catch (e) {} }
+
+  // ---- 1) automatic transfer into a new tab of the new site ----
+  var win = null, payload = null, sent = false, timer = null;
+  window.addEventListener('message', function (e) {
+    if (e.origin !== NEW_ORIGIN || !e.data) return;
+    if (e.data.type === 'fm-ready' && payload && !sent && win) { sent = true; win.postMessage(payload, NEW_ORIGIN); }
+    if (e.data.type === 'fm-done') { clearTimeout(timer); mark(); say('Готово! Карты скопированы на новый сайт (' + e.data.maps + '). Дальше пользуйтесь им — в новой вкладке он уже открыт.', 'ok'); }
+    if (e.data.type === 'fm-error') { clearTimeout(timer); say('Не получилось: ' + e.data.message + '. Скачайте файл переноса — это запасной путь.', 'err'); }
+  });
+  document.getElementById('go').addEventListener('click', async function () {
+    sent = false;
+    win = window.open(NEW + 'migrate.html?t=' + Date.now() + '#from-old', 'fm-migrate');
+    if (!win) { say('Браузер не дал открыть новую вкладку. Скачайте файл переноса — это запасной путь.', 'err'); return; }
+    say('Собираю карты…');
+    try { payload = await collect(); } catch (e) { say('Не удалось прочитать карты: ' + e.message, 'err'); return; }
+    say('Передаю на новый сайт… Не закрывайте эту вкладку.');
+    clearTimeout(timer);
+    timer = setTimeout(function () { if (!/Готово/.test(st.textContent)) say('Новый сайт не ответил. Скачайте файл переноса и выберите его на новом сайте.', 'err'); }, 60000);
+  });
+
+  // ---- 2) the transfer file (fallback) ----
+  function b64(blob) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(',')[1] || ''); }; r.onerror = rej; r.readAsDataURL(blob); }); }
+  async function toJsonable(o) {
+    if (o instanceof Blob) return { __fmBlob: true, type: o.type, b64: await b64(o) };
+    if (o instanceof Date) return { __fmDate: true, t: o.getTime() };
+    if (o instanceof ArrayBuffer) return toJsonable(new Blob([o]));
+    if (Array.isArray(o)) { var a = []; for (var i = 0; i < o.length; i++) a.push(await toJsonable(o[i])); return a; }
+    if (o && typeof o === 'object') { var r = {}; for (var k of Object.keys(o)) r[k] = await toJsonable(o[k]); return r; }
+    return o;
+  }
+  document.getElementById('dl').addEventListener('click', async function () {
+    say('Готовлю файл…');
+    try {
+      var data = await toJsonable(await collect());
+      var url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      var a = document.createElement('a'); a.href = url; a.download = 'fakt-karta-perenos.json'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      mark();
+      say('Файл скачан. Откройте новый сайт по ссылке ' + NEW + 'migrate.html и выберите этот файл.', 'ok');
+    } catch (e) { say('Не удалось собрать файл: ' + e.message, 'err'); }
+  });
+})();
+</script>
+</body>
+</html>
